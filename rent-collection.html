@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rent Collection - Rent Management</title>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="mobile-menu.js" defer></script>
+
+    <style>
+        /* Page-specific layout only; common design remains in style.css */
+        .rent-page {
+            min-width: 0;
+        }
+
+        .rent-summary {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .rent-stat {
+            background: #fff;
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 6px 22px rgba(15, 23, 42, .05);
+            min-width: 0;
+        }
+
+        .rent-stat-label {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .rent-stat-value {
+            display: block;
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .rent-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .rent-search {
+            width: min(360px, 100%);
+            min-height: 42px;
+            border: 1px solid #dbe2ea;
+            border-radius: 9px;
+            padding: 0 12px;
+            outline: none;
+            background: #fff;
+        }
+
+        .rent-search:focus {
+            border-color: #2563eb;
+        }
+
+        .rent-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .rent-table {
+            width: 100%;
+            min-width: 980px;
+            border-collapse: collapse;
+        }
+
+        .rent-table th,
+        .rent-table td {
+            padding: 13px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f7;
+            vertical-align: middle;
+        }
+
+        .rent-table th {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .rent-table td {
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .tenant-name {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .sub-text {
+            display: block;
+            color: #94a3b8;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-paid {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-partial {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-overdue {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .rent-actions {
+            display: flex;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .rent-action {
+            border: 0;
+            border-radius: 7px;
+            padding: 7px 9px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .view-action {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .edit-action {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .delete-action {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .empty-state {
+            text-align: center !important;
+            padding: 50px 20px !important;
+            color: #64748b !important;
+        }
+
+        .rent-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(15, 23, 42, .55);
+        }
+
+        .rent-overlay.open {
+            display: flex;
+        }
+
+        .rent-modal {
+            width: min(620px, 100%);
+            max-height: calc(100vh - 36px);
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, .25);
+        }
+
+        .rent-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .rent-modal-header h2 {
+            margin: 0 0 4px;
+            color: #0f172a;
+        }
+
+        .rent-modal-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .close-rent-modal {
+            border: 0;
+            background: #f1f5f9;
+            color: #334155;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .rent-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .rent-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .rent-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .rent-field label {
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .rent-field input,
+        .rent-field select {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #dbe2ea;
+            border-radius: 9px;
+            padding: 0 11px;
+            background: #fff;
+            color: #0f172a;
+            outline: none;
+        }
+
+        .rent-field input:focus,
+        .rent-field select:focus {
+            border-color: #2563eb;
+        }
+
+        .balance-preview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .balance-preview strong {
+            color: #0f172a;
+            font-size: 18px;
+        }
+
+        .rent-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .rent-form-actions button {
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 9px;
+            border: 0;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .cancel-rent {
+            background: #eef2f7;
+            color: #334155;
+        }
+
+        .save-rent {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .details-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .detail-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .detail-item span {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .detail-item strong {
+            color: #0f172a;
+        }
+
+        @media (max-width: 1000px) {
+            .rent-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .rent-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .rent-toolbar {
+                align-items: stretch;
+            }
+
+            .rent-search {
+                width: 100%;
+            }
+
+            .rent-toolbar .add-property-btn {
+                width: 100%;
+            }
+
+            .rent-form-grid,
+            .details-list {
+                grid-template-columns: 1fr;
+            }
+
+            .rent-field.full {
+                grid-column: auto;
+            }
+
+            .rent-form-actions {
+                flex-direction: column;
+            }
+
+            .rent-form-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">RM</div>
+
+            <div>
+                <h2>Rent Management</h2>
+                <span>Management System</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="index.html" class="nav-item">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="properties.html" class="nav-item">
+                <span>🏢</span>
+                Properties
+            </a>
+
+            <a href="tenants.html" class="nav-item">
+                <span>👥</span>
+                Tenants
+            </a>
+
+            <a href="rent-collection.html" class="nav-item active">
+                <span>₹</span>
+                Rent Collection
+            </a>
+
+            <a href="payments.html" class="nav-item">
+                <span>▤</span>
+                Payments
+            </a>
+
+            <a href="reports.html" class="nav-item">
+                <span>📊</span>
+                Reports
+            </a>
+
+            <a href="reminders.html" class="nav-item">
+                <span>🔔</span>
+                Reminders
+            </a>
+
+            <a href="settings.html" class="nav-item">
+                <span>⚙️</span>
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <strong>Rent Management</strong>
+            <span>Version 1.0</span>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main-content rent-page">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Rent Collection</h1>
+                <p>Manage rent payments and outstanding balances</p>
+            </div>
+
+            <button
+                type="button"
+                class="add-property-btn"
+                id="addRentButton">
+                + Add Rent Payment
+            </button>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+        <section class="rent-summary">
+
+            <div class="rent-stat">
+                <span class="rent-stat-label">Total Collected</span>
+                <span class="rent-stat-value" id="totalCollected">₹0</span>
+            </div>
+
+            <div class="rent-stat">
+                <span class="rent-stat-label">Paid Payments</span>
+                <span class="rent-stat-value" id="paidPayments">0</span>
+            </div>
+
+            <div class="rent-stat">
+                <span class="rent-stat-label">Pending Payments</span>
+                <span class="rent-stat-value" id="pendingPayments">0</span>
+            </div>
+
+            <div class="rent-stat">
+                <span class="rent-stat-label">Partial Payments</span>
+                <span class="rent-stat-value" id="partialPayments">0</span>
+            </div>
+
+        </section>
+
+
+        <!-- PAYMENT LIST -->
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h2>Rent Payment List</h2>
+                    <p>All rent payment records</p>
+                </div>
+
+            </div>
+
+            <div class="rent-toolbar">
+
+                <input
+                    type="search"
+                    id="rentSearch"
+                    class="rent-search"
+                    placeholder="Search tenant, property or unit...">
+
+            </div>
+
+            <div class="rent-table-wrap">
+
+                <table class="rent-table">
+
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Property</th>
+                            <th>Due Date</th>
+                            <th>Monthly Rent</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="rentTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ADD / EDIT MODAL -->
+<div class="rent-overlay" id="rentOverlay">
+
+    <div class="rent-modal">
+
+        <div class="rent-modal-header">
+
+            <div>
+                <h2 id="rentModalTitle">Add Rent Payment</h2>
+                <p>Enter the tenant's rent payment details</p>
+            </div>
+
+            <button
+                type="button"
+                class="close-rent-modal"
+                id="closeRentModal">
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="rentForm">
+
+            <div class="rent-form-grid">
+
+                <div class="rent-field">
+                    <label for="tenantName">Tenant *</label>
+                    <input
+                        id="tenantName"
+                        required
+                        placeholder="Tenant name">
+                </div>
+
+                <div class="rent-field">
+                    <label for="propertyName">Property *</label>
+                    <input
+                        id="propertyName"
+                        required
+                        placeholder="Property name">
+                </div>
+
+                <div class="rent-field">
+                    <label for="unit">Unit / Flat</label>
+                    <input
+                        id="unit"
+                        placeholder="e.g. Flat 101">
+                </div>
+
+                <div class="rent-field">
+                    <label for="dueDate">Due Date *</label>
+                    <input
+                        id="dueDate"
+                        type="date"
+                        required>
+                </div>
+
+                <div class="rent-field">
+                    <label for="monthlyRent">Monthly Rent *</label>
+                    <input
+                        id="monthlyRent"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        required
+                        placeholder="0">
+                </div>
+
+                <div class="rent-field">
+                    <label for="paidAmount">Paid Amount</label>
+                    <input
+                        id="paidAmount"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="0"
+                        placeholder="0">
+                </div>
+
+                <div class="rent-field">
+                    <label for="paymentDate">Payment Date</label>
+                    <input
+                        id="paymentDate"
+                        type="date">
+                </div>
+
+                <div class="rent-field">
+                    <label for="paymentMethod">Payment Method</label>
+
+                    <select id="paymentMethod">
+                        <option value="Cash">Cash</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                </div>
+
+                <div class="rent-field full">
+
+                    <label>Outstanding Balance</label>
+
+                    <div class="balance-preview">
+                        Balance:
+                        <strong id="balancePreview">₹0</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="rent-form-actions">
+
+                <button
+                    type="button"
+                    class="cancel-rent"
+                    id="cancelRent">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-rent">
+                    Save Payment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- DETAILS MODAL -->
+<div class="rent-overlay" id="detailsOverlay">
+
+    <div class="rent-modal">
+
+        <div class="rent-modal-header">
+
+            <div>
+                <h2>Payment Details</h2>
+                <p>Complete information for this rent payment</p>
+            </div>
+
+            <button
+                type="button"
+                class="close-rent-modal"
+                id="closeDetails">
+                ×
+            </button>
+
+        </div>
+
+        <div class="details-list" id="detailsList"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const STORAGE_KEY = "rentPayments";
+
+let payments = [];
+let editingId = null;
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function money(value) {
+    return "₹" + (Number(value) || 0).toLocaleString("en-IN");
+}
+
+function today() {
+    const d = new Date();
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function formatDate(value) {
+    if (!value) return "-";
+
+    const parts = String(value).split("-");
+
+    if (parts.length !== 3) return value;
+
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+function escapeHtml(value) {
+    const div = document.createElement("div");
+    div.textContent = value == null ? "" : String(value);
+    return div.innerHTML;
+}
+
+function calculateStatus(payment) {
+
+    const monthly = Number(payment.monthly) || 0;
+    const paid = Number(payment.paid) || 0;
+    const balance = Math.max(0, monthly - paid);
+
+    if (balance <= 0 && monthly > 0) {
+        return "Paid";
+    }
+
+    if (
+        payment.dueDate &&
+        payment.dueDate < today() &&
+        balance > 0
+    ) {
+        return "Overdue";
+    }
+
+    if (paid > 0 && balance > 0) {
+        return "Partial";
+    }
+
+    return "Pending";
+}
+
+function normalisePayment(payment) {
+
+    const monthly = Number(payment.monthly) || 0;
+    const paid = Number(payment.paid) || 0;
+
+    payment.monthly = monthly;
+    payment.paid = paid;
+    payment.balance = Math.max(0, monthly - paid);
+    payment.status = calculateStatus(payment);
+
+    return payment;
+}
+
+
+/* =========================
+   STORAGE
+========================= */
+
+function loadPayments() {
+
+    try {
+        const stored =
+            JSON.parse(
+                localStorage.getItem(STORAGE_KEY) || "[]"
+            );
+
+        payments =
+            Array.isArray(stored)
+                ? stored.map(normalisePayment)
+                : [];
+
+    } catch (error) {
+
+        console.error("Could not load rent payments:", error);
+
+        payments = [];
+
+    }
+
+}
+
+function savePayments() {
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(payments)
+    );
+
+}
+
+
+/* =========================
+   SUMMARY
+========================= */
+
+function updateSummary(list) {
+
+    const totalCollected =
+        list.reduce(
+            (sum, payment) =>
+                sum + (Number(payment.paid) || 0),
+            0
+        );
+
+    const paid =
+        list.filter(
+            payment => payment.status === "Paid"
+        ).length;
+
+    const pending =
+        list.filter(
+            payment =>
+                payment.status === "Pending" ||
+                payment.status === "Overdue"
+        ).length;
+
+    const partial =
+        list.filter(
+            payment => payment.status === "Partial"
+        ).length;
+
+
+    document.getElementById("totalCollected")
+        .textContent = money(totalCollected);
+
+    document.getElementById("paidPayments")
+        .textContent = paid;
+
+    document.getElementById("pendingPayments")
+        .textContent = pending;
+
+    document.getElementById("partialPayments")
+        .textContent = partial;
+
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+function statusClass(status) {
+
+    return {
+        Paid: "status-paid",
+        Pending: "status-pending",
+        Partial: "status-partial",
+        Overdue: "status-overdue"
+    }[status] || "status-pending";
+
+}
+
+function renderTable() {
+
+    const query =
+        document.getElementById("rentSearch")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const filtered =
+        payments.filter(payment => {
+
+            const text = [
+                payment.tenantName,
+                payment.propertyName,
+                payment.unit,
+                payment.dueDate
+            ]
+                .join(" ")
+                .toLowerCase();
+
+            return text.includes(query);
+
+        });
+
+
+    const body =
+        document.getElementById("rentTableBody");
+
+    body.innerHTML = "";
+
+
+    if (!filtered.length) {
+
+        body.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-state">
+                    No rent payment records found.
+                </td>
+            </tr>
+        `;
+
+        updateSummary(payments);
+
+        return;
+    }
+
+
+    filtered.forEach(payment => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>
+                <span class="tenant-name">
+                    ${escapeHtml(payment.tenantName || "Unknown")}
+                </span>
+            </td>
+
+            <td>
+                ${escapeHtml(payment.propertyName || "-")}
+                ${
+                    payment.unit
+                        ? `<span class="sub-text">${escapeHtml(payment.unit)}</span>`
+                        : ""
+                }
+            </td>
+
+            <td>
+                ${formatDate(payment.dueDate)}
+            </td>
+
+            <td>
+                ${money(payment.monthly)}
+            </td>
+
+            <td>
+                ${money(payment.paid)}
+            </td>
+
+            <td>
+                <strong>${money(payment.balance)}</strong>
+            </td>
+
+            <td>
+                <span class="status-badge ${statusClass(payment.status)}">
+                    ${escapeHtml(payment.status)}
+                </span>
+            </td>
+
+            <td>
+                <div class="rent-actions">
+
+                    <button
+                        type="button"
+                        class="rent-action view-action"
+                        data-action="view"
+                        data-id="${escapeHtml(payment.id)}">
+                        View
+                    </button>
+
+                    <button
+                        type="button"
+                        class="rent-action edit-action"
+                        data-action="edit"
+                        data-id="${escapeHtml(payment.id)}">
+                        Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        class="rent-action delete-action"
+                        data-action="delete"
+                        data-id="${escapeHtml(payment.id)}">
+                        Delete
+                    </button>
+
+                </div>
+            </td>
+        `;
+
+        body.appendChild(row);
+
+    });
+
+
+    updateSummary(payments);
+
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+const overlay =
+    document.getElementById("rentOverlay");
+
+const detailsOverlay =
+    document.getElementById("detailsOverlay");
+
+function openRentModal(payment = null) {
+
+    editingId =
+        payment ? payment.id : null;
+
+    document.getElementById("rentModalTitle")
+        .textContent =
+            payment
+                ? "Edit Rent Payment"
+                : "Add Rent Payment";
+
+
+    document.getElementById("tenantName").value =
+        payment?.tenantName || "";
+
+    document.getElementById("propertyName").value =
+        payment?.propertyName || "";
+
+    document.getElementById("unit").value =
+        payment?.unit || "";
+
+    document.getElementById("dueDate").value =
+        payment?.dueDate || "";
+
+    document.getElementById("monthlyRent").value =
+        payment?.monthly ?? "";
+
+    document.getElementById("paidAmount").value =
+        payment?.paid ?? 0;
+
+    document.getElementById("paymentDate").value =
+        payment?.paymentDate || "";
+
+    document.getElementById("paymentMethod").value =
+        payment?.paymentMethod || "Cash";
+
+
+    updateBalancePreview();
+
+    overlay.classList.add("open");
+
+    setTimeout(
+        () => document.getElementById("tenantName").focus(),
+        50
+    );
+
+}
+
+function closeRentModal() {
+
+    overlay.classList.remove("open");
+    editingId = null;
+
+    document.getElementById("rentForm").reset();
+
+    document.getElementById("paidAmount").value = 0;
+
+    updateBalancePreview();
+
+}
+
+
+/* =========================
+   BALANCE
+========================= */
+
+function updateBalancePreview() {
+
+    const monthly =
+        Number(
+            document.getElementById("monthlyRent").value
+        ) || 0;
+
+    const paid =
+        Number(
+            document.getElementById("paidAmount").value
+        ) || 0;
+
+    const balance =
+        Math.max(0, monthly - paid);
+
+    document.getElementById("balancePreview")
+        .textContent = money(balance);
+
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+document.getElementById("rentForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+
+        const tenantName =
+            document.getElementById("tenantName")
+                .value.trim();
+
+        const propertyName =
+            document.getElementById("propertyName")
+                .value.trim();
+
+        const unit =
+            document.getElementById("unit")
+                .value.trim();
+
+        const dueDate =
+            document.getElementById("dueDate")
+                .value;
+
+        const monthly =
+            Number(
+                document.getElementById("monthlyRent")
+                    .value
+            ) || 0;
+
+        const paid =
+            Number(
+                document.getElementById("paidAmount")
+                    .value
+            ) || 0;
+
+        const paymentDate =
+            document.getElementById("paymentDate")
+                .value;
+
+        const paymentMethod =
+            document.getElementById("paymentMethod")
+                .value;
+
+
+        if (!tenantName ||
+            !propertyName ||
+            !dueDate ||
+            monthly <= 0) {
+
+            alert(
+                "Please fill in Tenant, Property, Due Date and Monthly Rent."
+            );
+
+            return;
+
+        }
+
+
+        if (paid < 0 || paid > monthly) {
+
+            alert(
+                "Paid amount must be between ₹0 and the monthly rent."
+            );
+
+            return;
+
+        }
+
+
+        const existing =
+            payments.find(
+                payment =>
+                    String(payment.id) ===
+                    String(editingId)
+            );
+
+
+        const payment = {
+
+            id:
+                editingId ||
+                (
+                    Date.now().toString() +
+                    Math.random()
+                        .toString(36)
+                        .slice(2, 7)
+                ),
+
+            tenantName,
+            propertyName,
+            unit,
+            dueDate,
+            monthly,
+            paid,
+            balance:
+                Math.max(0, monthly - paid),
+            paymentDate:
+                paymentDate || (paid > 0 ? today() : ""),
+            paymentMethod,
+            createdAt:
+                existing?.createdAt ||
+                new Date().toISOString()
+
+        };
+
+
+        payment.status =
+            calculateStatus(payment);
+
+
+        if (editingId) {
+
+            const index =
+                payments.findIndex(
+                    item =>
+                        String(item.id) ===
+                        String(editingId)
+                );
+
+            if (index !== -1) {
+                payments[index] = payment;
+            }
+
+        } else {
+
+            payments.unshift(payment);
+
+        }
+
+
+        savePayments();
+        loadPayments();
+        renderTable();
+        closeRentModal();
+
+    });
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+document.getElementById("addRentButton")
+    .addEventListener(
+        "click",
+        () => openRentModal()
+    );
+
+document.getElementById("closeRentModal")
+    .addEventListener(
+        "click",
+        closeRentModal
+    );
+
+document.getElementById("cancelRent")
+    .addEventListener(
+        "click",
+        closeRentModal
+    );
+
+document.getElementById("monthlyRent")
+    .addEventListener(
+        "input",
+        updateBalancePreview
+    );
+
+document.getElementById("paidAmount")
+    .addEventListener(
+        "input",
+        updateBalancePreview
+    );
+
+
+/* =========================
+   TABLE ACTIONS
+========================= */
+
+document.getElementById("rentTableBody")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            const button =
+                event.target.closest(
+                    "[data-action]"
+                );
+
+            if (!button) return;
+
+
+            const id =
+                button.dataset.id;
+
+            const payment =
+                payments.find(
+                    item =>
+                        String(item.id) ===
+                        String(id)
+                );
+
+            if (!payment) return;
+
+
+            const action =
+                button.dataset.action;
+
+
+            if (action === "view") {
+
+                showDetails(payment);
+
+            }
+
+
+            if (action === "edit") {
+
+                openRentModal(payment);
+
+            }
+
+
+            if (action === "delete") {
+
+                const confirmed =
+                    confirm(
+                        `Delete the rent payment for ${payment.tenantName || "this tenant"}?`
+                    );
+
+                if (!confirmed) return;
+
+
+                payments =
+                    payments.filter(
+                        item =>
+                            String(item.id) !==
+                            String(id)
+                    );
+
+                savePayments();
+                renderTable();
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   DETAILS
+========================= */
+
+function showDetails(payment) {
+
+    const details = [
+
+        ["Tenant", payment.tenantName || "-"],
+        ["Property", payment.propertyName || "-"],
+        ["Unit / Flat", payment.unit || "-"],
+        ["Due Date", formatDate(payment.dueDate)],
+        ["Monthly Rent", money(payment.monthly)],
+        ["Paid Amount", money(payment.paid)],
+        ["Outstanding Balance", money(payment.balance)],
+        ["Payment Date", formatDate(payment.paymentDate)],
+        ["Payment Method", payment.paymentMethod || "-"],
+        ["Status", payment.status]
+
+    ];
+
+
+    document.getElementById("detailsList")
+        .innerHTML =
+            details.map(
+                ([label, value]) => `
+                    <div class="detail-item">
+                        <span>${escapeHtml(label)}</span>
+                        <strong>${escapeHtml(value)}</strong>
+                    </div>
+                `
+            ).join("");
+
+
+    detailsOverlay.classList.add("open");
+
+}
+
+
+document.getElementById("closeDetails")
+    .addEventListener(
+        "click",
+        () => detailsOverlay.classList.remove("open")
+    );
+
+
+/* Close modal by clicking backdrop */
+
+overlay.addEventListener(
+    "click",
+    function(event) {
+
+        if (event.target === overlay) {
+            closeRentModal();
+        }
+
+    }
+);
+
+detailsOverlay.addEventListener(
+    "click",
+    function(event) {
+
+        if (event.target === detailsOverlay) {
+            detailsOverlay.classList.remove("open");
+        }
+
+    }
+);
+
+
+/* ESC closes modal */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key !== "Escape") return;
+
+        closeRentModal();
+
+        detailsOverlay.classList.remove("open");
+
+    }
+);
+
+
+/* SEARCH */
+
+document.getElementById("rentSearch")
+    .addEventListener(
+        "input",
+        renderTable
+    );
+
+
+/* INITIALISE */
+
+loadPayments();
+renderTable();
+
+</script>
+
+</body>
+</html>
