@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Rent Management</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .report-toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .report-toolbar select,
+        .report-toolbar input {
+            padding: 10px 12px;
+            border: 1px solid #d7dee8;
+            border-radius: 8px;
+            outline: none;
+            background: #fff;
+        }
+
+        .report-btn {
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .report-btn.secondary {
+            background: #eef2f7;
+            color: #334155;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .report-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, .06);
+        }
+
+        .report-card h3 {
+            margin: 0 0 6px;
+            font-size: 18px;
+        }
+
+        .report-card p {
+            margin: 0 0 18px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .report-table th {
+            color: #475569;
+            font-weight: 700;
+        }
+
+        .report-table td.amount {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 24px;
+            color: #64748b;
+        }
+
+        .report-note {
+            margin-top: 18px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border-radius: 9px;
+            color: #475569;
+            font-size: 12px;
+        }
+
+        .mini-stat {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .mini-stat:last-child {
+            border-bottom: none;
+        }
+
+        .mini-stat span {
+            color: #64748b;
+        }
+
+        .mini-stat strong {
+            color: #0f172a;
+        }
+
+        @media (max-width: 900px) {
+            .report-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .report-toolbar select,
+            .report-toolbar input,
+            .report-toolbar button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+
+        @media print {
+            .sidebar,
+            .topbar .report-btn,
+            .report-toolbar,
+            .sidebar-footer {
+                display: none !important;
+            }
+
+            .main-content {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .report-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">RM</div>
+
+            <div>
+                <h2>Rent Management</h2>
+                <span>Management System</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="index.html" class="nav-item">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="properties.html" class="nav-item">
+                <span>🏢</span>
+                Properties
+            </a>
+
+            <a href="tenants.html" class="nav-item">
+                <span>👥</span>
+                Tenants
+            </a>
+
+            <a href="rent-collection.html" class="nav-item">
+                <span>₹</span>
+                Rent Collection
+            </a>
+
+            <a href="payments.html" class="nav-item">
+                <span>▤</span>
+                Payments
+            </a>
+
+            <a href="reports.html" class="nav-item active">
+                <span>📊</span>
+                Reports
+            </a>
+
+            <a href="settings.html" class="nav-item">
+                <span>⚙️</span>
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <strong>Rent Management</strong>
+            <span>Version 1.0</span>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Reports</h1>
+                <p>View rental, tenant and payment reports</p>
+            </div>
+
+            <button
+                type="button"
+                class="report-btn"
+                id="printReportBtn">
+                Print Report
+            </button>
+
+        </div>
+
+
+        <!-- FILTERS -->
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h2>Report Filters</h2>
+                    <p>Choose a month and property for the report</p>
+                </div>
+
+            </div>
+
+            <div class="report-toolbar">
+
+                <input
+                    type="month"
+                    id="reportMonth">
+
+                <select id="reportProperty">
+
+                    <option value="All">
+                        All Properties
+                    </option>
+
+                </select>
+
+                <select id="reportStatus">
+
+                    <option value="All">
+                        All Payment Status
+                    </option>
+
+                    <option value="Paid">
+                        Paid
+                    </option>
+
+                    <option value="Partial">
+                        Partial
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="Overdue">
+                        Overdue
+                    </option>
+
+                </select>
+
+                <button
+                    type="button"
+                    class="report-btn secondary"
+                    id="clearReportBtn">
+                    Clear
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="card-icon blue">₹</div>
+
+                <div>
+                    <span>Rent Collected</span>
+                    <strong id="reportCollected">₹0</strong>
+                    <small>For selected period</small>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="card-icon green">✓</div>
+
+                <div>
+                    <span>Paid Payments</span>
+                    <strong id="reportPaidCount">0</strong>
+                    <small>Fully paid records</small>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="card-icon purple">₹</div>
+
+                <div>
+                    <span>Outstanding</span>
+                    <strong id="reportOutstanding">₹0</strong>
+                    <small>Remaining balance</small>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="card-icon orange">⚠</div>
+
+                <div>
+                    <span>Overdue</span>
+                    <strong id="reportOverdue">₹0</strong>
+                    <small id="reportOverdueCount">0 records</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REPORT CONTENT -->
+        <div class="report-grid">
+
+            <!-- PAYMENT SUMMARY -->
+            <div class="report-card">
+
+                <h3>Payment Summary</h3>
+
+                <p>Status-wise payment analysis</p>
+
+                <div class="mini-stat">
+                    <span>Paid</span>
+                    <strong id="paidAmount">₹0</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Partial</span>
+                    <strong id="partialAmount">₹0</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Pending</span>
+                    <strong id="pendingReportAmount">₹0</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Overdue</span>
+                    <strong id="overdueReportAmount">₹0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- PROPERTY OCCUPANCY -->
+            <div class="report-card">
+
+                <h3>Property Occupancy</h3>
+
+                <p>Current occupancy based on active tenants</p>
+
+                <table class="report-table">
+
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Units</th>
+                            <th>Occupied</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="occupancyReportBody"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- TENANT REPORT -->
+            <div class="report-card">
+
+                <h3>Tenant Report</h3>
+
+                <p>Active tenant information for the selected property</p>
+
+                <table class="report-table">
+
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Property</th>
+                            <th>Unit</th>
+                            <th>Rent</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tenantReportBody"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- PAYMENT REPORT -->
+            <div class="report-card">
+
+                <h3>Payment Report</h3>
+
+                <p>Filtered payment records for the selected period</p>
+
+                <table class="report-table">
+
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Due</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="paymentReportBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-note">
+            Reports are generated from the current Properties, Tenants and Rent Collection
+            data stored in your browser's local storage.
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    let properties = [];
+    let tenants = [];
+    let rentPayments = [];
+
+
+    function loadData() {
+
+        properties =
+            JSON.parse(
+                localStorage.getItem("rentProperties")
+            ) || [];
+
+        tenants =
+            JSON.parse(
+                localStorage.getItem("rentTenants")
+            ) || [];
+
+        rentPayments =
+            JSON.parse(
+                localStorage.getItem("rentPayments")
+            ) || [];
+
+    }
+
+
+    function getTodayString() {
+
+        const d = new Date();
+
+        const year = d.getFullYear();
+
+        const month =
+            String(d.getMonth() + 1)
+                .padStart(2, "0");
+
+        const day =
+            String(d.getDate())
+                .padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    function getStatus(payment) {
+
+        const monthly =
+            Number(payment.monthly) || 0;
+
+        const paid =
+            Number(payment.paid) || 0;
+
+        if (
+            monthly > 0 &&
+            paid >= monthly
+        ) {
+            return "Paid";
+        }
+
+        if (
+            paid > 0 &&
+            paid < monthly
+        ) {
+            return "Partial";
+        }
+
+        if (
+            payment.dueDate &&
+            payment.dueDate < getTodayString()
+        ) {
+            return "Overdue";
+        }
+
+        return "Pending";
+
+    }
+
+
+    function money(value) {
+
+        return "₹" +
+            Number(value || 0)
+                .toLocaleString("en-IN");
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "-";
+        }
+
+        const parts =
+            value.split("-");
+
+        if (
+            parts.length !== 3
+        ) {
+            return value;
+        }
+
+        return (
+            parts[2] +
+            "/" +
+            parts[1] +
+            "/" +
+            parts[0]
+        );
+
+    }
+
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value == null
+                ? ""
+                : String(value);
+
+        return div.innerHTML;
+
+    }
+
+
+    function populatePropertyFilter() {
+
+        const select =
+            document.getElementById(
+                "reportProperty"
+            );
+
+        select.innerHTML =
+            `<option value="All">All Properties</option>`;
+
+        properties.forEach(
+            function(property) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    String(property.id);
+
+                option.textContent =
+                    property.name;
+
+                select.appendChild(option);
+
+            }
+        );
+
+    }
+
+
+    function getFilteredPayments() {
+
+        const month =
+            document.getElementById(
+                "reportMonth"
+            ).value;
+
+        const propertyId =
+            document.getElementById(
+                "reportProperty"
+            ).value;
+
+        const status =
+            document.getElementById(
+                "reportStatus"
+            ).value;
+
+
+        return rentPayments
+            .map(
+                function(payment) {
+
+                    return {
+                        ...payment,
+                        status:
+                            getStatus(payment)
+                    };
+
+                }
+            )
+            .filter(
+                function(payment) {
+
+                    if (
+                        month &&
+                        !(
+                            payment.paymentDate ||
+                            payment.dueDate ||
+                            ""
+                        ).startsWith(month)
+                    ) {
+                        return false;
+                    }
+
+
+                    if (
+                        propertyId !== "All"
+                    ) {
+
+                        const property =
+                            properties.find(
+                                p =>
+                                    String(p.id) ===
+                                    String(propertyId)
+                            );
+
+                        if (!property) {
+                            return false;
+                        }
+
+                        if (
+                            payment.propertyName !==
+                            property.name
+                        ) {
+                            return false;
+                        }
+
+                    }
+
+
+                    if (
+                        status !== "All" &&
+                        payment.status !== status
+                    ) {
+                        return false;
+                    }
+
+
+                    return true;
+
+                }
+            );
+
+    }
+
+
+    function renderSummary(payments) {
+
+        const collected =
+            payments.reduce(
+                (
+                    sum,
+                    payment
+                ) =>
+                    sum +
+                    Number(payment.paid || 0),
+                0
+            );
+
+
+        const outstanding =
+            payments.reduce(
+                (
+                    sum,
+                    payment
+                ) =>
+                    sum +
+                    Number(payment.balance || 0),
+                0
+            );
+
+
+        const paid =
+            payments.filter(
+                p =>
+                    p.status === "Paid"
+            ).length;
+
+
+        const overdue =
+            payments.filter(
+                p =>
+                    p.status === "Overdue"
+            );
+
+
+        const overdueAmount =
+            overdue.reduce(
+                (
+                    sum,
+                    payment
+                ) =>
+                    sum +
+                    Number(payment.balance || 0),
+                0
+            );
+
+
+        document.getElementById(
+            "reportCollected"
+        ).textContent =
+            money(collected);
+
+
+        document.getElementById(
+            "reportPaidCount"
+        ).textContent =
+            paid;
+
+
+        document.getElementById(
+            "reportOutstanding"
+        ).textContent =
+            money(outstanding);
+
+
+        document.getElementById(
+            "reportOverdue"
+        ).textContent =
+            money(overdueAmount);
+
+
+        document.getElementById(
+            "reportOverdueCount"
+        ).textContent =
+            overdue.length +
+            (
+                overdue.length === 1
+                    ? " record"
+                    : " records"
+            );
+
+    }
+
+
+    function renderPaymentSummary(payments) {
+
+        const paidAmount =
+            payments
+                .filter(
+                    p =>
+                        p.status === "Paid"
+                )
+                .reduce(
+                    (
+                        sum,
+                        p
+                    ) =>
+                        sum +
+                        Number(p.paid || 0),
+                    0
+                );
+
+
+        const partialAmount =
+            payments
+                .filter(
+                    p =>
+                        p.status === "Partial"
+                )
+                .reduce(
+                    (
+                        sum,
+                        p
+                    ) =>
+                        sum +
+                        Number(p.paid || 0),
+                    0
+                );
+
+
+        const pendingAmount =
+            payments
+                .filter(
+                    p =>
+                        p.status === "Pending"
+                )
+                .reduce(
+                    (
+                        sum,
+                        p
+                    ) =>
+                        sum +
+                        Number(p.balance || 0),
+                    0
+                );
+
+
+        const overdueAmount =
+            payments
+                .filter(
+                    p =>
+                        p.status === "Overdue"
+                )
+                .reduce(
+                    (
+                        sum,
+                        p
+                    ) =>
+                        sum +
+                        Number(p.balance || 0),
+                    0
+                );
+
+
+        document.getElementById(
+            "paidAmount"
+        ).textContent =
+            money(paidAmount);
+
+
+        document.getElementById(
+            "partialAmount"
+        ).textContent =
+            money(partialAmount);
+
+
+        document.getElementById(
+            "pendingReportAmount"
+        ).textContent =
+            money(pendingAmount);
+
+
+        document.getElementById(
+            "overdueReportAmount"
+        ).textContent =
+            money(overdueAmount);
+
+    }
+
+
+    function renderOccupancy() {
+
+        const tbody =
+            document.getElementById(
+                "occupancyReportBody"
+            );
+
+        tbody.innerHTML = "";
+
+
+        if (
+            properties.length === 0
+        ) {
+
+            tbody.innerHTML =
+                `<tr><td colspan="4" class="empty-state">No properties found.</td></tr>`;
+
+            return;
+
+        }
+
+
+        properties.forEach(
+            function(property) {
+
+                const activeTenants =
+                    tenants.filter(
+                        tenant =>
+                            tenant.status === "Active" &&
+                            Number(tenant.propertyId) ===
+                            Number(property.id)
+                    );
+
+
+                const occupied =
+                    Math.min(
+                        activeTenants.length,
+                        Number(property.units) || 0
+                    );
+
+
+                const available =
+                    Math.max(
+                        (Number(property.units) || 0) -
+                        occupied,
+                        0
+                    );
+
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(property.name)}
+                    </td>
+
+                    <td>
+                        ${property.units || 0}
+                    </td>
+
+                    <td>
+                        ${occupied}
+                    </td>
+
+                    <td>
+                        ${available}
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(row);
+
+            }
+        );
+
+    }
+
+
+    function renderTenants() {
+
+        const tbody =
+            document.getElementById(
+                "tenantReportBody"
+            );
+
+        tbody.innerHTML = "";
+
+
+        const propertyId =
+            document.getElementById(
+                "reportProperty"
+            ).value;
+
+
+        const filtered =
+            tenants.filter(
+                function(tenant) {
+
+                    if (
+                        tenant.status !==
+                        "Active"
+                    ) {
+                        return false;
+                    }
+
+
+                    if (
+                        propertyId === "All"
+                    ) {
+                        return true;
+                    }
+
+
+                    return (
+                        String(tenant.propertyId) ===
+                        String(propertyId)
+                    );
+
+                }
+            );
+
+
+        if (
+            filtered.length === 0
+        ) {
+
+            tbody.innerHTML =
+                `<tr><td colspan="4" class="empty-state">No active tenants found.</td></tr>`;
+
+            return;
+
+        }
+
+
+        filtered.forEach(
+            function(tenant) {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(tenant.name)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(tenant.propertyName)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(tenant.unit)}
+                    </td>
+
+                    <td class="amount">
+                        ${money(tenant.rent)}
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(row);
+
+            }
+        );
+
+    }
+
+
+    function renderPayments(payments) {
+
+        const tbody =
+            document.getElementById(
+                "paymentReportBody"
+            );
+
+        tbody.innerHTML = "";
+
+
+        if (
+            payments.length === 0
+        ) {
+
+            tbody.innerHTML =
+                `<tr><td colspan="5" class="empty-state">No payment records found.</td></tr>`;
+
+            return;
+
+        }
+
+
+        payments.forEach(
+            function(payment) {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(payment.tenantName)}
+                    </td>
+
+                    <td>
+                        ${formatDate(payment.dueDate)}
+                    </td>
+
+                    <td class="amount">
+                        ${money(payment.paid)}
+                    </td>
+
+                    <td class="amount">
+                        ${money(payment.balance)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(payment.status)}
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(row);
+
+            }
+        );
+
+    }
+
+
+    function generateReport() {
+
+        loadData();
+
+        const payments =
+            getFilteredPayments();
+
+        renderSummary(payments);
+        renderPaymentSummary(payments);
+        renderOccupancy();
+        renderTenants();
+        renderPayments(payments);
+
+    }
+
+
+    document.getElementById(
+        "reportMonth"
+    ).addEventListener(
+        "change",
+        generateReport
+    );
+
+
+    document.getElementById(
+        "reportProperty"
+    ).addEventListener(
+        "change",
+        generateReport
+    );
+
+
+    document.getElementById(
+        "reportStatus"
+    ).addEventListener(
+        "change",
+        generateReport
+    );
+
+
+    document.getElementById(
+        "clearReportBtn"
+    ).addEventListener(
+        "click",
+        function() {
+
+            document.getElementById(
+                "reportMonth"
+            ).value = "";
+
+            document.getElementById(
+                "reportProperty"
+            ).value = "All";
+
+            document.getElementById(
+                "reportStatus"
+            ).value = "All";
+
+            generateReport();
+
+        }
+    );
+
+
+    document.getElementById(
+        "printReportBtn"
+    ).addEventListener(
+        "click",
+        function() {
+
+            window.print();
+
+        }
+    );
+
+
+    loadData();
+    populatePropertyFilter();
+    generateReport();
+
+</script>
+
+</body>
+</html>

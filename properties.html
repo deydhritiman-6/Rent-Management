@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties - Rent Management</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* ===============================
+           PROPERTY ACTION BUTTONS
+        =============================== */
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            border: 0;
+            border-radius: 7px;
+            padding: 7px 11px;
+            margin: 2px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .view-btn {
+            background: #e8f0ff;
+            color: #2563eb;
+        }
+
+        .edit-btn {
+            background: #fff4d6;
+            color: #a16207;
+        }
+
+        .delete-btn {
+            background: #ffe5e5;
+            color: #dc2626;
+        }
+
+        .action-btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        /* ===============================
+           ADD PROPERTY MODAL
+        =============================== */
+
+        .property-form-overlay {
+            display: none;
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 99999 !important;
+
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(15, 23, 42, 0.55);
+            padding: 20px;
+        }
+
+        .property-form {
+            width: min(520px, 95vw);
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 28px;
+
+            box-shadow: 0 25px 70px rgba(0,0,0,0.25);
+        }
+
+        .property-form .form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .property-form .form-header h2 {
+            margin: 0;
+        }
+
+        .property-form .form-header button {
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            background: #eef2f7;
+        }
+
+        .property-form label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: 600;
+        }
+
+        .property-form input {
+            width: 100%;
+            box-sizing: border-box;
+
+            padding: 12px 14px;
+
+            border: 1px solid #d7dee8;
+            border-radius: 9px;
+
+            outline: none;
+        }
+
+        .property-form input:focus {
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .form-buttons button {
+            border: 0;
+            border-radius: 9px;
+            padding: 11px 18px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .cancel-btn {
+            background: #eef2f7;
+            color: #334155;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        /* ===============================
+           DETAILS MODAL
+        =============================== */
+
+        .details-overlay {
+            display: none;
+
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(15, 23, 42, 0.55);
+            padding: 20px;
+        }
+
+        .details-card {
+            width: min(560px, 95vw);
+
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 28px;
+
+            box-shadow: 0 25px 70px rgba(0,0,0,0.25);
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .details-header h2 {
+            margin: 0;
+        }
+
+        .details-close {
+            border: 0;
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: #eef2f7;
+
+            cursor: pointer;
+
+            font-size: 23px;
+        }
+
+        .details-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .detail-item {
+            background: #f8fafc;
+
+            border-radius: 10px;
+
+            padding: 14px;
+        }
+
+        .detail-item span {
+            display: block;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            margin-bottom: 5px;
+        }
+
+        .detail-item strong {
+            font-size: 16px;
+        }
+
+        @media (max-width: 650px) {
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-btn {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                RM
+            </div>
+
+            <div>
+
+                <h2>Rent Management</h2>
+
+                <span>
+                    Management System
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a href="index.html" class="nav-item">
+
+                <span>▦</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a href="properties.html"
+               class="nav-item active">
+
+                <span>🏢</span>
+
+                Properties
+
+            </a>
+
+
+            <a href="tenants.html" class="nav-item">
+
+                <span>👥</span>
+
+                Tenants
+
+            </a>
+
+
+            <a href="rent-collection.html" class="nav-item">
+
+                <span>₹</span>
+
+                Rent Collection
+
+            </a>
+
+
+            <a href="payments.html" class="nav-item">
+
+                <span>▤</span>
+
+                Payments
+
+            </a>
+
+
+            <a href="reports.html" class="nav-item">
+
+                <span>📊</span>
+
+                Reports
+
+            </a>
+
+
+            <a href="settings.html" class="nav-item">
+
+                <span>⚙️</span>
+
+                Settings
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <strong>
+                Rent Management
+            </strong>
+
+            <span>
+                Version 1.0
+            </span>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>
+                    Properties
+                </h1>
+
+                <p>
+                    Manage all your rental properties
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="addPropertyBtn"
+                class="add-property-btn">
+
+                + Add Property
+
+            </button>
+
+        </div>
+
+
+        <!-- PROPERTY SUMMARY -->
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <div class="card-icon blue">
+                    🏢
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Properties
+                    </span>
+
+                    <strong id="totalProperties">
+                        0
+                    </strong>
+
+                    <small>
+                        Registered properties
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="card-icon green">
+                    ✓
+                </div>
+
+                <div>
+
+                    <span>
+                        Occupied Units
+                    </span>
+
+                    <strong id="occupiedUnits">
+                        0
+                    </strong>
+
+                    <small>
+                        Currently occupied
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="card-icon purple">
+                    🏠
+                </div>
+
+                <div>
+
+                    <span>
+                        Available Units
+                    </span>
+
+                    <strong id="availableUnits">
+                        0
+                    </strong>
+
+                    <small>
+                        Ready for rent
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="card-icon orange">
+                    ₹
+                </div>
+
+                <div>
+
+                    <span>
+                        Monthly Rent
+                    </span>
+
+                    <strong id="monthlyRent">
+                        ₹0
+                    </strong>
+
+                    <small>
+                        Expected collection
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROPERTY LIST -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Property List
+                    </h2>
+
+                    <p>
+                        All registered properties
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Property
+                            </th>
+
+                            <th>
+                                Address
+                            </th>
+
+                            <th>
+                                Units
+                            </th>
+
+                            <th>
+                                Occupied
+                            </th>
+
+                            <th>
+                                Monthly Rent
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="propertyTableBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ADD / EDIT PROPERTY FORM -->
+
+        <div
+            id="propertyForm"
+            class="property-form-overlay">
+
+
+            <div class="property-form">
+
+
+                <div class="form-header">
+
+                    <h2 id="propertyFormTitle">
+                        Add New Property
+                    </h2>
+
+
+                    <button
+                        type="button"
+                        id="closePropertyBtn">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+
+                <label for="propertyName">
+                    Property Name
+                </label>
+
+                <input
+                    type="text"
+                    id="propertyName"
+                    placeholder="Enter property name">
+
+
+                <label for="propertyAddress">
+                    Address
+                </label>
+
+                <input
+                    type="text"
+                    id="propertyAddress"
+                    placeholder="Enter property address">
+
+
+                <label for="propertyUnits">
+                    Total Units
+                </label>
+
+                <input
+                    type="number"
+                    id="propertyUnits"
+                    min="1"
+                    placeholder="Enter number of units">
+
+
+                <label for="propertyRent">
+                    Monthly Rent
+                </label>
+
+                <input
+                    type="number"
+                    id="propertyRent"
+                    min="0"
+                    placeholder="Enter monthly rent">
+
+
+                <div class="form-buttons">
+
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        id="cancelPropertyBtn">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="save-btn"
+                        id="savePropertyBtn">
+
+                        Save Property
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROPERTY DETAILS -->
+
+        <div
+            id="detailsOverlay"
+            class="details-overlay">
+
+
+            <div class="details-card">
+
+
+                <div class="details-header">
+
+                    <h2>
+                        Property Details
+                    </h2>
+
+
+                    <button
+                        type="button"
+                        class="details-close"
+                        id="detailsCloseBtn">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+
+                <div id="detailsContent">
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   DEFAULT PROPERTIES
+========================================== */
+
+const defaultProperties = [
+
+    {
+        id: 1,
+        name: "Green View Apartments",
+        address: "Kolkata",
+        units: 12,
+        occupied: 10,
+        rent: 85000,
+        status: "Active"
+    },
+
+    {
+        id: 2,
+        name: "Lake Residency",
+        address: "New Town",
+        units: 8,
+        occupied: 7,
+        rent: 62000,
+        status: "Active"
+    },
+
+    {
+        id: 3,
+        name: "Royal Heights",
+        address: "Howrah",
+        units: 10,
+        occupied: 8,
+        rent: 58000,
+        status: "Active"
+    }
+
+];
+
+
+let properties = [];
+
+let editingPropertyId = null;
+
+
+/* ==========================================
+   LOAD PROPERTIES
+========================================== */
+
+function loadProperties() {
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem("rentProperties")
+        );
+
+
+    if (
+        Array.isArray(saved) &&
+        saved.length > 0
+    ) {
+
+        properties =
+            saved.map(normalizeProperty);
+
+    } else {
+
+        properties =
+            defaultProperties.map(
+                normalizeProperty
+            );
+
+        saveProperties();
+
+    }
+
+}
+
+
+/* ==========================================
+   NORMALIZE PROPERTY
+========================================== */
+
+function normalizeProperty(property) {
+
+    const units =
+        Number(property.units) || 0;
+
+
+    let occupied =
+        Number(property.occupied);
+
+
+    if (
+        !Number.isFinite(occupied) ||
+        occupied < 0
+    ) {
+
+        occupied = 0;
+
+    }
+
+
+    occupied =
+        Math.min(
+            occupied,
+            units
+        );
+
+
+    return {
+
+        id:
+            Number(property.id),
+
+        name:
+            String(property.name || ""),
+
+        address:
+            String(property.address || ""),
+
+        units:
+            units,
+
+        occupied:
+            occupied,
+
+        rent:
+            Number(property.rent) || 0,
+
+        status:
+            property.status || "Active"
+
+    };
+
+}
+
+
+/* ==========================================
+   SAVE TO LOCAL STORAGE
+========================================== */
+
+function saveProperties() {
+
+    localStorage.setItem(
+        "rentProperties",
+        JSON.stringify(properties)
+    );
+
+}
+
+
+/* ==========================================
+   OPEN PROPERTY FORM
+========================================== */
+
+function openPropertyForm(property = null) {
+
+    const form =
+        document.getElementById(
+            "propertyForm"
+        );
+
+
+    const title =
+        document.getElementById(
+            "propertyFormTitle"
+        );
+
+
+    const saveButton =
+        document.getElementById(
+            "savePropertyBtn"
+        );
+
+
+    if (property) {
+
+        editingPropertyId =
+            property.id;
+
+
+        title.textContent =
+            "Edit Property";
+
+
+        saveButton.textContent =
+            "Update Property";
+
+
+        document.getElementById(
+            "propertyName"
+        ).value =
+            property.name;
+
+
+        document.getElementById(
+            "propertyAddress"
+        ).value =
+            property.address;
+
+
+        document.getElementById(
+            "propertyUnits"
+        ).value =
+            property.units;
+
+
+        document.getElementById(
+            "propertyRent"
+        ).value =
+            property.rent;
+
+
+    } else {
+
+        editingPropertyId =
+            null;
+
+
+        title.textContent =
+            "Add New Property";
+
+
+        saveButton.textContent =
+            "Save Property";
+
+
+        clearForm();
+
+    }
+
+
+    form.style.display =
+        "flex";
+
+
+    setTimeout(
+        function() {
+
+            document.getElementById(
+                "propertyName"
+            ).focus();
+
+        },
+        50
+    );
+
+}
+
+
+/* ==========================================
+   CLOSE FORM
+========================================== */
+
+function closePropertyForm() {
+
+    document.getElementById(
+        "propertyForm"
+    ).style.display =
+        "none";
+
+
+    editingPropertyId =
+        null;
+
+
+    clearForm();
+
+}
+
+
+/* ==========================================
+   CLEAR FORM
+========================================== */
+
+function clearForm() {
+
+    document.getElementById(
+        "propertyName"
+    ).value = "";
+
+
+    document.getElementById(
+        "propertyAddress"
+    ).value = "";
+
+
+    document.getElementById(
+        "propertyUnits"
+    ).value = "";
+
+
+    document.getElementById(
+        "propertyRent"
+    ).value = "";
+
+}
+
+
+/* ==========================================
+   SAVE / UPDATE PROPERTY
+========================================== */
+
+function saveProperty() {
+
+    const name =
+        document.getElementById(
+            "propertyName"
+        ).value.trim();
+
+
+    const address =
+        document.getElementById(
+            "propertyAddress"
+        ).value.trim();
+
+
+    const units =
+        Number(
+            document.getElementById(
+                "propertyUnits"
+            ).value
+        );
+
+
+    const rent =
+        Number(
+            document.getElementById(
+                "propertyRent"
+            ).value
+        );
+
+
+    if (
+        !name ||
+        !address ||
+        !units ||
+        units < 1 ||
+        rent < 0
+    ) {
+
+        alert(
+            "Please fill in all property details correctly."
+        );
+
+        return;
+
+    }
+
+
+    /* EDIT EXISTING PROPERTY */
+
+    if (
+        editingPropertyId !== null
+    ) {
+
+        const property =
+            properties.find(
+                p =>
+                    p.id ===
+                    editingPropertyId
+            );
+
+
+        if (!property) {
+            return;
+        }
+
+
+        property.name =
+            name;
+
+
+        property.address =
+            address;
+
+
+        property.units =
+            units;
+
+
+        property.rent =
+            rent;
+
+
+        property.occupied =
+            Math.min(
+                property.occupied,
+                units
+            );
+
+
+        saveProperties();
+
+        renderProperties();
+
+        closePropertyForm();
+
+
+        alert(
+            "Property updated successfully!"
+        );
+
+
+        return;
+
+    }
+
+
+    /* ADD NEW PROPERTY */
+
+    const newProperty = {
+
+        id:
+            Date.now(),
+
+        name:
+            name,
+
+        address:
+            address,
+
+        units:
+            units,
+
+        occupied:
+            0,
+
+        rent:
+            rent,
+
+        status:
+            "Active"
+
+    };
+
+
+    properties.push(
+        newProperty
+    );
+
+
+    saveProperties();
+
+    renderProperties();
+
+    closePropertyForm();
+
+
+    alert(
+        "Property added successfully!"
+    );
+
+}
+
+
+/* ==========================================
+   RENDER PROPERTY TABLE
+========================================== */
+
+function renderProperties() {
+
+    const tbody =
+        document.getElementById(
+            "propertyTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    properties.forEach(
+        function(property) {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    <strong>
+                        ${escapeHtml(property.name)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHtml(property.address)}
+                </td>
+
+                <td>
+                    ${property.units}
+                </td>
+
+                <td>
+                    ${property.occupied}
+                </td>
+
+                <td>
+                    ₹${Number(property.rent)
+                        .toLocaleString("en-IN")}
+                </td>
+
+                <td>
+                    <span class="status paid">
+                        ${escapeHtml(property.status)}
+                    </span>
+                </td>
+
+                <td class="actions-cell">
+
+                    <button
+                        type="button"
+                        class="action-btn view-btn"
+                        data-action="view"
+                        data-id="${property.id}">
+
+                        View
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="action-btn edit-btn"
+                        data-action="edit"
+                        data-id="${property.id}">
+
+                        Edit
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="action-btn delete-btn"
+                        data-action="delete"
+                        data-id="${property.id}">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(row);
+
+        }
+    );
+
+
+    updateSummary();
+
+}
+
+
+/* ==========================================
+   UPDATE SUMMARY
+========================================== */
+
+function updateSummary() {
+
+    const totalProperties =
+        properties.length;
+
+
+    const occupiedUnits =
+        properties.reduce(
+            function(sum, property) {
+
+                return (
+                    sum +
+                    property.occupied
+                );
+
+            },
+            0
+        );
+
+
+    const totalUnits =
+        properties.reduce(
+            function(sum, property) {
+
+                return (
+                    sum +
+                    property.units
+                );
+
+            },
+            0
+        );
+
+
+    const availableUnits =
+        Math.max(
+            totalUnits -
+            occupiedUnits,
+            0
+        );
+
+
+    const monthlyRent =
+        properties.reduce(
+            function(sum, property) {
+
+                return (
+                    sum +
+                    property.rent
+                );
+
+            },
+            0
+        );
+
+
+    document.getElementById(
+        "totalProperties"
+    ).textContent =
+        totalProperties;
+
+
+    document.getElementById(
+        "occupiedUnits"
+    ).textContent =
+        occupiedUnits;
+
+
+    document.getElementById(
+        "availableUnits"
+    ).textContent =
+        availableUnits;
+
+
+    document.getElementById(
+        "monthlyRent"
+    ).textContent =
+        "₹" +
+        monthlyRent.toLocaleString(
+            "en-IN"
+        );
+
+}
+
+
+/* ==========================================
+   VIEW PROPERTY
+========================================== */
+
+function viewProperty(id) {
+
+    const property =
+        properties.find(
+            p =>
+                p.id === Number(id)
+        );
+
+
+    if (!property) {
+        return;
+    }
+
+
+    const available =
+        Math.max(
+            property.units -
+            property.occupied,
+            0
+        );
+
+
+    document.getElementById(
+        "detailsContent"
+    ).innerHTML = `
+
+        <div class="details-grid">
+
+            <div class="detail-item">
+
+                <span>
+                    Property Name
+                </span>
+
+                <strong>
+                    ${escapeHtml(property.name)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Status
+                </span>
+
+                <strong>
+                    ${escapeHtml(property.status)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Address
+                </span>
+
+                <strong>
+                    ${escapeHtml(property.address)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Total Units
+                </span>
+
+                <strong>
+                    ${property.units}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Occupied Units
+                </span>
+
+                <strong>
+                    ${property.occupied}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Available Units
+                </span>
+
+                <strong>
+                    ${available}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Monthly Rent
+                </span>
+
+                <strong>
+                    ₹${Number(property.rent)
+                        .toLocaleString("en-IN")}
+                </strong>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "detailsOverlay"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* ==========================================
+   CLOSE DETAILS
+========================================== */
+
+function closeDetails() {
+
+    document.getElementById(
+        "detailsOverlay"
+    ).style.display =
+        "none";
+
+}
+
+
+/* ==========================================
+   EDIT PROPERTY
+========================================== */
+
+function editProperty(id) {
+
+    const property =
+        properties.find(
+            p =>
+                p.id === Number(id)
+        );
+
+
+    if (!property) {
+        return;
+    }
+
+
+    openPropertyForm(
+        property
+    );
+
+}
+
+
+/* ==========================================
+   DELETE PROPERTY
+========================================== */
+
+function deleteProperty(id) {
+
+    const property =
+        properties.find(
+            p =>
+                p.id === Number(id)
+        );
+
+
+    if (!property) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Are you sure you want to delete "${property.name}"?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    properties =
+        properties.filter(
+            p =>
+                p.id !== Number(id)
+        );
+
+
+    saveProperties();
+
+    renderProperties();
+
+
+    alert(
+        "Property deleted successfully!"
+    );
+
+}
+
+
+/* ==========================================
+   BUTTON EVENTS
+========================================== */
+
+document
+    .getElementById(
+        "addPropertyBtn"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            openPropertyForm();
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "closePropertyBtn"
+    )
+    .addEventListener(
+        "click",
+        closePropertyForm
+    );
+
+
+document
+    .getElementById(
+        "cancelPropertyBtn"
+    )
+    .addEventListener(
+        "click",
+        closePropertyForm
+    );
+
+
+document
+    .getElementById(
+        "savePropertyBtn"
+    )
+    .addEventListener(
+        "click",
+        saveProperty
+    );
+
+
+document
+    .getElementById(
+        "detailsCloseBtn"
+    )
+    .addEventListener(
+        "click",
+        closeDetails
+    );
+
+
+/* ==========================================
+   TABLE ACTIONS
+========================================== */
+
+document
+    .getElementById(
+        "propertyTableBody"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            const button =
+                event.target.closest(
+                    "button[data-action]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const action =
+                button.dataset.action;
+
+
+            const id =
+                Number(
+                    button.dataset.id
+                );
+
+
+            if (action === "view") {
+
+                viewProperty(id);
+
+            }
+
+
+            if (action === "edit") {
+
+                editProperty(id);
+
+            }
+
+
+            if (action === "delete") {
+
+                deleteProperty(id);
+
+            }
+
+        }
+    );
+
+
+/* ==========================================
+   CLICK OUTSIDE MODAL
+========================================== */
+
+document
+    .getElementById(
+        "propertyForm"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closePropertyForm();
+
+            }
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "detailsOverlay"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closeDetails();
+
+            }
+
+        }
+    );
+
+
+/* ==========================================
+   ESCAPE KEY
+========================================== */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closePropertyForm();
+
+            closeDetails();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   HTML ESCAPE
+========================================== */
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        value == null
+            ? ""
+            : String(value);
+
+
+    return div.innerHTML;
+
+}
+
+
+/* ==========================================
+   INITIALIZE
+========================================== */
+
+loadProperties();
+
+renderProperties();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tenants - Rent Management</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        /* ================================
+           TENANT ACTION BUTTONS
+        ================================= */
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            border: none;
+            border-radius: 7px;
+            padding: 7px 11px;
+            margin: 2px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .view-btn {
+            background: #e8f0ff;
+            color: #2563eb;
+        }
+
+        .edit-btn {
+            background: #fff4d6;
+            color: #a16207;
+        }
+
+        .delete-btn {
+            background: #ffe5e5;
+            color: #dc2626;
+        }
+
+        .action-btn:hover {
+            opacity: .85;
+            transform: translateY(-1px);
+        }
+
+
+        /* ================================
+           TENANT MODAL
+        ================================= */
+
+        .tenant-form-overlay {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 99999;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: rgba(15, 23, 42, .55);
+
+            padding: 20px;
+        }
+
+
+        .tenant-form {
+
+            width: min(600px, 95vw);
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 25px 70px rgba(0,0,0,.25);
+        }
+
+
+        .form-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+
+        .form-header h2 {
+
+            margin: 0;
+
+        }
+
+
+        .close-form {
+
+            width: 38px;
+
+            height: 38px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: #eef2f7;
+
+            font-size: 24px;
+
+            cursor: pointer;
+        }
+
+
+        /* ================================
+           FORM GRID
+        ================================= */
+
+        .tenant-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .form-group.full {
+
+            grid-column:
+                1 / -1;
+        }
+
+
+        .form-group label {
+
+            margin-bottom: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #334155;
+        }
+
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 12px 13px;
+
+            border:
+                1px solid #d7dee8;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            background: white;
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color:
+                #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,.10);
+        }
+
+
+        /* ================================
+           FORM BUTTONS
+        ================================= */
+
+        .tenant-form-buttons {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            margin-top: 22px;
+        }
+
+
+        .tenant-form-buttons button {
+
+            border: none;
+
+            border-radius: 9px;
+
+            padding:
+                11px 18px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+
+        .cancel-tenant {
+
+            background: #eef2f7;
+
+            color: #334155;
+        }
+
+
+        .save-tenant {
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        /* ================================
+           DETAILS MODAL
+        ================================= */
+
+        .tenant-details-overlay {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 100000;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                rgba(15,23,42,.55);
+
+            padding: 20px;
+        }
+
+
+        .tenant-details {
+
+            width:
+                min(600px, 95vw);
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 25px 70px rgba(0,0,0,.25);
+        }
+
+
+        .details-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+        }
+
+
+        .detail-item {
+
+            background:
+                #f8fafc;
+
+            padding: 14px;
+
+            border-radius: 10px;
+        }
+
+
+        .detail-item span {
+
+            display: block;
+
+            color:
+                #64748b;
+
+            font-size: 12px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .detail-item strong {
+
+            font-size: 15px;
+        }
+
+
+        @media (max-width: 650px) {
+
+            .tenant-form-grid,
+            .details-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- ================================
+         SIDEBAR
+    ================================= -->
+
+    <aside class="sidebar">
+
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                RM
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Rent Management
+                </h2>
+
+                <span>
+                    Management System
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="navigation">
+
+
+            <a
+                href="index.html"
+                class="nav-item">
+
+                <span>▦</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="properties.html"
+                class="nav-item">
+
+                <span>🏢</span>
+
+                Properties
+
+            </a>
+
+
+            <a
+                href="tenants.html"
+                class="nav-item active">
+
+                <span>👥</span>
+
+                Tenants
+
+            </a>
+
+
+            <a
+                href="rent-collection.html"
+                class="nav-item">
+
+                <span>₹</span>
+
+                Rent Collection
+
+            </a>
+
+
+            <a
+                href="payments.html"
+                class="nav-item">
+
+                <span>▤</span>
+
+                Payments
+
+            </a>
+
+
+            <a
+                href="reports.html"
+                class="nav-item">
+
+                <span>📊</span>
+
+                Reports
+
+            </a>
+
+
+            <a
+                href="settings.html"
+                class="nav-item">
+
+                <span>⚙️</span>
+
+                Settings
+
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <strong>
+                Rent Management
+            </strong>
+
+            <span>
+                Version 1.0
+            </span>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- ================================
+         MAIN CONTENT
+    ================================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+
+            <div>
+
+                <h1>
+                    Tenants
+                </h1>
+
+                <p>
+                    Manage all your tenants
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="addTenantBtn"
+                class="add-property-btn">
+
+                + Add Tenant
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- ================================
+             SUMMARY
+        ================================= -->
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <div class="card-icon blue">
+                    👥
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Total Tenants
+                    </span>
+
+                    <strong
+                        id="totalTenants">
+                        0
+                    </strong>
+
+                    <small>
+                        Registered tenants
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <div class="card-icon green">
+                    ✓
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Active Tenants
+                    </span>
+
+                    <strong
+                        id="activeTenants">
+                        0
+                    </strong>
+
+                    <small>
+                        Currently active
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <div class="card-icon purple">
+                    🏠
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Occupied Units
+                    </span>
+
+                    <strong
+                        id="occupiedUnits">
+                        0
+                    </strong>
+
+                    <small>
+                        Units occupied
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <div class="card-icon orange">
+                    ₹
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Monthly Rent
+                    </span>
+
+                    <strong
+                        id="tenantMonthlyRent">
+                        ₹0
+                    </strong>
+
+                    <small>
+                        Expected collection
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================
+             TENANT LIST
+        ================================= -->
+
+        <div class="panel">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Tenant List
+                    </h2>
+
+                    <p>
+                        All registered tenants
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="table-container">
+
+
+                <table>
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Tenant
+                            </th>
+
+                            <th>
+                                Mobile
+                            </th>
+
+                            <th>
+                                Property
+                            </th>
+
+                            <th>
+                                Unit
+                            </th>
+
+                            <th>
+                                Monthly Rent
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody
+                        id="tenantTableBody">
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================
+             ADD / EDIT TENANT FORM
+        ================================= -->
+
+        <div
+            id="tenantForm"
+            class="tenant-form-overlay">
+
+
+            <div class="tenant-form">
+
+
+                <div class="form-header">
+
+
+                    <h2
+                        id="tenantFormTitle">
+
+                        Add New Tenant
+
+                    </h2>
+
+
+                    <button
+                        type="button"
+                        class="close-form"
+                        id="closeTenantBtn">
+
+                        ×
+
+                    </button>
+
+
+                </div>
+
+
+
+                <div
+                    class="tenant-form-grid">
+
+
+                    <!-- NAME -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Tenant Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="tenantName"
+                            placeholder="Enter tenant name">
+
+                    </div>
+
+
+
+                    <!-- MOBILE -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Mobile Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="tenantMobile"
+                            placeholder="Enter mobile number">
+
+                    </div>
+
+
+
+                    <!-- EMAIL -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="tenantEmail"
+                            placeholder="Enter email address">
+
+                    </div>
+
+
+
+                    <!-- PROPERTY -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Property
+                        </label>
+
+                        <select
+                            id="tenantProperty">
+
+                            <option value="">
+                                Select Property
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- UNIT -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Unit / Flat Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="tenantUnit"
+                            placeholder="Example: A-101">
+
+                    </div>
+
+
+
+                    <!-- MONTHLY RENT -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Monthly Rent
+                        </label>
+
+                        <input
+                            type="number"
+                            id="tenantRent"
+                            min="0"
+                            placeholder="Enter monthly rent">
+
+                    </div>
+
+
+
+                    <!-- DEPOSIT -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Security Deposit
+                        </label>
+
+                        <input
+                            type="number"
+                            id="tenantDeposit"
+                            min="0"
+                            placeholder="Enter deposit amount">
+
+                    </div>
+
+
+
+                    <!-- LEASE DATE -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Lease Start Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="tenantLeaseDate">
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div
+                        class="form-group">
+
+                        <label>
+                            Status
+                        </label>
+
+                        <select
+                            id="tenantStatus">
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div
+                    class="tenant-form-buttons">
+
+
+                    <button
+                        type="button"
+                        class="cancel-tenant"
+                        id="cancelTenantBtn">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="save-tenant"
+                        id="saveTenantBtn">
+
+                        Save Tenant
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================
+             DETAILS MODAL
+        ================================= -->
+
+        <div
+            id="tenantDetailsOverlay"
+            class="tenant-details-overlay">
+
+
+            <div class="tenant-details">
+
+
+                <div class="form-header">
+
+                    <h2>
+                        Tenant Details
+                    </h2>
+
+
+                    <button
+                        type="button"
+                        class="close-form"
+                        id="closeDetailsBtn">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="tenantDetailsContent">
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+
+
+<script>
+
+
+/* ==========================================
+   DATA
+========================================== */
+
+let tenants =
+    JSON.parse(
+        localStorage.getItem(
+            "rentTenants"
+        )
+    ) || [];
+
+
+let editingTenantId = null;
+
+
+
+/* ==========================================
+   GET PROPERTIES
+========================================== */
+
+function getProperties() {
+
+    return JSON.parse(
+        localStorage.getItem(
+            "rentProperties"
+        )
+    ) || [];
+
+}
+
+
+
+/* ==========================================
+   PROPERTY DROPDOWN
+========================================== */
+
+function loadPropertyDropdown() {
+
+    const select =
+        document.getElementById(
+            "tenantProperty"
+        );
+
+
+    select.innerHTML = `
+        <option value="">
+            Select Property
+        </option>
+    `;
+
+
+    const properties =
+        getProperties();
+
+
+    properties.forEach(
+        function(property) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                property.id;
+
+
+            option.textContent =
+                property.name;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+/* ==========================================
+   OPEN FORM
+========================================== */
+
+function openTenantForm(
+    tenant = null
+) {
+
+    loadPropertyDropdown();
+
+
+    const form =
+        document.getElementById(
+            "tenantForm"
+        );
+
+
+    const title =
+        document.getElementById(
+            "tenantFormTitle"
+        );
+
+
+    const saveButton =
+        document.getElementById(
+            "saveTenantBtn"
+        );
+
+
+    if (tenant) {
+
+        editingTenantId =
+            tenant.id;
+
+
+        title.textContent =
+            "Edit Tenant";
+
+
+        saveButton.textContent =
+            "Update Tenant";
+
+
+        document.getElementById(
+            "tenantName"
+        ).value =
+            tenant.name;
+
+
+        document.getElementById(
+            "tenantMobile"
+        ).value =
+            tenant.mobile;
+
+
+        document.getElementById(
+            "tenantEmail"
+        ).value =
+            tenant.email;
+
+
+        document.getElementById(
+            "tenantProperty"
+        ).value =
+            tenant.propertyId;
+
+
+        document.getElementById(
+            "tenantUnit"
+        ).value =
+            tenant.unit;
+
+
+        document.getElementById(
+            "tenantRent"
+        ).value =
+            tenant.rent;
+
+
+        document.getElementById(
+            "tenantDeposit"
+        ).value =
+            tenant.deposit;
+
+
+        document.getElementById(
+            "tenantLeaseDate"
+        ).value =
+            tenant.leaseDate;
+
+
+        document.getElementById(
+            "tenantStatus"
+        ).value =
+            tenant.status;
+
+
+    } else {
+
+        editingTenantId =
+            null;
+
+
+        title.textContent =
+            "Add New Tenant";
+
+
+        saveButton.textContent =
+            "Save Tenant";
+
+
+        clearTenantForm();
+
+    }
+
+
+    form.style.display =
+        "flex";
+
+}
+
+
+
+/* ==========================================
+   CLOSE FORM
+========================================== */
+
+function closeTenantForm() {
+
+    document.getElementById(
+        "tenantForm"
+    ).style.display =
+        "none";
+
+
+    editingTenantId =
+        null;
+
+
+    clearTenantForm();
+
+}
+
+
+
+/* ==========================================
+   CLEAR FORM
+========================================== */
+
+function clearTenantForm() {
+
+    document.getElementById(
+        "tenantName"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantMobile"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantEmail"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantProperty"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantUnit"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantRent"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantDeposit"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantLeaseDate"
+    ).value = "";
+
+
+    document.getElementById(
+        "tenantStatus"
+    ).value = "Active";
+
+}
+
+
+
+/* ==========================================
+   SAVE TENANT
+========================================== */
+
+function saveTenant() {
+
+    const name =
+        document.getElementById(
+            "tenantName"
+        ).value.trim();
+
+
+    const mobile =
+        document.getElementById(
+            "tenantMobile"
+        ).value.trim();
+
+
+    const email =
+        document.getElementById(
+            "tenantEmail"
+        ).value.trim();
+
+
+    const propertyId =
+        document.getElementById(
+            "tenantProperty"
+        ).value;
+
+
+    const unit =
+        document.getElementById(
+            "tenantUnit"
+        ).value.trim();
+
+
+    const rent =
+        Number(
+            document.getElementById(
+                "tenantRent"
+            ).value
+        );
+
+
+    const deposit =
+        Number(
+            document.getElementById(
+                "tenantDeposit"
+            ).value
+        ) || 0;
+
+
+    const leaseDate =
+        document.getElementById(
+            "tenantLeaseDate"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "tenantStatus"
+        ).value;
+
+
+    if (
+        !name ||
+        !mobile ||
+        !propertyId ||
+        !unit ||
+        !rent ||
+        !leaseDate
+    ) {
+
+        alert(
+            "Please fill in all required tenant details."
+        );
+
+        return;
+
+    }
+
+
+
+    const properties =
+        getProperties();
+
+
+    const property =
+        properties.find(
+            p =>
+                String(p.id) ===
+                String(propertyId)
+        );
+
+
+    if (!property) {
+
+        alert(
+            "Selected property could not be found."
+        );
+
+        return;
+
+    }
+
+
+
+    /* EDIT */
+
+    if (
+        editingTenantId !== null
+    ) {
+
+        const tenant =
+            tenants.find(
+                t =>
+                    t.id ===
+                    editingTenantId
+            );
+
+
+        if (!tenant) {
+            return;
+        }
+
+
+        tenant.name =
+            name;
+
+        tenant.mobile =
+            mobile;
+
+        tenant.email =
+            email;
+
+        tenant.propertyId =
+            Number(propertyId);
+
+        tenant.propertyName =
+            property.name;
+
+        tenant.unit =
+            unit;
+
+        tenant.rent =
+            rent;
+
+        tenant.deposit =
+            deposit;
+
+        tenant.leaseDate =
+            leaseDate;
+
+        tenant.status =
+            status;
+
+
+        saveTenants();
+
+        renderTenants();
+
+        updatePropertyOccupancy();
+
+        closeTenantForm();
+
+
+        alert(
+            "Tenant updated successfully!"
+        );
+
+
+        return;
+
+    }
+
+
+
+    /* NEW TENANT */
+
+    const tenant = {
+
+        id:
+            Date.now(),
+
+        name:
+            name,
+
+        mobile:
+            mobile,
+
+        email:
+            email,
+
+        propertyId:
+            Number(propertyId),
+
+        propertyName:
+            property.name,
+
+        unit:
+            unit,
+
+        rent:
+            rent,
+
+        deposit:
+            deposit,
+
+        leaseDate:
+            leaseDate,
+
+        status:
+            status
+
+    };
+
+
+    tenants.push(
+        tenant
+    );
+
+
+    saveTenants();
+
+    renderTenants();
+
+    updatePropertyOccupancy();
+
+    closeTenantForm();
+
+
+    alert(
+        "Tenant added successfully!"
+    );
+
+}
+
+
+
+/* ==========================================
+   SAVE TENANTS
+========================================== */
+
+function saveTenants() {
+
+    localStorage.setItem(
+        "rentTenants",
+        JSON.stringify(
+            tenants
+        )
+    );
+
+}
+
+
+
+/* ==========================================
+   RENDER TENANTS
+========================================== */
+
+function renderTenants() {
+
+    const tbody =
+        document.getElementById(
+            "tenantTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    tenants.forEach(
+        function(tenant) {
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    <strong>
+                        ${escapeHtml(
+                            tenant.name
+                        )}
+                    </strong>
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        tenant.mobile
+                    )}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        tenant.propertyName
+                    )}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        tenant.unit
+                    )}
+                </td>
+
+
+                <td>
+                    ₹${Number(
+                        tenant.rent
+                    ).toLocaleString(
+                        "en-IN"
+                    )}
+                </td>
+
+
+                <td>
+
+                    <span class="status ${
+                        tenant.status === "Active"
+                            ? "paid"
+                            : "pending"
+                    }">
+
+                        ${tenant.status}
+
+                    </span>
+
+                </td>
+
+
+                <td
+                    class="actions-cell">
+
+
+                    <button
+                        type="button"
+                        class="action-btn view-btn"
+                        data-action="view"
+                        data-id="${tenant.id}">
+
+                        View
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="action-btn edit-btn"
+                        data-action="edit"
+                        data-id="${tenant.id}">
+
+                        Edit
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="action-btn delete-btn"
+                        data-action="delete"
+                        data-id="${tenant.id}">
+
+                        Delete
+
+                    </button>
+
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    updateSummary();
+
+}
+
+
+
+/* ==========================================
+   SUMMARY
+========================================== */
+
+function updateSummary() {
+
+    const total =
+        tenants.length;
+
+
+    const active =
+        tenants.filter(
+            t =>
+                t.status ===
+                "Active"
+        ).length;
+
+
+    const occupied =
+        tenants.filter(
+            t =>
+                t.status ===
+                "Active"
+        ).length;
+
+
+    const monthlyRent =
+        tenants
+            .filter(
+                t =>
+                    t.status ===
+                    "Active"
+            )
+            .reduce(
+                (
+                    sum,
+                    tenant
+                ) =>
+                    sum +
+                    Number(
+                        tenant.rent
+                    ),
+                0
+            );
+
+
+    document.getElementById(
+        "totalTenants"
+    ).textContent =
+        total;
+
+
+    document.getElementById(
+        "activeTenants"
+    ).textContent =
+        active;
+
+
+    document.getElementById(
+        "occupiedUnits"
+    ).textContent =
+        occupied;
+
+
+    document.getElementById(
+        "tenantMonthlyRent"
+    ).textContent =
+        "₹" +
+        monthlyRent.toLocaleString(
+            "en-IN"
+        );
+
+}
+
+
+
+/* ==========================================
+   PROPERTY OCCUPANCY
+========================================== */
+
+function updatePropertyOccupancy() {
+
+    const properties =
+        getProperties();
+
+
+    properties.forEach(
+        function(property) {
+
+            const occupied =
+                tenants.filter(
+                    tenant =>
+
+                        tenant.status ===
+                        "Active"
+
+                        &&
+
+                        Number(
+                            tenant.propertyId
+                        ) ===
+                        Number(
+                            property.id
+                        )
+                ).length;
+
+
+            property.occupied =
+                Math.min(
+                    occupied,
+                    Number(
+                        property.units
+                    )
+                );
+
+        }
+    );
+
+
+    localStorage.setItem(
+        "rentProperties",
+        JSON.stringify(
+            properties
+        )
+    );
+
+}
+
+
+
+/* ==========================================
+   VIEW TENANT
+========================================== */
+
+function viewTenant(id) {
+
+    const tenant =
+        tenants.find(
+            t =>
+                t.id ===
+                Number(id)
+        );
+
+
+    if (!tenant) {
+        return;
+    }
+
+
+    document.getElementById(
+        "tenantDetailsContent"
+    ).innerHTML = `
+
+        <div class="details-grid">
+
+
+            <div class="detail-item">
+
+                <span>
+                    Tenant Name
+                </span>
+
+                <strong>
+                    ${escapeHtml(
+                        tenant.name
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Status
+                </span>
+
+                <strong>
+                    ${tenant.status}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Mobile
+                </span>
+
+                <strong>
+                    ${escapeHtml(
+                        tenant.mobile
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Email
+                </span>
+
+                <strong>
+                    ${escapeHtml(
+                        tenant.email ||
+                        "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Property
+                </span>
+
+                <strong>
+                    ${escapeHtml(
+                        tenant.propertyName
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Unit
+                </span>
+
+                <strong>
+                    ${escapeHtml(
+                        tenant.unit
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Monthly Rent
+                </span>
+
+                <strong>
+                    ₹${Number(
+                        tenant.rent
+                    ).toLocaleString(
+                        "en-IN"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Security Deposit
+                </span>
+
+                <strong>
+                    ₹${Number(
+                        tenant.deposit
+                    ).toLocaleString(
+                        "en-IN"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <span>
+                    Lease Start
+                </span>
+
+                <strong>
+                    ${tenant.leaseDate}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "tenantDetailsOverlay"
+    ).style.display =
+        "flex";
+
+}
+
+
+
+/* ==========================================
+   EDIT TENANT
+========================================== */
+
+function editTenant(id) {
+
+    const tenant =
+        tenants.find(
+            t =>
+                t.id ===
+                Number(id)
+        );
+
+
+    if (!tenant) {
+        return;
+    }
+
+
+    openTenantForm(
+        tenant
+    );
+
+}
+
+
+
+/* ==========================================
+   DELETE TENANT
+========================================== */
+
+function deleteTenant(id) {
+
+    const tenant =
+        tenants.find(
+            t =>
+                t.id ===
+                Number(id)
+        );
+
+
+    if (!tenant) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Are you sure you want to delete "${tenant.name}"?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    tenants =
+        tenants.filter(
+            t =>
+                t.id !==
+                Number(id)
+        );
+
+
+    saveTenants();
+
+    renderTenants();
+
+    updatePropertyOccupancy();
+
+
+    alert(
+        "Tenant deleted successfully!"
+    );
+
+}
+
+
+
+/* ==========================================
+   EVENT HANDLERS
+========================================== */
+
+document
+    .getElementById(
+        "addTenantBtn"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            openTenantForm();
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "closeTenantBtn"
+    )
+    .addEventListener(
+        "click",
+        closeTenantForm
+    );
+
+
+document
+    .getElementById(
+        "cancelTenantBtn"
+    )
+    .addEventListener(
+        "click",
+        closeTenantForm
+    );
+
+
+document
+    .getElementById(
+        "saveTenantBtn"
+    )
+    .addEventListener(
+        "click",
+        saveTenant
+    );
+
+
+document
+    .getElementById(
+        "closeDetailsBtn"
+    )
+    .addEventListener(
+        "click",
+        function() {
+
+            document.getElementById(
+                "tenantDetailsOverlay"
+            ).style.display =
+                "none";
+
+        }
+    );
+
+
+
+/* ==========================================
+   TABLE ACTIONS
+========================================== */
+
+document
+    .getElementById(
+        "tenantTableBody"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            const button =
+                event.target.closest(
+                    "button[data-action]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const action =
+                button.dataset.action;
+
+
+            const id =
+                Number(
+                    button.dataset.id
+                );
+
+
+            if (
+                action === "view"
+            ) {
+
+                viewTenant(id);
+
+            }
+
+
+            if (
+                action === "edit"
+            ) {
+
+                editTenant(id);
+
+            }
+
+
+            if (
+                action === "delete"
+            ) {
+
+                deleteTenant(id);
+
+            }
+
+        }
+    );
+
+
+
+/* ==========================================
+   HTML ESCAPE
+========================================== */
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        value == null
+            ? ""
+            : String(value);
+
+
+    return div.innerHTML;
+
+}
+
+
+
+/* ==========================================
+   INITIALIZE
+========================================== */
+
+loadPropertyDropdown();
+
+renderTenants();
+
+updatePropertyOccupancy();
+
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payments - Rent Management</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.actions-cell{white-space:nowrap}
+.action-btn{border:0;border-radius:7px;padding:7px 11px;margin:2px;cursor:pointer;font-size:12px;font-weight:600}
+.view-btn{background:#e8f0ff;color:#2563eb}.delete-btn{background:#ffe5e5;color:#dc2626}
+.status.paid{background:#dcfce7;color:#15803d}.status.partial{background:#fef3c7;color:#a16207}
+.status.pending{background:#e2e8f0;color:#475569}.status.overdue{background:#fee2e2;color:#dc2626}
+.filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.filter-bar select,.filter-bar input{padding:10px 12px;border:1px solid #d7dee8;border-radius:8px;background:#fff}
+.clear-filter-btn{border:0;padding:10px 14px;border-radius:8px;cursor:pointer;background:#eef2f7;color:#334155;font-weight:600}
+.details-overlay{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:rgba(15,23,42,.55);padding:20px}
+.details-card{width:min(650px,95vw);max-height:90vh;overflow-y:auto;background:#fff;border-radius:18px;padding:28px;box-shadow:0 25px 70px rgba(0,0,0,.25)}
+.form-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.form-header h2{margin:0}.close-form{width:38px;height:38px;border:0;border-radius:50%;background:#eef2f7;font-size:24px;cursor:pointer}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.detail-item{background:#f8fafc;padding:14px;border-radius:10px}
+.detail-item span{display:block;color:#64748b;font-size:12px;margin-bottom:5px}
+@media(max-width:650px){.details-grid{grid-template-columns:1fr}.filter-bar{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="logo"><div class="logo-icon">RM</div><div><h2>Rent Management</h2><span>Management System</span></div></div>
+<nav class="navigation">
+<a href="index.html" class="nav-item"><span>▦</span>Dashboard</a>
+<a href="properties.html" class="nav-item"><span>🏢</span>Properties</a>
+<a href="tenants.html" class="nav-item"><span>👥</span>Tenants</a>
+<a href="rent-collection.html" class="nav-item"><span>₹</span>Rent Collection</a>
+<a href="payments.html" class="nav-item active"><span>▤</span>Payments</a>
+<a href="reports.html" class="nav-item"><span>📊</span>Reports</a>
+<a href="settings.html" class="nav-item"><span>⚙️</span>Settings</a>
+</nav>
+<div class="sidebar-footer"><strong>Rent Management</strong><span>Version 1.0</span></div>
+</aside>
+
+<main class="main-content">
+<div class="topbar"><div><h1>Payments</h1><p>View and manage all recorded rent payments</p></div></div>
+
+<div class="summary-grid">
+<div class="summary-card"><div class="card-icon blue">₹</div><div><span>Total Payments</span><strong id="totalPayments">0</strong><small>Recorded payment entries</small></div></div>
+<div class="summary-card"><div class="card-icon green">✓</div><div><span>Total Received</span><strong id="totalReceived">₹0</strong><small>Amount received</small></div></div>
+<div class="summary-card"><div class="card-icon purple">₹</div><div><span>Outstanding</span><strong id="totalOutstanding">₹0</strong><small>Remaining balance</small></div></div>
+<div class="summary-card"><div class="card-icon orange">⚠</div><div><span>Overdue</span><strong id="totalOverdue">₹0</strong><small id="overdueCount">0 overdue payments</small></div></div>
+</div>
+
+<div class="panel">
+<div class="panel-header"><div><h2>Payment History</h2><p>All payments recorded through Rent Collection</p></div></div>
+<div class="filter-bar">
+<select id="statusFilter"><option value="All">All Status</option><option>Paid</option><option>Partial</option><option>Pending</option><option>Overdue</option></select>
+<select id="methodFilter"><option value="All">All Payment Methods</option><option>Cash</option><option>UPI</option><option>Bank Transfer</option><option>Cheque</option><option>Other</option></select>
+<input type="month" id="monthFilter">
+<button type="button" class="clear-filter-btn" id="clearFilterBtn">Clear Filter</button>
+</div>
+<div class="table-container">
+<table><thead><tr><th>Tenant</th><th>Property</th><th>Payment Date</th><th>Due Date</th><th>Paid Amount</th><th>Method</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody id="paymentTableBody"></tbody></table>
+</div>
+</div>
+
+<div id="detailsOverlay" class="details-overlay"><div class="details-card">
+<div class="form-header"><h2>Payment Details</h2><button type="button" class="close-form" id="closeDetailsBtn">×</button></div>
+<div id="detailsContent"></div>
+</div></div>
+</main>
+</div>
+
+<script>
+let rentPayments=JSON.parse(localStorage.getItem("rentPayments"))||[];
+
+function today(){
+ const d=new Date(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+ return d.getFullYear()+"-"+m+"-"+day;
+}
+function statusOf(p){
+ const monthly=Number(p.monthly)||0,paid=Number(p.paid)||0;
+ if(monthly>0&&paid>=monthly)return"Paid";
+ if(paid>0&&paid<monthly)return"Partial";
+ if(p.dueDate&&p.dueDate<today())return"Overdue";
+ return"Pending";
+}
+function refreshStatuses(){
+ let changed=false;
+ rentPayments.forEach(p=>{const s=statusOf(p);if(p.status!==s){p.status=s;changed=true;}});
+ if(changed)localStorage.setItem("rentPayments",JSON.stringify(rentPayments));
+}
+function fmt(v){
+ if(!v)return"-"; const a=v.split("-"); return a.length===3?a[2]+"/"+a[1]+"/"+a[0]:v;
+}
+function esc(v){const d=document.createElement("div");d.textContent=v==null?"":String(v);return d.innerHTML;}
+
+function render(){
+ refreshStatuses();
+ const sf=document.getElementById("statusFilter").value;
+ const mf=document.getElementById("methodFilter").value;
+ const mon=document.getElementById("monthFilter").value;
+ const rows=rentPayments.filter(p=>
+   (sf==="All"||p.status===sf)&&
+   (mf==="All"||p.paymentMethod===mf)&&
+   (!mon||(p.paymentDate||p.dueDate||"").startsWith(mon))
+ );
+ const body=document.getElementById("paymentTableBody");
+ body.innerHTML="";
+ if(!rows.length){
+  body.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:#64748b">No payment records found.</td></tr>';
+ }else{
+  rows.forEach(p=>{
+   const cls=p.status==="Paid"?"paid":p.status==="Partial"?"partial":p.status==="Overdue"?"overdue":"pending";
+   const tr=document.createElement("tr");
+   tr.innerHTML=`<td><strong>${esc(p.tenantName)}</strong></td>
+   <td>${esc(p.propertyName)}<br><small>${esc(p.unit)}</small></td>
+   <td>${fmt(p.paymentDate)}</td><td>${fmt(p.dueDate)}</td>
+   <td>₹${Number(p.paid||0).toLocaleString("en-IN")}</td>
+   <td>${esc(p.paymentMethod||"-")}</td>
+   <td><span class="status ${cls}">${esc(p.status)}</span></td>
+   <td class="actions-cell"><button class="action-btn view-btn" data-action="view" data-id="${p.id}">View</button>
+   <button class="action-btn delete-btn" data-action="delete" data-id="${p.id}">Delete</button></td>`;
+   body.appendChild(tr);
+  });
+ }
+ summary();
+}
+function summary(){
+ refreshStatuses();
+ const received=rentPayments.reduce((s,p)=>s+Number(p.paid||0),0);
+ const outstanding=rentPayments.reduce((s,p)=>s+Number(p.balance||0),0);
+ const overdue=rentPayments.filter(p=>p.status==="Overdue");
+ const overdueAmount=overdue.reduce((s,p)=>s+Number(p.balance||0),0);
+ document.getElementById("totalPayments").textContent=rentPayments.length;
+ document.getElementById("totalReceived").textContent="₹"+received.toLocaleString("en-IN");
+ document.getElementById("totalOutstanding").textContent="₹"+outstanding.toLocaleString("en-IN");
+ document.getElementById("totalOverdue").textContent="₹"+overdueAmount.toLocaleString("en-IN");
+ document.getElementById("overdueCount").textContent=overdue.length+(overdue.length===1?" overdue payment":" overdue payments");
+}
+function viewPayment(id){
+ const p=rentPayments.find(x=>Number(x.id)===Number(id)); if(!p)return;
+ document.getElementById("detailsContent").innerHTML=`<div class="details-grid">
+ <div class="detail-item"><span>Tenant</span><strong>${esc(p.tenantName)}</strong></div>
+ <div class="detail-item"><span>Property</span><strong>${esc(p.propertyName)}</strong></div>
+ <div class="detail-item"><span>Unit</span><strong>${esc(p.unit)}</strong></div>
+ <div class="detail-item"><span>Due Date</span><strong>${fmt(p.dueDate)}</strong></div>
+ <div class="detail-item"><span>Monthly Rent</span><strong>₹${Number(p.monthly||0).toLocaleString("en-IN")}</strong></div>
+ <div class="detail-item"><span>Paid Amount</span><strong>₹${Number(p.paid||0).toLocaleString("en-IN")}</strong></div>
+ <div class="detail-item"><span>Outstanding Balance</span><strong>₹${Number(p.balance||0).toLocaleString("en-IN")}</strong></div>
+ <div class="detail-item"><span>Payment Date</span><strong>${fmt(p.paymentDate)}</strong></div>
+ <div class="detail-item"><span>Payment Method</span><strong>${esc(p.paymentMethod||"-")}</strong></div>
+ <div class="detail-item"><span>Status</span><strong>${esc(p.status)}</strong></div></div>`;
+ document.getElementById("detailsOverlay").style.display="flex";
+}
+function deletePayment(id){
+ const p=rentPayments.find(x=>Number(x.id)===Number(id));if(!p)return;
+ if(!confirm(`Are you sure you want to delete this payment for "${p.tenantName}"?`))return;
+ rentPayments=rentPayments.filter(x=>Number(x.id)!==Number(id));
+ localStorage.setItem("rentPayments",JSON.stringify(rentPayments));
+ render();
+}
+document.getElementById("paymentTableBody").addEventListener("click",e=>{
+ const b=e.target.closest("button[data-action]");if(!b)return;
+ const id=Number(b.dataset.id);
+ if(b.dataset.action==="view")viewPayment(id);
+ if(b.dataset.action==="delete")deletePayment(id);
+});
+["statusFilter","methodFilter","monthFilter"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+document.getElementById("clearFilterBtn").addEventListener("click",()=>{
+ document.getElementById("statusFilter").value="All";
+ document.getElementById("methodFilter").value="All";
+ document.getElementById("monthFilter").value="";
+ render();
+});
+document.getElementById("closeDetailsBtn").addEventListener("click",()=>document.getElementById("detailsOverlay").style.display="none");
+document.getElementById("detailsOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.style.display="none"});
+render();
+</script>
+</body>
+</html>

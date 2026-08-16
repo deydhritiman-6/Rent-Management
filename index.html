@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rent Management Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-icon">RM</div>
+                <div>
+                    <h2>Rent Management</h2>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="navigation">
+
+                <a href="#" class="nav-item active">
+                    <span>▦</span>
+                    Dashboard
+                </a>
+
+                <a href="properties.html" class="nav-item">
+    <span>🏢</span>
+    Properties
+</a>
+
+                <a href="tenants.html" class="nav-item">
+                    <span>👥</span>
+                    Tenants
+                </a>
+
+                <a href="rent-collection.html" class="nav-item">
+                    <span>₹</span>
+                    Rent Collection
+                </a>
+
+                <a href="payments.html" class="nav-item">
+                    <span>🧾</span>
+                    Payments
+                </a>
+
+                <a href="reports.html" class="nav-item">
+                    <span>📊</span>
+                    Reports
+                </a>
+
+                <a href="settings.html" class="nav-item">
+                    <span>⚙️</span>
+                    Settings
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>Rent Management</p>
+                <span>Version 1.0</span>
+            </div>
+
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Welcome back. Here's your rental overview.</p>
+                </div>
+
+                <div class="admin-area">
+                    <div class="notification">🔔</div>
+
+                    <div class="admin-profile">
+                        <div class="avatar">A</div>
+                        <div>
+                            <strong>Administrator</strong>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+            </header>
+
+
+            <!-- Summary Cards -->
+            <section class="summary-grid">
+
+                <div class="summary-card">
+                    <div class="card-icon blue">🏢</div>
+                    <div>
+                        <span>Total Properties</span>
+                        <strong>24</strong>
+                        <small>Registered properties</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon green">👥</div>
+                    <div>
+                        <span>Active Tenants</span>
+                        <strong>38</strong>
+                        <small>Currently occupied</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon purple">₹</div>
+                    <div>
+                        <span>Monthly Rent</span>
+                        <strong>₹2,45,000</strong>
+                        <small>Expected this month</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon orange">⚠️</div>
+                    <div>
+                        <span>Pending Rent</span>
+                        <strong>₹32,500</strong>
+                        <small>Needs attention</small>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- Dashboard Content -->
+            <section class="dashboard-grid">
+
+                <!-- Recent Payments -->
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <h2>Recent Payments</h2>
+                            <p>Latest rent transactions</p>
+                        </div>
+
+                        <button class="view-button">View All</button>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Tenant</th>
+                                    <th>Property</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td>Rahul Sharma</td>
+                                    <td>Flat 101</td>
+                                    <td>12 Aug 2026</td>
+                                    <td>₹18,000</td>
+                                    <td><span class="status paid">Paid</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Ananya Das</td>
+                                    <td>Flat 204</td>
+                                    <td>11 Aug 2026</td>
+                                    <td>₹22,000</td>
+                                    <td><span class="status paid">Paid</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Arjun Singh</td>
+                                    <td>Flat 302</td>
+                                    <td>10 Aug 2026</td>
+                                    <td>₹16,500</td>
+                                    <td><span class="status pending">Pending</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Priya Roy</td>
+                                    <td>Flat 105</td>
+                                    <td>09 Aug 2026</td>
+                                    <td>₹20,000</td>
+                                    <td><span class="status paid">Paid</span></td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Upcoming Due Dates -->
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <h2>Upcoming Due Dates</h2>
+                            <p>Rent payments due soon</p>
+                        </div>
+                    </div>
+
+                    <div class="due-list">
+
+                        <div class="due-item">
+                            <div class="date-box">
+                                <strong>15</strong>
+                                <span>AUG</span>
+                            </div>
+
+                            <div class="due-info">
+                                <strong>Rohan Mehta</strong>
+                                <span>Flat 201</span>
+                            </div>
+
+                            <strong>₹19,000</strong>
+                        </div>
+
+
+                        <div class="due-item">
+                            <div class="date-box">
+                                <strong>17</strong>
+                                <span>AUG</span>
+                            </div>
+
+                            <div class="due-info">
+                                <strong>Neha Gupta</strong>
+                                <span>Flat 305</span>
+                            </div>
+
+                            <strong>₹21,500</strong>
+                        </div>
+
+
+                        <div class="due-item">
+                            <div class="date-box">
+                                <strong>20</strong>
+                                <span>AUG</span>
+                            </div>
+
+                            <div class="due-info">
+                                <strong>Vikram Das</strong>
+                                <span>Flat 402</span>
+                            </div>
+
+                            <strong>₹17,000</strong>
+                        </div>
+
+
+                        <div class="due-item">
+                            <div class="date-box">
+                                <strong>22</strong>
+                                <span>AUG</span>
+                            </div>
+
+                            <div class="due-info">
+                                <strong>Sneha Roy</strong>
+                                <span>Flat 103</span>
+                            </div>
+
+                            <strong>₹23,000</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+
+                <h2>Quick Actions</h2>
+
+                <div class="action-grid">
+
+                    <button>
+                        <span>＋</span>
+                        Add Property
+                    </button>
+
+                    <button>
+                        <span>👤</span>
+                        Add Tenant
+                    </button>
+
+                    <button>
+                        <span>₹</span>
+                        Record Payment
+                    </button>
+
+                    <button>
+                        <span>🧾</span>
+                        Generate Receipt
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
