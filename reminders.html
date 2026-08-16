@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rent Reminders - Rent Management</title>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <script src="mobile-menu.js" defer></script>
+
+    <style>
+        .reminder-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .reminder-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .reminder-btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 700;
+            min-height: 42px;
+        }
+
+        .whatsapp-btn {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .whatsapp-btn:hover {
+            background: #15803d;
+        }
+
+        .secondary-btn {
+            background: #eef2f7;
+            color: #334155;
+        }
+
+        .summary-grid {
+            margin-bottom: 20px;
+        }
+
+        .reminder-message-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, .06);
+        }
+
+        .reminder-message-card h2 {
+            margin: 0 0 6px;
+        }
+
+        .reminder-message-card p {
+            margin: 0 0 14px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        #messageTemplate {
+            width: 100%;
+            min-height: 150px;
+            padding: 13px;
+            border: 1px solid #d7dee8;
+            border-radius: 10px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        #messageTemplate:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+        }
+
+        .placeholder-help {
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .reminder-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .sent-status {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .no-phone-status {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .select-cell {
+            width: 42px;
+            text-align: center;
+        }
+
+        .select-all {
+            cursor: pointer;
+        }
+
+        .empty-reminders {
+            text-align: center;
+            padding: 45px 20px;
+            color: #64748b;
+        }
+
+        .empty-reminders strong {
+            display: block;
+            color: #334155;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .phone-number {
+            white-space: nowrap;
+        }
+
+        @media (max-width: 700px) {
+            .reminder-toolbar {
+                align-items: stretch;
+            }
+
+            .reminder-actions {
+                width: 100%;
+            }
+
+            .reminder-btn {
+                flex: 1 1 180px;
+            }
+
+            #messageTemplate {
+                min-height: 180px;
+            }
+
+            table {
+                min-width: 900px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">RM</div>
+
+            <div>
+                <h2>Rent Management</h2>
+                <span>Management System</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="index.html" class="nav-item">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="properties.html" class="nav-item">
+                <span>🏢</span>
+                Properties
+            </a>
+
+            <a href="tenants.html" class="nav-item">
+                <span>👥</span>
+                Tenants
+            </a>
+
+            <a href="rent-collection.html" class="nav-item">
+                <span>₹</span>
+                Rent Collection
+            </a>
+
+            <a href="payments.html" class="nav-item">
+                <span>▤</span>
+                Payments
+            </a>
+
+            <a href="reports.html" class="nav-item">
+                <span>📊</span>
+                Reports
+            </a>
+
+            <a href="reminders.html" class="nav-item active">
+                <span>🔔</span>
+                Reminders
+            </a>
+
+            <a href="settings.html" class="nav-item">
+                <span>⚙️</span>
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <strong>Rent Management</strong>
+            <span>Version 1.0</span>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Rent Reminders</h1>
+                <p>Send WhatsApp reminders to tenants with overdue rent</p>
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <div class="card-icon orange">⚠</div>
+
+                <div>
+                    <span>Overdue Payments</span>
+                    <strong id="overdueCount">0</strong>
+                    <small>Need payment reminder</small>
+                </div>
+            </div>
+
+
+            <div class="summary-card">
+                <div class="card-icon red">₹</div>
+
+                <div>
+                    <span>Outstanding Amount</span>
+                    <strong id="outstandingAmount">₹0</strong>
+                    <small>Total overdue balance</small>
+                </div>
+            </div>
+
+
+            <div class="summary-card">
+                <div class="card-icon green">✓</div>
+
+                <div>
+                    <span>WhatsApp Ready</span>
+                    <strong id="whatsappReady">0</strong>
+                    <small>Tenants with phone number</small>
+                </div>
+            </div>
+
+
+            <div class="summary-card">
+                <div class="card-icon blue">✓</div>
+
+                <div>
+                    <span>Reminders Sent</span>
+                    <strong id="remindersSent">0</strong>
+                    <small>This browser session</small>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- MESSAGE TEMPLATE -->
+        <div class="reminder-message-card">
+
+            <h2>WhatsApp Reminder Message</h2>
+
+            <p>
+                Edit the message before sending. The system will replace the
+                placeholders automatically for each tenant.
+            </p>
+
+            <textarea id="messageTemplate">Dear {tenantName},
+
+This is a friendly reminder that your rent payment of ₹{balance} for {propertyName} - {unit} is overdue.
+
+Due Date: {dueDate}
+
+Please arrange the payment at your earliest convenience.
+
+Thank you,
+Rent Management</textarea>
+
+            <div class="placeholder-help">
+                Available placeholders:
+                <strong>{tenantName}</strong>,
+                <strong>{propertyName}</strong>,
+                <strong>{unit}</strong>,
+                <strong>{monthlyRent}</strong>,
+                <strong>{paidAmount}</strong>,
+                <strong>{balance}</strong>,
+                <strong>{dueDate}</strong>
+            </div>
+
+        </div>
+
+
+        <!-- REMINDER LIST -->
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h2>Overdue Rent</h2>
+                    <p>Select tenants and send their reminder through WhatsApp</p>
+                </div>
+
+            </div>
+
+
+            <div class="reminder-toolbar">
+
+                <label>
+                    <input
+                        type="checkbox"
+                        id="selectAll"
+                        class="select-all">
+                    Select All
+                </label>
+
+                <div class="reminder-actions">
+
+                    <button
+                        type="button"
+                        class="reminder-btn secondary-btn"
+                        id="refreshBtn">
+                        ↻ Refresh
+                    </button>
+
+                    <button
+                        type="button"
+                        class="reminder-btn whatsapp-btn"
+                        id="sendSelectedBtn">
+                        💬 Send Selected via WhatsApp
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th class="select-cell">Select</th>
+
+                            <th>Tenant</th>
+
+                            <th>Property</th>
+
+                            <th>Due Date</th>
+
+                            <th>Monthly Rent</th>
+
+                            <th>Paid</th>
+
+                            <th>Outstanding</th>
+
+                            <th>Phone</th>
+
+                            <th>Status</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="reminderTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    const RENT_PAYMENTS_KEY = "rentPayments";
+
+    const REMINDER_SENT_KEY = "rentReminderSent";
+
+    let rentPayments = [];
+
+    let reminderSent = JSON.parse(
+        localStorage.getItem(REMINDER_SENT_KEY) || "{}"
+    );
+
+
+    function today() {
+
+        const d = new Date();
+
+        const month =
+            String(d.getMonth() + 1).padStart(2, "0");
+
+        const day =
+            String(d.getDate()).padStart(2, "0");
+
+        return (
+            d.getFullYear() +
+            "-" +
+            month +
+            "-" +
+            day
+        );
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) return "-";
+
+        const parts = value.split("-");
+
+        if (parts.length !== 3) {
+            return value;
+        }
+
+        return (
+            parts[2] +
+            "/" +
+            parts[1] +
+            "/" +
+            parts[0]
+        );
+
+    }
+
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value == null ? "" : String(value);
+
+        return div.innerHTML;
+
+    }
+
+
+    function getPhone(payment) {
+
+        const candidates = [
+
+            payment.tenantPhone,
+            payment.phone,
+            payment.phoneNumber,
+            payment.mobile,
+            payment.mobileNumber
+
+        ];
+
+        for (const value of candidates) {
+
+            if (value !== undefined &&
+                value !== null &&
+                String(value).trim() !== "") {
+
+                return String(value).trim();
+
+            }
+
+        }
+
+        return "";
+
+    }
+
+
+    function getStatus(payment) {
+
+        const monthly =
+            Number(payment.monthly) || 0;
+
+        const paid =
+            Number(payment.paid) || 0;
+
+        if (
+            monthly > 0 &&
+            paid >= monthly
+        ) {
+            return "Paid";
+        }
+
+        if (
+            paid > 0 &&
+            paid < monthly
+        ) {
+            return "Partial";
+        }
+
+        if (
+            payment.dueDate &&
+            payment.dueDate < today()
+        ) {
+            return "Overdue";
+        }
+
+        return "Pending";
+
+    }
+
+
+    function loadPayments() {
+
+        rentPayments =
+            JSON.parse(
+                localStorage.getItem(
+                    RENT_PAYMENTS_KEY
+                ) || "[]"
+            );
+
+        rentPayments.forEach(
+            function (payment) {
+
+                payment.status =
+                    getStatus(payment);
+
+                if (
+                    payment.balance === undefined ||
+                    payment.balance === null
+                ) {
+
+                    payment.balance =
+                        Math.max(
+                            0,
+                            (
+                                Number(payment.monthly) || 0
+                            ) -
+                            (
+                                Number(payment.paid) || 0
+                            )
+                        );
+
+                }
+
+            }
+        );
+
+        localStorage.setItem(
+            RENT_PAYMENTS_KEY,
+            JSON.stringify(rentPayments)
+        );
+
+    }
+
+
+    function getOverduePayments() {
+
+        return rentPayments.filter(
+            function (payment) {
+
+                return (
+                    getStatus(payment) === "Overdue" &&
+                    Number(payment.balance) > 0
+                );
+
+            }
+        );
+
+    }
+
+
+    function replacePlaceholders(
+        template,
+        payment
+    ) {
+
+        const monthly =
+            Number(payment.monthly) || 0;
+
+        const paid =
+            Number(payment.paid) || 0;
+
+        const balance =
+            Number(payment.balance) ||
+            Math.max(
+                0,
+                monthly - paid
+            );
+
+
+        const values = {
+
+            "{tenantName}":
+                payment.tenantName || "Tenant",
+
+            "{propertyName}":
+                payment.propertyName || "",
+
+            "{unit}":
+                payment.unit || "",
+
+            "{monthlyRent}":
+                monthly.toLocaleString("en-IN"),
+
+            "{paidAmount}":
+                paid.toLocaleString("en-IN"),
+
+            "{balance}":
+                balance.toLocaleString("en-IN"),
+
+            "{dueDate}":
+                formatDate(payment.dueDate)
+
+        };
+
+
+        let message = template;
+
+        Object.keys(values).forEach(
+            function (key) {
+
+                message =
+                    message.split(key)
+                        .join(values[key]);
+
+            }
+        );
+
+
+        return message;
+
+    }
+
+
+    function createWhatsAppUrl(
+        phone,
+        message
+    ) {
+
+        let cleaned =
+            String(phone)
+                .replace(/\D/g, "");
+
+
+        /*
+         * If an Indian 10-digit number is stored,
+         * automatically add country code 91.
+         */
+        if (cleaned.length === 10) {
+
+            cleaned = "91" + cleaned;
+
+        }
+
+
+        return (
+            "https://wa.me/" +
+            cleaned +
+            "?text=" +
+            encodeURIComponent(message)
+        );
+
+    }
+
+
+    function sendReminder(payment) {
+
+        const phone =
+            getPhone(payment);
+
+
+        if (!phone) {
+
+            alert(
+                "No WhatsApp/mobile number is available for " +
+                (payment.tenantName || "this tenant") +
+                "."
+            );
+
+            return;
+
+        }
+
+
+        const template =
+            document.getElementById(
+                "messageTemplate"
+            ).value;
+
+
+        const message =
+            replacePlaceholders(
+                template,
+                payment
+            );
+
+
+        const url =
+            createWhatsAppUrl(
+                phone,
+                message
+            );
+
+
+        /*
+         * This opens WhatsApp with the message
+         * already prepared. The user presses Send
+         * inside WhatsApp.
+         */
+        window.open(
+            url,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+
+        reminderSent[payment.id] =
+            new Date().toISOString();
+
+
+        localStorage.setItem(
+            REMINDER_SENT_KEY,
+            JSON.stringify(reminderSent)
+        );
+
+
+        render();
+
+    }
+
+
+    function sendSelected() {
+
+        const selected =
+            Array.from(
+                document.querySelectorAll(
+                    ".reminder-check:checked"
+                )
+            );
+
+
+        if (!selected.length) {
+
+            alert(
+                "Please select at least one overdue payment."
+            );
+
+            return;
+
+        }
+
+
+        const overdue =
+            getOverduePayments();
+
+
+        const selectedPayments =
+            overdue.filter(
+                function (payment) {
+
+                    return selected.some(
+                        function (checkbox) {
+
+                            return (
+                                String(checkbox.dataset.id) ===
+                                String(payment.id)
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /*
+         * Browsers/WhatsApp can block multiple
+         * automatic tabs. Therefore each selected
+         * reminder is opened one at a time with a
+         * small delay.
+         */
+        let index = 0;
+
+
+        function next() {
+
+            if (
+                index >= selectedPayments.length
+            ) {
+
+                render();
+
+                return;
+
+            }
+
+
+            sendReminderWithoutPrompt(
+                selectedPayments[index]
+            );
+
+            index++;
+
+            setTimeout(
+                next,
+                900
+            );
+
+        }
+
+
+        next();
+
+    }
+
+
+    function sendReminderWithoutPrompt(
+        payment
+    ) {
+
+        const phone =
+            getPhone(payment);
+
+
+        if (!phone) {
+            return;
+        }
+
+
+        const template =
+            document.getElementById(
+                "messageTemplate"
+            ).value;
+
+
+        const message =
+            replacePlaceholders(
+                template,
+                payment
+            );
+
+
+        const url =
+            createWhatsAppUrl(
+                phone,
+                message
+            );
+
+
+        window.open(
+            url,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+
+        reminderSent[payment.id] =
+            new Date().toISOString();
+
+
+        localStorage.setItem(
+            REMINDER_SENT_KEY,
+            JSON.stringify(reminderSent)
+        );
+
+    }
+
+
+    function render() {
+
+        const overdue =
+            getOverduePayments();
+
+
+        const body =
+            document.getElementById(
+                "reminderTableBody"
+            );
+
+
+        body.innerHTML = "";
+
+
+        let readyCount = 0;
+
+        let outstanding = 0;
+
+
+        overdue.forEach(
+            function (payment) {
+
+                const phone =
+                    getPhone(payment);
+
+                if (phone) {
+                    readyCount++;
+                }
+
+
+                const balance =
+                    Number(payment.balance) || 0;
+
+                outstanding += balance;
+
+
+                const sent =
+                    Boolean(
+                        reminderSent[payment.id]
+                    );
+
+
+                const tr =
+                    document.createElement("tr");
+
+
+                tr.innerHTML = `
+
+                    <td class="select-cell">
+
+                        <input
+                            type="checkbox"
+                            class="reminder-check"
+                            data-id="${escapeHtml(payment.id)}"
+                            ${!phone ? "disabled" : ""}>
+
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(payment.tenantName || "Unknown")}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(payment.propertyName || "-")}
+                        <br>
+                        <small>
+                            ${escapeHtml(payment.unit || "")}
+                        </small>
+                    </td>
+
+                    <td>
+                        ${formatDate(payment.dueDate)}
+                    </td>
+
+                    <td>
+                        ₹${(
+                            Number(payment.monthly) || 0
+                        ).toLocaleString("en-IN")}
+                    </td>
+
+                    <td>
+                        ₹${(
+                            Number(payment.paid) || 0
+                        ).toLocaleString("en-IN")}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ₹${balance.toLocaleString("en-IN")}
+                        </strong>
+                    </td>
+
+                    <td class="phone-number">
+                        ${
+                            phone
+                                ? escapeHtml(phone)
+                                : '<span class="reminder-status no-phone-status">No number</span>'
+                        }
+                    </td>
+
+                    <td>
+
+                        ${
+                            sent
+                                ? '<span class="reminder-status sent-status">Reminder Sent</span>'
+                                : '<span class="reminder-status">Overdue</span>'
+                        }
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="reminder-btn whatsapp-btn"
+                            data-send-id="${escapeHtml(payment.id)}"
+                            ${!phone ? "disabled" : ""}>
+
+                            💬 WhatsApp
+
+                        </button>
+
+                    </td>
+                `;
+
+
+                body.appendChild(tr);
+
+            }
+        );
+
+
+        if (!overdue.length) {
+
+            body.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="10"
+                        class="empty-reminders">
+
+                        <strong>No overdue rent found</strong>
+
+                        All recorded rent payments are currently up to date.
+
+                    </td>
+
+                </tr>
+            `;
+
+        }
+
+
+        document.getElementById(
+            "overdueCount"
+        ).textContent =
+            overdue.length;
+
+
+        document.getElementById(
+            "outstandingAmount"
+        ).textContent =
+            "₹" +
+            outstanding.toLocaleString(
+                "en-IN"
+            );
+
+
+        document.getElementById(
+            "whatsappReady"
+        ).textContent =
+            readyCount;
+
+
+        document.getElementById(
+            "remindersSent"
+        ).textContent =
+            Object.keys(reminderSent).filter(
+                function (id) {
+
+                    return overdue.some(
+                        function (payment) {
+
+                            return (
+                                String(payment.id) ===
+                                String(id)
+                            );
+
+                        }
+                    );
+
+                }
+            ).length;
+
+
+        document.getElementById(
+            "selectAll"
+        ).checked = false;
+
+    }
+
+
+    document.getElementById(
+        "reminderTableBody"
+    ).addEventListener(
+        "click",
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    "[data-send-id]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const id =
+                button.dataset.sendId;
+
+
+            const payment =
+                getOverduePayments().find(
+                    function (item) {
+
+                        return (
+                            String(item.id) ===
+                            String(id)
+                        );
+
+                    }
+                );
+
+
+            if (payment) {
+
+                sendReminder(payment);
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "selectAll"
+    ).addEventListener(
+        "change",
+        function () {
+
+            document.querySelectorAll(
+                ".reminder-check:not(:disabled)"
+            ).forEach(
+                function (checkbox) {
+
+                    checkbox.checked =
+                        document.getElementById(
+                            "selectAll"
+                        ).checked;
+
+                }
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "sendSelectedBtn"
+    ).addEventListener(
+        "click",
+        sendSelected
+    );
+
+
+    document.getElementById(
+        "refreshBtn"
+    ).addEventListener(
+        "click",
+        function () {
+
+            loadPayments();
+
+            render();
+
+        }
+    );
+
+
+    loadPayments();
+
+    render();
+
+</script>
+
+</body>
+</html>
