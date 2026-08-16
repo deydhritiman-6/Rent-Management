@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent Agreements - Rent Management</title>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/sidebar.js" defer></script>
+    <script src="js/mobile-menu.js" defer></script>
+    <script src="js/rent-agreement.js" defer></script>
+
+    <style>
+        .agreement-page {
+            min-width: 0;
+        }
+
+        .agreement-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .agreement-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, .06);
+            padding: 20px;
+        }
+
+        .agreement-card h2 {
+            margin-bottom: 16px;
+            font-size: 20px;
+            color: #0f172a;
+        }
+
+        .agreement-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .agreement-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .agreement-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .agreement-field label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .agreement-field input,
+        .agreement-field select,
+        .agreement-field textarea {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #dbe2ea;
+            border-radius: 9px;
+            padding: 10px 12px;
+            background: #fff;
+            color: #0f172a;
+            font: inherit;
+            outline: none;
+        }
+
+        .agreement-field textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .agreement-field input:focus,
+        .agreement-field select:focus,
+        .agreement-field textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+        }
+
+        .agreement-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .agreement-btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 11px 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .agreement-btn.secondary {
+            background: #eef2f7;
+            color: #334155;
+        }
+
+        .agreement-btn.primary {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .summary-grid {
+            margin-bottom: 20px;
+        }
+
+        .agreement-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f7;
+            font-size: 13px;
+        }
+
+        th {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .agreement-status {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 5px 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .agreement-status.active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .agreement-status.expiring {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .agreement-status.expired {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .agreement-actions-cell {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .mini-btn {
+            border: 0;
+            border-radius: 7px;
+            padding: 7px 9px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .mini-btn.delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .mini-btn.view {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        @media (max-width: 900px) {
+            .agreement-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .agreement-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content agreement-page">
+            <div class="topbar">
+                <div>
+                    <h1>Rent Agreements</h1>
+                    <p>Manage tenant lease records and rental terms</p>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-icon blue">📄</div>
+                    <div>
+                        <span>Total Agreements</span>
+                        <strong id="totalAgreements">0</strong>
+                        <small>Lease records</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon green">✓</div>
+                    <div>
+                        <span>Active</span>
+                        <strong id="activeAgreements">0</strong>
+                        <small>Currently active</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon purple">₹</div>
+                    <div>
+                        <span>Monthly Rent</span>
+                        <strong id="monthlyRentTotal">₹0</strong>
+                        <small>Combined rent</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon orange">⚠</div>
+                    <div>
+                        <span>Expiring Soon</span>
+                        <strong id="expiringAgreements">0</strong>
+                        <small>Next 30 days</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agreement-grid">
+                <section class="agreement-card">
+                    <h2>Add Rent Agreement</h2>
+
+                    <form id="agreementForm" class="agreement-form">
+                        <div class="agreement-field">
+                            <label for="tenantName">Tenant Name</label>
+                            <input type="text" id="tenantName" required>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="propertyName">Property</label>
+                            <input type="text" id="propertyName" required>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="unit">Unit / Flat</label>
+                            <input type="text" id="unit" required>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="monthlyRent">Monthly Rent (₹)</label>
+                            <input type="number" id="monthlyRent" min="0" step="1" required>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="securityDeposit">Security Deposit (₹)</label>
+                            <input type="number" id="securityDeposit" min="0" step="1" required>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="agreementStatus">Status</label>
+                            <select id="agreementStatus">
+                                <option value="Active">Active</option>
+                                <option value="Expiring Soon">Expiring Soon</option>
+                                <option value="Expired">Expired</option>
+                            </select>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate">
+                        </div>
+
+                        <div class="agreement-field full">
+                            <label for="terms">Agreement Terms / Notes</label>
+                            <textarea id="terms" placeholder="Example: Lease includes maintenance, notice period, pet policy, etc."></textarea>
+                        </div>
+
+                        <div class="agreement-field full">
+                            <div class="agreement-actions">
+                                <button type="button" class="agreement-btn secondary" id="resetAgreementForm">Reset</button>
+                                <button type="submit" class="agreement-btn primary">Save Agreement</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="agreement-card">
+                    <h2>Agreement Overview</h2>
+                    <div id="agreementOverview" class="empty-state">No agreement selected.</div>
+                </section>
+            </div>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Stored Agreements</h2>
+                        <p>All active and historical rental agreements</p>
+                    </div>
+                </div>
+
+                <div class="agreement-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Property</th>
+                                <th>Unit</th>
+                                <th>Rent</th>
+                                <th>Start / End</th>
+                                <th>Security</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agreementTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
