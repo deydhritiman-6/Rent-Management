@@ -23,26 +23,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // WhatsApp number button
-    const waBtn = document.getElementById('whatsappButton');
-    if (!waBtn) return;
-
-    waBtn.addEventListener('click', function () {
-        // Try to get stored number
-        let stored = localStorage.getItem('whatsappNumber') || '';
-        const promptMsg = 'Enter WhatsApp number (with country code, e.g. 919812345678)';
-        const num = window.prompt(promptMsg, stored);
-        if (!num) return;
-        // Normalize: remove spaces, dashes, parentheses, plus
-        const cleaned = num.replace(/[^0-9]/g, '');
-        if (!cleaned) {
-            alert('Please enter a valid phone number containing digits.');
-            return;
-        }
-        localStorage.setItem('whatsappNumber', cleaned);
-        // Open WhatsApp Web to send a message
-        const defaultMessage = 'Hello from Rent Management. I would like to discuss my rent.';
-        const waUrl = 'https://wa.me/' + cleaned + '?text=' + encodeURIComponent(defaultMessage);
-        window.open(waUrl, '_blank');
-    });
 });
