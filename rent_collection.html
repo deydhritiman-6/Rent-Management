@@ -413,6 +413,102 @@
 
         }
 
+
+        /* RENT COLLECTION CONSISTENCY */
+        .main-content { min-width: 0; }
+
+        .topbar {
+            align-items: center;
+            gap: 16px;
+        }
+
+        .topbar > div:first-child {
+            min-width: 0;
+        }
+
+        .topbar h1 { margin-bottom: 4px; }
+        .topbar p { margin: 0; }
+
+        .topbar .add-property-btn {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
+        .summary-grid { width: 100%; }
+        .summary-card { min-width: 0; }
+
+        .panel {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .panel-header { gap: 12px; }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            width: 100%;
+            min-width: 850px;
+        }
+
+        .rent-form,
+        .details-card {
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .topbar .add-property-btn {
+                width: 100%;
+                min-height: 44px;
+            }
+
+            .rent-form-overlay,
+            .details-overlay {
+                padding: 14px;
+                align-items: center;
+            }
+
+            .rent-form,
+            .details-card {
+                width: 100%;
+                max-width: 560px;
+                max-height: calc(100vh - 28px);
+                overflow-y: auto;
+                padding: 20px;
+                border-radius: 14px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                flex-direction: column;
+            }
+
+            .topbar > div:first-child {
+                width: 100%;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .form-buttons button {
+                width: 100%;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
     </style>
 
 </head>
@@ -520,6 +616,12 @@
                 Reports
 
             </a>
+            <a href="reminders.html" class="nav-item">
+                <span>🔔</span>
+                Reminders
+            </a>
+
+
 
 
             <a
@@ -585,8 +687,7 @@
             <button
                 type="button"
                 id="addRentBtn"
-                class="add-property-btn"
-                onclick="openRentForm();">
+                class="add-property-btn">
 
                 + Add Rent Payment
 
@@ -2057,7 +2158,7 @@ function renderRentPayments() {
 
 
                 <td>
-                    ${payment.dueDate}
+                    ${formatRentDate(payment.dueDate)}
                 </td>
 
 
@@ -2321,7 +2422,7 @@ function viewPayment(id) {
                 </span>
 
                 <strong>
-                    ${payment.dueDate}
+                    ${formatRentDate(payment.dueDate)}
                 </strong>
 
             </div>
@@ -2385,7 +2486,7 @@ function viewPayment(id) {
                 </span>
 
                 <strong>
-                    ${payment.paymentDate || "-"}
+                    ${formatRentDate(payment.paymentDate)}
                 </strong>
 
             </div>
@@ -2775,6 +2876,15 @@ function escapeHtml(value) {
 
 }
 
+
+
+
+function formatRentDate(value) {
+    if (!value) return "-";
+    const parts = String(value).split("-");
+    if (parts.length !== 3) return escapeHtml(value);
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
 
 
 function refreshExistingPaymentStatuses() {
