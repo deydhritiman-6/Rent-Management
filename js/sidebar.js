@@ -34,6 +34,20 @@ document.addEventListener('DOMContentLoaded', function () {
             Properties
         </a>
 
+        <a href="brokers.html"
+           class="nav-item"
+           data-page="brokers.html">
+            <span>🤝</span>
+            Brokers
+        </a>
+
+        <a href="maintenance.html"
+           class="nav-item"
+           data-page="maintenance.html">
+            <span>🛠️</span>
+            Maintenance
+        </a>
+
         <a href="tenants.html"
            class="nav-item"
            data-page="tenants.html">
@@ -46,6 +60,13 @@ document.addEventListener('DOMContentLoaded', function () {
            data-page="rent-collection.html">
             <span>₹</span>
             Rent Collection
+        </a>
+
+        <a href="rent-agreement.html"
+           class="nav-item"
+           data-page="rent-agreement.html">
+            <span>📄</span>
+            Rent Agreement
         </a>
 
         <a href="payments.html"
@@ -67,6 +88,13 @@ document.addEventListener('DOMContentLoaded', function () {
            data-page="reminders.html">
             <span>🔔</span>
             Reminders
+        </a>
+
+        <a href="access-role.html"
+           class="nav-item"
+           data-page="access-role.html">
+            <span>🔐</span>
+            Access Role
         </a>
 
         <a href="settings.html"
@@ -100,6 +128,10 @@ document.addEventListener('DOMContentLoaded', function () {
             item.classList.remove('active');
         }
     });
+
+    if (window.RentAuth && typeof window.RentAuth.applyNavigationVisibility === 'function') {
+        window.RentAuth.applyNavigationVisibility();
+    }
 
     // Dispatch event so mobile-menu.js can initialize
     try {

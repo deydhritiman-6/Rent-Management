@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brokers - Rent Management</title>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/sidebar.js" defer></script>
+    <script src="js/mobile-menu.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/brokers.js" defer></script>
+
+    <style>
+        .broker-page {
+            min-width: 0;
+        }
+
+        .broker-layout {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .broker-card {
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(148,163,184,0.16);
+            border-radius: 18px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+            padding: 22px;
+        }
+
+        .broker-card h2 {
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .broker-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .broker-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .broker-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .broker-field label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .broker-field input,
+        .broker-field select,
+        .broker-field textarea {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #d6deeb;
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: #fff;
+            color: #0f172a;
+            font: inherit;
+            outline: none;
+        }
+
+        .broker-field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .broker-field input:focus,
+        .broker-field select:focus,
+        .broker-field textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .broker-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .broker-btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .broker-btn.secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .broker-btn.primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .broker-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 920px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eef2f7;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .broker-status {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .broker-status.active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .broker-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .broker-status.inactive {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .broker-actions-cell {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .mini-btn {
+            border: 0;
+            border-radius: 7px;
+            padding: 7px 9px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .mini-btn.delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .mini-btn.view {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        @media (max-width: 900px) {
+            .broker-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .broker-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content broker-page">
+            <div class="topbar">
+                <div>
+                    <h1>Brokers</h1>
+                    <p>Track property brokers and referral partners</p>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-icon blue">🤝</div>
+                    <div>
+                        <span>Total Brokers</span>
+                        <strong id="totalBrokers">0</strong>
+                        <small>Registered agents</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon green">✓</div>
+                    <div>
+                        <span>Active</span>
+                        <strong id="activeBrokers">0</strong>
+                        <small>Currently active</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon purple">🏠</div>
+                    <div>
+                        <span>Properties Linked</span>
+                        <strong id="propertiesLinked">0</strong>
+                        <small>Listings managed</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon orange">₹</div>
+                    <div>
+                        <span>Commission Value</span>
+                        <strong id="commissionValue">₹0</strong>
+                        <small>Potential earnings</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="broker-layout">
+                <section class="broker-card">
+                    <h2>Add Broker</h2>
+
+                    <form id="brokerForm" class="broker-form">
+                        <div class="broker-field">
+                            <label for="brokerName">Broker Name</label>
+                            <input id="brokerName" type="text" placeholder="e.g. Arvind Mehta" required>
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="companyName">Agency / Company</label>
+                            <input id="companyName" type="text" placeholder="e.g. Urban Nest Realty">
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="brokerPhone">Phone</label>
+                            <input id="brokerPhone" type="tel" placeholder="+91 98765 43210">
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="brokerEmail">Email</label>
+                            <input id="brokerEmail" type="email" placeholder="broker@email.com">
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="propertyType">Property Type</label>
+                            <select id="propertyType">
+                                <option value="Residential">Residential</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Both">Both</option>
+                            </select>
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="region">Region / Area</label>
+                            <input id="region" type="text" placeholder="e.g. North City">
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="propertiesManaged">Properties Managed</label>
+                            <input id="propertiesManaged" type="number" min="0" value="1">
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="commissionRate">Commission Rate (%)</label>
+                            <input id="commissionRate" type="number" min="0" step="0.1" value="2">
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="status">Status</label>
+                            <select id="status">
+                                <option value="Active">Active</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="broker-field">
+                            <label for="rating">Rating</label>
+                            <input id="rating" type="number" min="1" max="5" step="0.1" value="4.5">
+                        </div>
+
+                        <div class="broker-field full">
+                            <label for="notes">Broker Notes</label>
+                            <textarea id="notes" placeholder="Add details about the broker relationship, referral network, and deal history"></textarea>
+                        </div>
+
+                        <div class="broker-field full">
+                            <div class="broker-actions">
+                                <button type="button" id="resetBrokerForm" class="broker-btn secondary">Clear</button>
+                                <button type="submit" class="broker-btn primary">Save Broker</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="broker-card">
+                    <h2>Broker Profile</h2>
+                    <div id="brokerOverview">
+                        <p class="empty-state" style="margin:0; padding:20px; color:#64748b;">No broker selected.</p>
+                    </div>
+                </section>
+            </div>
+
+            <section class="broker-card">
+                <h2>Broker Directory</h2>
+                <div class="broker-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Broker</th>
+                                <th>Agency</th>
+                                <th>Region</th>
+                                <th>Properties</th>
+                                <th>Commission</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="brokerTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

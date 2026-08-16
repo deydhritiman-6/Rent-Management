@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/responsive.css">
     <script src="js/sidebar.js" defer></script>
     <script src="js/mobile-menu.js" defer></script>
+    <script src="js/auth.js" defer></script>
     <script src="js/rent-agreement.js" defer></script>
 
     <style>
@@ -262,6 +263,21 @@
                         </div>
 
                         <div class="agreement-field">
+                            <label for="tenantPhone">Tenant Phone</label>
+                            <input type="tel" id="tenantPhone" placeholder="e.g. +91 98765 43210">
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="tenantEmail">Tenant Email</label>
+                            <input type="email" id="tenantEmail" placeholder="tenant@email.com">
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="tenantId">ID / Aadhaar / Passport</label>
+                            <input type="text" id="tenantId" placeholder="Document number">
+                        </div>
+
+                        <div class="agreement-field">
                             <label for="propertyName">Property</label>
                             <input type="text" id="propertyName" required>
                         </div>
@@ -279,6 +295,44 @@
                         <div class="agreement-field">
                             <label for="securityDeposit">Security Deposit (₹)</label>
                             <input type="number" id="securityDeposit" min="0" step="1" required>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="maintenanceCharges">Maintenance Charges (₹)</label>
+                            <input type="number" id="maintenanceCharges" min="0" step="1" value="0">
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="rentDueDay">Rent Due Day</label>
+                            <input type="number" id="rentDueDay" min="1" max="31" value="5">
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="noticePeriod">Notice Period (Months)</label>
+                            <input type="number" id="noticePeriod" min="0" max="12" value="1">
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="parkingIncluded">Parking</label>
+                            <select id="parkingIncluded">
+                                <option value="Included">Included</option>
+                                <option value="Not Included">Not Included</option>
+                                <option value="Paid Extra">Paid Extra</option>
+                            </select>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="petsAllowed">Pets Allowed</label>
+                            <select id="petsAllowed">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Conditional">Conditional</option>
+                            </select>
+                        </div>
+
+                        <div class="agreement-field">
+                            <label for="emergencyContact">Emergency Contact</label>
+                            <input type="text" id="emergencyContact" placeholder="Name and phone number">
                         </div>
 
                         <div class="agreement-field">
@@ -301,8 +355,8 @@
                         </div>
 
                         <div class="agreement-field full">
-                            <label for="terms">Agreement Terms / Notes</label>
-                            <textarea id="terms" placeholder="Example: Lease includes maintenance, notice period, pet policy, etc."></textarea>
+                            <label for="terms">Additional Terms / Notes</label>
+                            <textarea id="terms" placeholder="Example: House rules, maintenance responsibilities, visits, water bill sharing, lock-in, etc."></textarea>
                         </div>
 
                         <div class="agreement-field full">

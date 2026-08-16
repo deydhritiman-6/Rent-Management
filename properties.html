@@ -13,6 +13,7 @@
 
 <script src="js/sidebar.js" defer></script>
 <script src="js/mobile-menu.js" defer></script>
+<script src="js/auth.js" defer></script>
 
     <style>
         /* ===============================
@@ -234,11 +235,176 @@
             margin-bottom: 5px;
         }
 
-        .detail-item strong {
+.detail-item strong {
             font-size: 16px;
         }
 
+        .property-detail-sections {
+            display: grid;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .detail-section {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .detail-section-header {
+            background: #eef4ff;
+            color: #1e3a8a;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border-bottom: 1px solid #dbeafe;
+        }
+
+        .detail-section-body {
+            padding: 14px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .property-form .field-grid label,
+        .property-form .field-grid .input-wrap {
+            display: block;
+            width: 100%;
+        }
+
+        .property-form label {
+            display: block;
+            margin: 0 0 6px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .property-form input,
+        .property-form select,
+        .property-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border: 1px solid #d7dee8;
+            border-radius: 9px;
+            background: #fff;
+            color: #0f172a;
+            outline: none;
+        }
+
+        .property-form textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .property-form input:focus,
+        .property-form select:focus,
+        .property-form textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .property-form .subtext {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .radio-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .radio-inline label {
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            border: 1px solid #d7dee8;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        .facility-checklist {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .facility-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #d7dee8;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        .facility-item input {
+            width: 14px;
+            height: 14px;
+        }
+
+        .inventory-form {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .inventory-table th,
+        .inventory-table td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .mini-action {
+            border: 0;
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .mini-action.delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
         @media (max-width: 650px) {
+            .field-grid,
+            .facility-checklist,
+            .inventory-form {
+                grid-template-columns: 1fr;
+            }
 
             .details-grid {
                 grid-template-columns: 1fr;
@@ -408,11 +574,11 @@
                 <div>
 
                     <h2>
-                        Property List
+                        Residential Properties
                     </h2>
 
                     <p>
-                        All registered properties
+                        Homes and residential units
                     </p>
 
                 </div>
@@ -461,7 +627,76 @@
                     </thead>
 
 
-                    <tbody id="propertyTableBody">
+                    <tbody id="residentialPropertyTableBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="panel" style="margin-top: 20px;">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Commercial Properties
+                    </h2>
+
+                    <p>
+                        Offices, retail spaces, and commercial units
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Property
+                            </th>
+
+                            <th>
+                                Address
+                            </th>
+
+                            <th>
+                                Units
+                            </th>
+
+                            <th>
+                                Occupied
+                            </th>
+
+                            <th>
+                                Monthly Rent
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="commercialPropertyTableBody">
                     </tbody>
 
                 </table>
@@ -508,7 +743,6 @@
                     id="propertyName"
                     placeholder="Enter property name">
 
-
                 <label for="propertyAddress">
                     Address
                 </label>
@@ -540,6 +774,563 @@
                     min="0"
                     placeholder="Enter monthly rent">
 
+                <div class="property-detail-sections">
+                    <div class="detail-section">
+                        <div class="detail-section-header">Basic Information</div>
+                        <div class="detail-section-body">
+                            <div class="field-grid">
+                                <div>
+                                    <label for="propertyCode">Property Code / Property ID</label>
+                                    <input type="text" id="propertyCode" placeholder="e.g. PR-101">
+                                </div>
+                                <div>
+                                    <label for="propertyType">Property Type</label>
+                                    <select id="propertyType">
+                                        <option value="Apartment">Apartment</option>
+                                        <option value="Flat">Flat</option>
+                                        <option value="House">House</option>
+                                        <option value="Villa">Villa</option>
+                                        <option value="Office">Office</option>
+                                        <option value="Shop">Shop</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="areaLocality">Area / Locality</label>
+                                    <input type="text" id="areaLocality" placeholder="e.g. Salt Lake">
+                                </div>
+                                <div>
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" placeholder="e.g. Kolkata">
+                                </div>
+                                <div>
+                                    <label for="state">State</label>
+                                    <input type="text" id="state" placeholder="e.g. West Bengal">
+                                </div>
+                                <div>
+                                    <label for="pinCode">PIN Code</label>
+                                    <input type="text" id="pinCode" placeholder="e.g. 700091">
+                                </div>
+                                <div>
+                                    <label for="floor">Floor</label>
+                                    <input type="text" id="floor" placeholder="e.g. 3rd Floor">
+                                </div>
+                                <div>
+                                    <label for="totalFloors">Total Floors</label>
+                                    <input type="number" id="totalFloors" min="1" placeholder="e.g. 12">
+                                </div>
+                                <div>
+                                    <label for="builtUpArea">Built-up Area (sq ft)</label>
+                                    <input type="number" id="builtUpArea" min="0" placeholder="e.g. 1200">
+                                </div>
+                                <div>
+                                    <label for="carpetArea">Carpet Area (sq ft)</label>
+                                    <input type="number" id="carpetArea" min="0" placeholder="e.g. 950">
+                                </div>
+                                <div>
+                                    <label for="bedrooms">Number of Bedrooms</label>
+                                    <input type="number" id="bedrooms" min="0" placeholder="e.g. 2">
+                                </div>
+                                <div>
+                                    <label for="bathrooms">Number of Bathrooms</label>
+                                    <input type="number" id="bathrooms" min="0" placeholder="e.g. 2">
+                                </div>
+                                <div>
+                                    <label for="balconies">Number of Balconies</label>
+                                    <input type="number" id="balconies" min="0" placeholder="e.g. 1">
+                                </div>
+                                <div>
+                                    <label for="parkingAvailable">Parking Available</label>
+                                    <select id="parkingAvailable">
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="parkingType">Parking Type</label>
+                                    <select id="parkingType">
+                                        <option value="">Select</option>
+                                        <option value="Open">Open</option>
+                                        <option value="Covered">Covered</option>
+                                        <option value="Stilt">Stilt</option>
+                                        <option value="Basement">Basement</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="propertyStatus">Property Status</label>
+                                    <select id="propertyStatus">
+                                        <option value="Available">Available</option>
+                                        <option value="Occupied">Occupied</option>
+                                        <option value="Under Maintenance">Under Maintenance</option>
+                                        <option value="Reserved">Reserved</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="propertyCondition">Property Condition</label>
+                                    <select id="propertyCondition">
+                                        <option value="Good">Good</option>
+                                        <option value="Excellent">Excellent</option>
+                                        <option value="Average">Average</option>
+                                        <option value="Needs Repair">Needs Repair</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Property Description</div>
+                        <div class="detail-section-body">
+                            <div>
+                                <label for="propertyDescription">Property Description</label>
+                                <textarea id="propertyDescription" placeholder="Describe the location, rooms, lighting, ventilation, furnishing, nearby facilities, restrictions, and special features."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Furnishing Details</div>
+                        <div class="detail-section-body">
+                            <div>
+                                <label>Furnishing Status</label>
+                                <div class="radio-inline">
+                                    <label><input type="radio" name="furnishingStatus" value="Unfurnished"> Unfurnished</label>
+                                    <label><input type="radio" name="furnishingStatus" value="Semi-Furnished"> Semi-Furnished</label>
+                                    <label><input type="radio" name="furnishingStatus" value="Fully Furnished"> Fully Furnished</label>
+                                </div>
+                            </div>
+                            <div>
+                                <label>Facilities</label>
+                                <div id="facilityChecklist" class="facility-checklist"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Electrical Meter Details</div>
+                        <div class="detail-section-body">
+                            <div class="field-grid">
+                                <div>
+                                    <label>Electricity Connection Available</label>
+                                    <div class="radio-inline">
+                                        <label><input type="radio" name="electricityConnectionAvailable" value="Yes"> Yes</label>
+                                        <label><input type="radio" name="electricityConnectionAvailable" value="No"> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="meterType">Meter Type</label>
+                                    <select id="meterType">
+                                        <option value="">Select</option>
+                                        <option value="Individual">Individual</option>
+                                        <option value="Shared">Shared</option>
+                                        <option value="Prepaid">Prepaid</option>
+                                        <option value="Smart Meter">Smart Meter</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="meterNumber">Meter Number</label>
+                                    <input type="text" id="meterNumber" placeholder="e.g. 78540">
+                                </div>
+                                <div>
+                                    <label for="consumerNumber">Consumer Number</label>
+                                    <input type="text" id="consumerNumber" placeholder="e.g. 654321">
+                                </div>
+                                <div>
+                                    <label for="electricityProvider">Electricity Provider</label>
+                                    <input type="text" id="electricityProvider" placeholder="e.g. CESC">
+                                </div>
+                                <div>
+                                    <label for="sanctionedLoad">Sanctioned Load (kW)</label>
+                                    <input type="number" id="sanctionedLoad" min="0" step="0.1" placeholder="e.g. 3.5">
+                                </div>
+                                <div>
+                                    <label for="meterLocation">Meter Location</label>
+                                    <input type="text" id="meterLocation" placeholder="e.g. Common lobby">
+                                </div>
+                                <div>
+                                    <label for="previousMeterReading">Previous Meter Reading</label>
+                                    <input type="number" id="previousMeterReading" min="0" step="0.01" placeholder="e.g. 1260">
+                                </div>
+                                <div>
+                                    <label for="currentMeterReading">Current Meter Reading</label>
+                                    <input type="number" id="currentMeterReading" min="0" step="0.01" placeholder="e.g. 1380">
+                                </div>
+                                <div>
+                                    <label for="meterReadingDate">Meter Reading Date</label>
+                                    <input type="date" id="meterReadingDate">
+                                </div>
+                                <div>
+                                    <label for="electricityBillResponsibility">Electricity Bill Responsibility</label>
+                                    <select id="electricityBillResponsibility">
+                                        <option value="">Select</option>
+                                        <option value="Owner">Owner</option>
+                                        <option value="Tenant">Tenant</option>
+                                        <option value="Shared">Shared</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="electricityRemarks">Electricity Remarks</label>
+                                    <input type="text" id="electricityRemarks" placeholder="Optional remarks">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Water & Utility Details</div>
+                        <div class="detail-section-body">
+                            <div class="field-grid">
+                                <div>
+                                    <label>Water Connection</label>
+                                    <div class="radio-inline">
+                                        <label><input type="radio" name="waterConnectionAvailable" value="Yes"> Yes</label>
+                                        <label><input type="radio" name="waterConnectionAvailable" value="No"> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="waterSource">Water Source</label>
+                                    <select id="waterSource">
+                                        <option value="">Select</option>
+                                        <option value="Municipal">Municipal</option>
+                                        <option value="Borewell">Borewell</option>
+                                        <option value="Tanker">Tanker</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Water Meter Available</label>
+                                    <div class="radio-inline">
+                                        <label><input type="radio" name="waterMeterAvailable" value="Yes"> Yes</label>
+                                        <label><input type="radio" name="waterMeterAvailable" value="No"> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="waterMeterNumber">Water Meter Number</label>
+                                    <input type="text" id="waterMeterNumber" placeholder="e.g. WM-221">
+                                </div>
+                                <div>
+                                    <label for="waterBillResponsibility">Water Bill Responsibility</label>
+                                    <select id="waterBillResponsibility">
+                                        <option value="">Select</option>
+                                        <option value="Owner">Owner</option>
+                                        <option value="Tenant">Tenant</option>
+                                        <option value="Shared">Shared</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="waterRemarks">Water Remarks</label>
+                                    <input type="text" id="waterRemarks" placeholder="Optional remarks">
+                                </div>
+                                <div>
+                                    <label>Gas Connection</label>
+                                    <div class="radio-inline">
+                                        <label><input type="radio" name="gasConnectionAvailable" value="Yes"> Yes</label>
+                                        <label><input type="radio" name="gasConnectionAvailable" value="No"> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="gasType">Gas Type</label>
+                                    <select id="gasType">
+                                        <option value="">Select</option>
+                                        <option value="PNG">PNG</option>
+                                        <option value="LPG">LPG</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="gasMeterNumber">Gas Meter Number</label>
+                                    <input type="text" id="gasMeterNumber" placeholder="e.g. G-102">
+                                </div>
+                                <div>
+                                    <label for="gasBillResponsibility">Gas Bill Responsibility</label>
+                                    <select id="gasBillResponsibility">
+                                        <option value="">Select</option>
+                                        <option value="Owner">Owner</option>
+                                        <option value="Tenant">Tenant</option>
+                                        <option value="Shared">Shared</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Internet Available</label>
+                                    <div class="radio-inline">
+                                        <label><input type="radio" name="internetAvailable" value="Yes"> Yes</label>
+                                        <label><input type="radio" name="internetAvailable" value="No"> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="internetProvider">Internet Provider</label>
+                                    <input type="text" id="internetProvider" placeholder="e.g. ACT Fiber">
+                                </div>
+                                <div>
+                                    <label for="internetConnectionType">Connection Type</label>
+                                    <input type="text" id="internetConnectionType" placeholder="e.g. Fiber / Wi-Fi">
+                                </div>
+                                <div>
+                                    <label>Wi-Fi Available</label>
+                                    <div class="radio-inline">
+                                        <label><input type="radio" name="wifiAvailable" value="Yes"> Yes</label>
+                                        <label><input type="radio" name="wifiAvailable" value="No"> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="internetBillResponsibility">Internet Bill Responsibility</label>
+                                    <select id="internetBillResponsibility">
+                                        <option value="">Select</option>
+                                        <option value="Owner">Owner</option>
+                                        <option value="Tenant">Tenant</option>
+                                        <option value="Shared">Shared</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Property Facilities</div>
+                        <div class="detail-section-body">
+                            <div class="field-grid">
+                                <div>
+                                    <label>Balcony</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Balcony"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Terrace</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Terrace"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Garden</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Garden"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Lift</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Lift"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Parking</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Parking"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Security</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Security"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>CCTV</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="CCTV"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Power Backup</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Power Backup"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Generator</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Generator"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Fire Safety</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Fire Safety"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Intercom</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Intercom"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Video Door Phone</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Video Door Phone"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Swimming Pool</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Swimming Pool"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Gym</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Gym"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Club House</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Club House"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Children's Play Area</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Children's Play Area"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Visitor Parking</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="Visitor Parking"> Yes</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>24x7 Security</label>
+                                    <div class="radio-inline">
+                                        <label><input type="checkbox" class="feature-checkbox" value="24x7 Security"> Yes</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Maintenance Details</div>
+                        <div class="detail-section-body">
+                            <div class="field-grid">
+                                <div>
+                                    <label for="lastMaintenanceDate">Last Maintenance Date</label>
+                                    <input type="date" id="lastMaintenanceDate">
+                                </div>
+                                <div>
+                                    <label for="nextMaintenanceDate">Next Maintenance Date</label>
+                                    <input type="date" id="nextMaintenanceDate">
+                                </div>
+                                <div>
+                                    <label for="maintenanceStatus">Maintenance Status</label>
+                                    <select id="maintenanceStatus">
+                                        <option value="Good">Good</option>
+                                        <option value="Routine Maintenance Due">Routine Maintenance Due</option>
+                                        <option value="Under Maintenance">Under Maintenance</option>
+                                        <option value="Major Repair Required">Major Repair Required</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="maintenanceRemarks">Maintenance Remarks</label>
+                                    <input type="text" id="maintenanceRemarks" placeholder="Optional remarks">
+                                </div>
+                                <div>
+                                    <label for="lastInspectionDate">Last Inspection Date</label>
+                                    <input type="date" id="lastInspectionDate">
+                                </div>
+                                <div>
+                                    <label for="nextInspectionDate">Next Inspection Date</label>
+                                    <input type="date" id="nextInspectionDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Property Inventory / Assets</div>
+                        <div class="detail-section-body">
+                            <div class="inventory-form">
+                                <div>
+                                    <label for="inventoryCategory">Category</label>
+                                    <select id="inventoryCategory">
+                                        <option value="Furniture">Furniture</option>
+                                        <option value="Electrical">Electrical</option>
+                                        <option value="Appliance">Appliance</option>
+                                        <option value="Kitchen">Kitchen</option>
+                                        <option value="Bathroom">Bathroom</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="inventoryItemName">Item Name</label>
+                                    <input type="text" id="inventoryItemName" placeholder="e.g. Bed, Fan, AC">
+                                </div>
+                                <div>
+                                    <label for="inventoryQuantity">Quantity</label>
+                                    <input type="number" id="inventoryQuantity" min="1" value="1">
+                                </div>
+                                <div>
+                                    <label for="inventoryBrand">Brand</label>
+                                    <input type="text" id="inventoryBrand" placeholder="Optional">
+                                </div>
+                                <div>
+                                    <label for="inventoryModel">Model</label>
+                                    <input type="text" id="inventoryModel" placeholder="Optional">
+                                </div>
+                                <div>
+                                    <label for="inventorySerial">Serial Number</label>
+                                    <input type="text" id="inventorySerial" placeholder="Optional">
+                                </div>
+                                <div>
+                                    <label for="inventoryCondition">Condition</label>
+                                    <select id="inventoryCondition">
+                                        <option value="New">New</option>
+                                        <option value="Good">Good</option>
+                                        <option value="Fair">Fair</option>
+                                        <option value="Needs Repair">Needs Repair</option>
+                                        <option value="Damaged">Damaged</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="inventoryPurchaseDate">Purchase Date</label>
+                                    <input type="date" id="inventoryPurchaseDate">
+                                </div>
+                                <div>
+                                    <label for="inventoryWarrantyExpiry">Warranty Expiry</label>
+                                    <input type="date" id="inventoryWarrantyExpiry">
+                                </div>
+                                <div>
+                                    <label for="inventoryEstimatedValue">Estimated Value</label>
+                                    <input type="number" id="inventoryEstimatedValue" min="0" placeholder="e.g. 15000">
+                                </div>
+                                <div>
+                                    <label for="inventoryRemarks">Remarks</label>
+                                    <input type="text" id="inventoryRemarks" placeholder="Optional">
+                                </div>
+                                <div style="display:flex; align-items:flex-end;">
+                                    <button type="button" id="addInventoryItemBtn" class="save-btn" style="width:100%;">Add Item</button>
+                                </div>
+                            </div>
+                            <table class="inventory-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Item</th>
+                                        <th>Qty</th>
+                                        <th>Condition</th>
+                                        <th>Value</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="detail-section-header">Additional Remarks</div>
+                        <div class="detail-section-body">
+                            <div>
+                                <label for="additionalRemarks">Additional Remarks</label>
+                                <textarea id="additionalRemarks" placeholder="Add final notes or special instructions for the property."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-buttons">
 
@@ -623,33 +1414,47 @@ const defaultProperties = [
 
     {
         id: 1,
-        name: "Green View Apartments",
-        address: "Kolkata",
-        units: 12,
-        occupied: 10,
-        rent: 85000,
-        status: "Active"
-    },
+    type: "Residential",
+    name: "Green View Apartments",
+    address: "Kolkata",
+    units: 12,
+    occupied: 10,
+    rent: 85000,
+    status: "Active"
+},
 
-    {
-        id: 2,
-        name: "Lake Residency",
-        address: "New Town",
-        units: 8,
-        occupied: 7,
-        rent: 62000,
-        status: "Active"
-    },
+{
+    id: 2,
+    type: "Residential",
+    name: "Lake Residency",
+    address: "New Town",
+    units: 8,
+    occupied: 7,
+    rent: 62000,
+    status: "Active"
+},
 
-    {
-        id: 3,
-        name: "Royal Heights",
-        address: "Howrah",
-        units: 10,
-        occupied: 8,
-        rent: 58000,
-        status: "Active"
-    }
+{
+    id: 3,
+    type: "Commercial",
+    name: "Business Plaza",
+    address: "Salt Lake",
+    units: 6,
+    occupied: 5,
+    rent: 95000,
+    status: "Active"
+},
+
+{
+    id: 4,
+    type: "Commercial",
+    name: "City Mart Offices",
+    address: "Howrah",
+    units: 9,
+    occupied: 6,
+    rent: 71000,
+    status: "Active"
+}
 
 ];
 
@@ -694,65 +1499,6 @@ function loadProperties() {
 
 
 /* ==========================================
-   NORMALIZE PROPERTY
-========================================== */
-
-function normalizeProperty(property) {
-
-    const units =
-        Number(property.units) || 0;
-
-
-    let occupied =
-        Number(property.occupied);
-
-
-    if (
-        !Number.isFinite(occupied) ||
-        occupied < 0
-    ) {
-
-        occupied = 0;
-
-    }
-
-
-    occupied =
-        Math.min(
-            occupied,
-            units
-        );
-
-
-    return {
-
-        id:
-            Number(property.id),
-
-        name:
-            String(property.name || ""),
-
-        address:
-            String(property.address || ""),
-
-        units:
-            units,
-
-        occupied:
-            occupied,
-
-        rent:
-            Number(property.rent) || 0,
-
-        status:
-            property.status || "Active"
-
-    };
-
-}
-
-
-/* ==========================================
    SAVE TO LOCAL STORAGE
 ========================================== */
 
@@ -765,6 +1511,468 @@ function saveProperties() {
 
 }
 
+function createDefaultPropertyDetails() {
+   return {
+       propertyCode: "",
+       propertyType: "Apartment",
+       propertyDescription: "",
+       areaLocality: "",
+       city: "",
+       state: "",
+       pinCode: "",
+       floor: "",
+       totalFloors: "",
+       builtUpArea: "",
+       carpetArea: "",
+       bedrooms: "",
+       bathrooms: "",
+       balconies: "",
+       parkingAvailable: "No",
+       parkingType: "",
+       propertyStatus: "Available",
+       propertyCondition: "Good",
+       furnishingStatus: "Unfurnished",
+       electrical: {
+           connectionAvailable: "No",
+           meterType: "",
+           meterNumber: "",
+           consumerNumber: "",
+           provider: "",
+           sanctionedLoad: "",
+           meterLocation: "",
+           previousReading: "",
+           currentReading: "",
+           readingDate: "",
+           billResponsibility: "",
+           remarks: ""
+       },
+       water: {
+           connectionAvailable: "No",
+           source: "",
+           meterAvailable: "No",
+           meterNumber: "",
+           billResponsibility: "",
+           remarks: ""
+       },
+       gas: {
+           connectionAvailable: "No",
+           type: "",
+           meterNumber: "",
+           billResponsibility: ""
+       },
+       internet: {
+           available: "No",
+           provider: "",
+           connectionType: "",
+           wifiAvailable: "No",
+           billResponsibility: ""
+       },
+       facilities: [],
+       inventory: [],
+       maintenance: {
+           lastMaintenanceDate: "",
+           nextMaintenanceDate: "",
+           status: "Good",
+           remarks: "",
+           lastInspectionDate: "",
+           nextInspectionDate: ""
+       },
+       additionalRemarks: ""
+   };
+}
+
+function normalizePropertyDetails(details) {
+   const base = createDefaultPropertyDetails();
+   const source = details && typeof details === "object" ? details : {};
+
+   function applyNested(target, incoming) {
+       if (!incoming || typeof incoming !== "object") return target;
+       Object.keys(target).forEach(function (key) {
+           if (incoming[key] !== undefined && incoming[key] !== null) {
+               if (typeof target[key] === "object" && !Array.isArray(target[key]) && typeof incoming[key] === "object") {
+                   target[key] = Object.assign({}, target[key], incoming[key]);
+               } else {
+                   target[key] = incoming[key];
+               }
+           }
+       });
+       return target;
+   }
+
+   const normalized = applyNested(base, source);
+   normalized.facilities = Array.isArray(source.facilities) ? source.facilities.map(function (facility) {
+       return {
+           category: facility.category || "General",
+           name: facility.name || "",
+           available: Boolean(facility.available),
+           quantity: Number(facility.quantity) || 0,
+           condition: facility.condition || "Good",
+           brand: facility.brand || "",
+           model: facility.model || "",
+           serialNumber: facility.serialNumber || "",
+           remarks: facility.remarks || ""
+       };
+   }) : [];
+
+   normalized.inventory = Array.isArray(source.inventory) ? source.inventory.map(function (item) {
+       return {
+           category: item.category || "Furniture",
+           name: item.name || "",
+           quantity: Number(item.quantity) || 1,
+           brand: item.brand || "",
+           model: item.model || "",
+           serialNumber: item.serialNumber || "",
+           condition: item.condition || "Good",
+           purchaseDate: item.purchaseDate || "",
+           warrantyExpiry: item.warrantyExpiry || "",
+           estimatedValue: Number(item.estimatedValue) || 0,
+           remarks: item.remarks || ""
+       };
+   }) : [];
+
+   if (!normalized.maintenance || typeof normalized.maintenance !== "object") {
+       normalized.maintenance = base.maintenance;
+   }
+
+   return normalized;
+}
+
+function setRadioGroupValue(name, value) {
+   const radios = document.querySelectorAll('input[name="' + name + '"]');
+   radios.forEach(function (radio) {
+       radio.checked = String(radio.value) === String(value);
+   });
+}
+
+function setCheckboxValue(selector, value) {
+   const input = document.querySelector(selector);
+   if (input) {
+       input.checked = !!value;
+   }
+}
+
+function getFacilityChecklistMap() {
+   const map = {};
+   const facilityList = document.querySelectorAll('#facilityChecklist .facility-item input[type="checkbox"]');
+   facilityList.forEach(function (checkbox) {
+       map[checkbox.value] = checkbox.checked;
+   });
+   return map;
+}
+
+function renderFacilityChecklist() {
+   const checklist = document.getElementById('facilityChecklist');
+   if (!checklist) return;
+
+   const status = document.querySelector('input[name="furnishingStatus"]:checked');
+   const selectedStatus = status ? status.value : 'Unfurnished';
+   const existingMap = {};
+   const existingFacilities = currentPropertyDetails && Array.isArray(currentPropertyDetails.facilities) ? currentPropertyDetails.facilities : [];
+   existingFacilities.forEach(function (facility) {
+       if (facility && facility.name) {
+           existingMap[facility.name] = true;
+       }
+   });
+
+   const facilitySets = {
+       'Unfurnished': [
+           'Electrical Light', 'Ceiling Fan', 'Exhaust Fan', 'Electrical Switches', 'Electrical Sockets', 'Tube Light / LED Light',
+           'Main Electrical Connection', 'Water Connection', 'Gas Connection', 'Internet Connection', 'TV Connection',
+           'AC Point', 'Geyser Point', 'Washing Machine Point', 'Refrigerator Point'
+       ],
+       'Semi-Furnished': [
+           'Bed', 'Mattress', 'Wardrobe', 'Dressing Table', 'Sofa', 'Sofa Set', 'Dining Table', 'Dining Chairs', 'Study Table', 'Study Chair',
+           'Shoe Rack', 'TV Unit', 'Centre Table', 'Side Table', 'Curtains', 'Blinds', 'Ceiling Fan', 'Exhaust Fan', 'LED Light',
+           'Tube Light', 'Wall Light', 'Decorative Light', 'Geyser', 'Air Conditioner', 'AC Remote', 'Water Purifier', 'Door Bell', 'Intercom',
+           'Modular Kitchen', 'Kitchen Cabinets', 'Chimney', 'Sink', 'Gas Pipeline', 'Gas Stove', 'Refrigerator', 'Microwave', 'RO / Water Purifier', 'Electric Hob'
+       ],
+       'Fully Furnished': [
+           'Bed', 'Mattress', 'Pillow', 'Bedside Table', 'Wardrobe', 'Dressing Table', 'Mirror', 'Curtains', 'AC', 'Ceiling Fan', 'Lights',
+           'Sofa', 'Sofa Set', 'Centre Table', 'TV Unit', 'Television', 'Decorative Lights', 'Dining Table', 'Dining Chairs', 'Crockery Unit',
+           'Modular Kitchen', 'Kitchen Cabinets', 'Chimney', 'Gas Stove', 'Refrigerator', 'Microwave', 'Electric Hob', 'Water Purifier', 'Sink',
+           'Exhaust Fan', 'Utensils', 'Crockery', 'Geyser', 'Shower', 'Shower Enclosure', 'Wash Basin', 'Bathroom Cabinet', 'Western Toilet', 'Health Faucet',
+           'Washing Machine', 'Wi-Fi', 'Internet Connection', 'Intercom', 'Video Door Phone', 'CCTV', 'Security System', 'Power Backup', 'Generator',
+           'Lift', 'Parking', 'Security Guard', 'Club House', 'Swimming Pool', 'Gym', 'Children\'s Play Area', 'Garden', 'Terrace', 'Balcony'
+       ]
+   };
+
+   const selectedSet = facilitySets[selectedStatus] || facilitySets.Unfurnished;
+
+   checklist.innerHTML = selectedSet.map(function (facilityName) {
+       const checked = existingMap[facilityName] || false;
+       return '<label class="facility-item"><input type="checkbox" value="' + facilityName + '" ' + (checked ? 'checked' : '') + '> ' + facilityName + '</label>';
+   }).join('');
+}
+
+function clearInventoryForm() {
+   document.getElementById('inventoryCategory').value = 'Furniture';
+   document.getElementById('inventoryItemName').value = '';
+   document.getElementById('inventoryQuantity').value = '1';
+   document.getElementById('inventoryBrand').value = '';
+   document.getElementById('inventoryModel').value = '';
+   document.getElementById('inventorySerial').value = '';
+   document.getElementById('inventoryCondition').value = 'Good';
+   document.getElementById('inventoryPurchaseDate').value = '';
+   document.getElementById('inventoryWarrantyExpiry').value = '';
+   document.getElementById('inventoryEstimatedValue').value = '';
+   document.getElementById('inventoryRemarks').value = '';
+   currentInventoryEditIndex = null;
+   const addButton = document.getElementById('addInventoryItemBtn');
+   if (addButton) {
+       addButton.textContent = 'Add Item';
+   }
+}
+
+let currentPropertyDetails = null;
+let currentInventoryEditIndex = null;
+
+function renderInventoryTable() {
+   const tableBody = document.getElementById('inventoryTableBody');
+   if (!tableBody) return;
+
+   const list = currentPropertyDetails && Array.isArray(currentPropertyDetails.inventory) ? currentPropertyDetails.inventory : [];
+   if (!list.length) {
+       tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">No inventory items added.</td></tr>';
+       return;
+   }
+
+   tableBody.innerHTML = list.map(function (item, index) {
+       return '<tr>' +
+           '<td>' + (item.category || 'Other') + '</td>' +
+           '<td>' + (item.name || '-') + '</td>' +
+           '<td>' + (Number(item.quantity) || 0) + '</td>' +
+           '<td>' + (item.condition || 'Good') + '</td>' +
+           '<td>' + (Number(item.estimatedValue) ? '₹' + Number(item.estimatedValue).toLocaleString('en-IN') : '—') + '</td>' +
+           '<td><button type="button" class="mini-action" data-inventory-action="edit" data-index="' + index + '">Edit</button> <button type="button" class="mini-action delete" data-inventory-action="delete" data-index="' + index + '">Delete</button></td>' +
+           '</tr>';
+   }).join('');
+}
+
+function addInventoryItem() {
+   if (!currentPropertyDetails) {
+       currentPropertyDetails = createDefaultPropertyDetails();
+   }
+   if (!Array.isArray(currentPropertyDetails.inventory)) {
+       currentPropertyDetails.inventory = [];
+   }
+
+   const item = {
+       category: document.getElementById('inventoryCategory').value || 'Furniture',
+       name: document.getElementById('inventoryItemName').value.trim(),
+       quantity: Number(document.getElementById('inventoryQuantity').value) || 1,
+       brand: document.getElementById('inventoryBrand').value.trim(),
+       model: document.getElementById('inventoryModel').value.trim(),
+       serialNumber: document.getElementById('inventorySerial').value.trim(),
+       condition: document.getElementById('inventoryCondition').value || 'Good',
+       purchaseDate: document.getElementById('inventoryPurchaseDate').value,
+       warrantyExpiry: document.getElementById('inventoryWarrantyExpiry').value,
+       estimatedValue: Number(document.getElementById('inventoryEstimatedValue').value) || 0,
+       remarks: document.getElementById('inventoryRemarks').value.trim()
+   };
+
+   if (!item.name) {
+       alert('Please enter an inventory item name.');
+       return;
+   }
+
+   if (currentInventoryEditIndex !== null && currentInventoryEditIndex >= 0) {
+       currentPropertyDetails.inventory[currentInventoryEditIndex] = item;
+   } else {
+       currentPropertyDetails.inventory.push(item);
+   }
+
+   renderInventoryTable();
+   clearInventoryForm();
+}
+
+function buildPropertyDetailsFromForm() {
+   const details = createDefaultPropertyDetails();
+   details.propertyCode = document.getElementById('propertyCode').value.trim();
+   details.propertyType = document.getElementById('propertyType').value || 'Apartment';
+   details.propertyDescription = document.getElementById('propertyDescription').value.trim();
+   details.areaLocality = document.getElementById('areaLocality').value.trim();
+   details.city = document.getElementById('city').value.trim();
+   details.state = document.getElementById('state').value.trim();
+   details.pinCode = document.getElementById('pinCode').value.trim();
+   details.floor = document.getElementById('floor').value.trim();
+   details.totalFloors = document.getElementById('totalFloors').value.trim();
+   details.builtUpArea = document.getElementById('builtUpArea').value.trim();
+   details.carpetArea = document.getElementById('carpetArea').value.trim();
+   details.bedrooms = document.getElementById('bedrooms').value.trim();
+   details.bathrooms = document.getElementById('bathrooms').value.trim();
+   details.balconies = document.getElementById('balconies').value.trim();
+   details.parkingAvailable = document.getElementById('parkingAvailable').value || 'No';
+   details.parkingType = document.getElementById('parkingType').value || '';
+   details.propertyStatus = document.getElementById('propertyStatus').value || 'Available';
+   details.propertyCondition = document.getElementById('propertyCondition').value || 'Good';
+   details.furnishingStatus = document.querySelector('input[name="furnishingStatus"]:checked') ? document.querySelector('input[name="furnishingStatus"]:checked').value : 'Unfurnished';
+
+   details.electrical.connectionAvailable = document.querySelector('input[name="electricityConnectionAvailable"]:checked') ? document.querySelector('input[name="electricityConnectionAvailable"]:checked').value : 'No';
+   details.electrical.meterType = document.getElementById('meterType').value || '';
+   details.electrical.meterNumber = document.getElementById('meterNumber').value.trim();
+   details.electrical.consumerNumber = document.getElementById('consumerNumber').value.trim();
+   details.electrical.provider = document.getElementById('electricityProvider').value.trim();
+   details.electrical.sanctionedLoad = document.getElementById('sanctionedLoad').value.trim();
+   details.electrical.meterLocation = document.getElementById('meterLocation').value.trim();
+   details.electrical.previousReading = document.getElementById('previousMeterReading').value.trim();
+   details.electrical.currentReading = document.getElementById('currentMeterReading').value.trim();
+   details.electrical.readingDate = document.getElementById('meterReadingDate').value;
+   details.electrical.billResponsibility = document.getElementById('electricityBillResponsibility').value || '';
+   details.electrical.remarks = document.getElementById('electricityRemarks').value.trim();
+
+   details.water.connectionAvailable = document.querySelector('input[name="waterConnectionAvailable"]:checked') ? document.querySelector('input[name="waterConnectionAvailable"]:checked').value : 'No';
+   details.water.source = document.getElementById('waterSource').value || '';
+   details.water.meterAvailable = document.querySelector('input[name="waterMeterAvailable"]:checked') ? document.querySelector('input[name="waterMeterAvailable"]:checked').value : 'No';
+   details.water.meterNumber = document.getElementById('waterMeterNumber').value.trim();
+   details.water.billResponsibility = document.getElementById('waterBillResponsibility').value || '';
+   details.water.remarks = document.getElementById('waterRemarks').value.trim();
+
+   details.gas.connectionAvailable = document.querySelector('input[name="gasConnectionAvailable"]:checked') ? document.querySelector('input[name="gasConnectionAvailable"]:checked').value : 'No';
+   details.gas.type = document.getElementById('gasType').value || '';
+   details.gas.meterNumber = document.getElementById('gasMeterNumber').value.trim();
+   details.gas.billResponsibility = document.getElementById('gasBillResponsibility').value || '';
+
+   details.internet.available = document.querySelector('input[name="internetAvailable"]:checked') ? document.querySelector('input[name="internetAvailable"]:checked').value : 'No';
+   details.internet.provider = document.getElementById('internetProvider').value.trim();
+   details.internet.connectionType = document.getElementById('internetConnectionType').value.trim();
+   details.internet.wifiAvailable = document.querySelector('input[name="wifiAvailable"]:checked') ? document.querySelector('input[name="wifiAvailable"]:checked').value : 'No';
+   details.internet.billResponsibility = document.getElementById('internetBillResponsibility').value || '';
+
+   const facilityList = getFacilityChecklistMap();
+   const facilities = [];
+   Object.keys(facilityList).forEach(function (name) {
+       if (facilityList[name]) {
+           facilities.push({
+               category: details.furnishingStatus,
+               name: name,
+               available: true,
+               quantity: 1,
+               condition: 'Good',
+               brand: '',
+               model: '',
+               serialNumber: '',
+               remarks: ''
+           });
+       }
+   });
+   details.facilities = facilities;
+
+   details.inventory = currentPropertyDetails && Array.isArray(currentPropertyDetails.inventory) ? currentPropertyDetails.inventory.slice() : [];
+   details.maintenance.lastMaintenanceDate = document.getElementById('lastMaintenanceDate').value;
+   details.maintenance.nextMaintenanceDate = document.getElementById('nextMaintenanceDate').value;
+   details.maintenance.status = document.getElementById('maintenanceStatus').value || 'Good';
+   details.maintenance.remarks = document.getElementById('maintenanceRemarks').value.trim();
+   details.maintenance.lastInspectionDate = document.getElementById('lastInspectionDate').value;
+   details.maintenance.nextInspectionDate = document.getElementById('nextInspectionDate').value;
+   details.additionalRemarks = document.getElementById('additionalRemarks').value.trim();
+
+   return normalizePropertyDetails(details);
+}
+
+function applyPropertyDetailsToForm(details) {
+   const normalized = normalizePropertyDetails(details || {});
+   currentPropertyDetails = normalized;
+
+   document.getElementById('propertyCode').value = normalized.propertyCode || '';
+   document.getElementById('propertyType').value = normalized.propertyType || 'Apartment';
+   document.getElementById('propertyDescription').value = normalized.propertyDescription || '';
+   document.getElementById('areaLocality').value = normalized.areaLocality || '';
+   document.getElementById('city').value = normalized.city || '';
+   document.getElementById('state').value = normalized.state || '';
+   document.getElementById('pinCode').value = normalized.pinCode || '';
+   document.getElementById('floor').value = normalized.floor || '';
+   document.getElementById('totalFloors').value = normalized.totalFloors || '';
+   document.getElementById('builtUpArea').value = normalized.builtUpArea || '';
+   document.getElementById('carpetArea').value = normalized.carpetArea || '';
+   document.getElementById('bedrooms').value = normalized.bedrooms || '';
+   document.getElementById('bathrooms').value = normalized.bathrooms || '';
+   document.getElementById('balconies').value = normalized.balconies || '';
+   document.getElementById('parkingAvailable').value = normalized.parkingAvailable || 'No';
+   document.getElementById('parkingType').value = normalized.parkingType || '';
+   document.getElementById('propertyStatus').value = normalized.propertyStatus || 'Available';
+   document.getElementById('propertyCondition').value = normalized.propertyCondition || 'Good';
+
+   setRadioGroupValue('furnishingStatus', normalized.furnishingStatus || 'Unfurnished');
+   renderFacilityChecklist();
+
+   setRadioGroupValue('electricityConnectionAvailable', normalized.electrical.connectionAvailable || 'No');
+   document.getElementById('meterType').value = normalized.electrical.meterType || '';
+   document.getElementById('meterNumber').value = normalized.electrical.meterNumber || '';
+   document.getElementById('consumerNumber').value = normalized.electrical.consumerNumber || '';
+   document.getElementById('electricityProvider').value = normalized.electrical.provider || '';
+   document.getElementById('sanctionedLoad').value = normalized.electrical.sanctionedLoad || '';
+   document.getElementById('meterLocation').value = normalized.electrical.meterLocation || '';
+   document.getElementById('previousMeterReading').value = normalized.electrical.previousReading || '';
+   document.getElementById('currentMeterReading').value = normalized.electrical.currentReading || '';
+   document.getElementById('meterReadingDate').value = normalized.electrical.readingDate || '';
+   document.getElementById('electricityBillResponsibility').value = normalized.electrical.billResponsibility || '';
+   document.getElementById('electricityRemarks').value = normalized.electrical.remarks || '';
+
+   setRadioGroupValue('waterConnectionAvailable', normalized.water.connectionAvailable || 'No');
+   document.getElementById('waterSource').value = normalized.water.source || '';
+   setRadioGroupValue('waterMeterAvailable', normalized.water.meterAvailable || 'No');
+   document.getElementById('waterMeterNumber').value = normalized.water.meterNumber || '';
+   document.getElementById('waterBillResponsibility').value = normalized.water.billResponsibility || '';
+   document.getElementById('waterRemarks').value = normalized.water.remarks || '';
+
+   setRadioGroupValue('gasConnectionAvailable', normalized.gas.connectionAvailable || 'No');
+   document.getElementById('gasType').value = normalized.gas.type || '';
+   document.getElementById('gasMeterNumber').value = normalized.gas.meterNumber || '';
+   document.getElementById('gasBillResponsibility').value = normalized.gas.billResponsibility || '';
+
+   setRadioGroupValue('internetAvailable', normalized.internet.available || 'No');
+   document.getElementById('internetProvider').value = normalized.internet.provider || '';
+   document.getElementById('internetConnectionType').value = normalized.internet.connectionType || '';
+   setRadioGroupValue('wifiAvailable', normalized.internet.wifiAvailable || 'No');
+   document.getElementById('internetBillResponsibility').value = normalized.internet.billResponsibility || '';
+
+   var featureCheck = document.querySelectorAll('.feature-checkbox');
+   featureCheck.forEach(function (item) {
+       item.checked = false;
+   });
+   const featureMap = {};
+   (normalized.facilities || []).forEach(function (entry) {
+       if (entry && entry.name) {
+           featureMap[entry.name] = true;
+       }
+   });
+   featureCheck.forEach(function (item) {
+       item.checked = Boolean(featureMap[item.value]);
+   });
+
+   document.getElementById('lastMaintenanceDate').value = normalized.maintenance.lastMaintenanceDate || '';
+   document.getElementById('nextMaintenanceDate').value = normalized.maintenance.nextMaintenanceDate || '';
+   document.getElementById('maintenanceStatus').value = normalized.maintenance.status || 'Good';
+   document.getElementById('maintenanceRemarks').value = normalized.maintenance.remarks || '';
+   document.getElementById('lastInspectionDate').value = normalized.maintenance.lastInspectionDate || '';
+   document.getElementById('nextInspectionDate').value = normalized.maintenance.nextInspectionDate || '';
+   document.getElementById('additionalRemarks').value = normalized.additionalRemarks || '';
+
+   renderInventoryTable();
+}
+
+function normalizeProperty(property) {
+   const units = Number(property.units) || 0;
+   let occupied = Number(property.occupied);
+
+   if (!Number.isFinite(occupied) || occupied < 0) {
+       occupied = 0;
+   }
+
+   occupied = Math.min(occupied, units);
+
+   return {
+       id: Number(property.id),
+       type: String(property.type || "Residential"),
+       name: String(property.name || ""),
+       address: String(property.address || ""),
+       units: units,
+       occupied: occupied,
+       rent: Number(property.rent) || 0,
+       status: property.status || "Active",
+       propertyDetails: normalizePropertyDetails(property.propertyDetails || {})
+   };
+}
 
 /* ==========================================
    OPEN PROPERTY FORM
@@ -791,59 +1999,22 @@ function openPropertyForm(property = null) {
 
 
     if (property) {
-
-        editingPropertyId =
-            property.id;
-
-
-        title.textContent =
-            "Edit Property";
-
-
-        saveButton.textContent =
-            "Update Property";
-
-
-        document.getElementById(
-            "propertyName"
-        ).value =
-            property.name;
-
-
-        document.getElementById(
-            "propertyAddress"
-        ).value =
-            property.address;
-
-
-        document.getElementById(
-            "propertyUnits"
-        ).value =
-            property.units;
-
-
-        document.getElementById(
-            "propertyRent"
-        ).value =
-            property.rent;
-
-
+        editingPropertyId = property.id;
+        title.textContent = "Edit Property";
+        saveButton.textContent = "Update Property";
+        document.getElementById("propertyName").value = property.name || "";
+        document.getElementById("propertyAddress").value = property.address || "";
+        document.getElementById("propertyUnits").value = property.units || "";
+        document.getElementById("propertyRent").value = property.rent || "";
+        currentPropertyDetails = normalizePropertyDetails(property.propertyDetails || {});
+        applyPropertyDetailsToForm(currentPropertyDetails);
+        const propertyTypeValue = currentPropertyDetails.propertyType || (property.type === "Commercial" ? "Office" : "Apartment");
+        document.getElementById("propertyType").value = propertyTypeValue;
     } else {
-
-        editingPropertyId =
-            null;
-
-
-        title.textContent =
-            "Add New Property";
-
-
-        saveButton.textContent =
-            "Save Property";
-
-
+        editingPropertyId = null;
+        title.textContent = "Add New Property";
+        saveButton.textContent = "Save Property";
         clearForm();
-
     }
 
 
@@ -891,183 +2062,140 @@ function closePropertyForm() {
 ========================================== */
 
 function clearForm() {
-
-    document.getElementById(
-        "propertyName"
-    ).value = "";
-
-
-    document.getElementById(
-        "propertyAddress"
-    ).value = "";
-
-
-    document.getElementById(
-        "propertyUnits"
-    ).value = "";
-
-
-    document.getElementById(
-        "propertyRent"
-    ).value = "";
-
+   document.getElementById("propertyName").value = "";
+   document.getElementById("propertyAddress").value = "";
+   document.getElementById("propertyUnits").value = "";
+   document.getElementById("propertyRent").value = "";
+   document.getElementById("propertyCode").value = "";
+   document.getElementById("propertyType").value = "Apartment";
+   document.getElementById("propertyDescription").value = "";
+   document.getElementById("areaLocality").value = "";
+   document.getElementById("city").value = "";
+   document.getElementById("state").value = "";
+   document.getElementById("pinCode").value = "";
+   document.getElementById("floor").value = "";
+   document.getElementById("totalFloors").value = "";
+   document.getElementById("builtUpArea").value = "";
+   document.getElementById("carpetArea").value = "";
+   document.getElementById("bedrooms").value = "";
+   document.getElementById("bathrooms").value = "";
+   document.getElementById("balconies").value = "";
+   document.getElementById("parkingAvailable").value = "No";
+   document.getElementById("parkingType").value = "";
+   document.getElementById("propertyStatus").value = "Available";
+   document.getElementById("propertyCondition").value = "Good";
+   setRadioGroupValue('furnishingStatus', 'Unfurnished');
+   renderFacilityChecklist();
+   setRadioGroupValue('electricityConnectionAvailable', 'No');
+   document.getElementById('meterType').value = '';
+   document.getElementById('meterNumber').value = '';
+   document.getElementById('consumerNumber').value = '';
+   document.getElementById('electricityProvider').value = '';
+   document.getElementById('sanctionedLoad').value = '';
+   document.getElementById('meterLocation').value = '';
+   document.getElementById('previousMeterReading').value = '';
+   document.getElementById('currentMeterReading').value = '';
+   document.getElementById('meterReadingDate').value = '';
+   document.getElementById('electricityBillResponsibility').value = '';
+   document.getElementById('electricityRemarks').value = '';
+   setRadioGroupValue('waterConnectionAvailable', 'No');
+   document.getElementById('waterSource').value = '';
+   setRadioGroupValue('waterMeterAvailable', 'No');
+   document.getElementById('waterMeterNumber').value = '';
+   document.getElementById('waterBillResponsibility').value = '';
+   document.getElementById('waterRemarks').value = '';
+   setRadioGroupValue('gasConnectionAvailable', 'No');
+   document.getElementById('gasType').value = '';
+   document.getElementById('gasMeterNumber').value = '';
+   document.getElementById('gasBillResponsibility').value = '';
+   setRadioGroupValue('internetAvailable', 'No');
+   document.getElementById('internetProvider').value = '';
+   document.getElementById('internetConnectionType').value = '';
+   setRadioGroupValue('wifiAvailable', 'No');
+   document.getElementById('internetBillResponsibility').value = '';
+   const featureCheck = document.querySelectorAll('.feature-checkbox');
+   featureCheck.forEach(function (item) {
+       item.checked = false;
+   });
+   document.getElementById('lastMaintenanceDate').value = '';
+   document.getElementById('nextMaintenanceDate').value = '';
+   document.getElementById('maintenanceStatus').value = 'Good';
+   document.getElementById('maintenanceRemarks').value = '';
+   document.getElementById('lastInspectionDate').value = '';
+   document.getElementById('nextInspectionDate').value = '';
+   document.getElementById('additionalRemarks').value = '';
+   currentPropertyDetails = createDefaultPropertyDetails();
+   currentInventoryEditIndex = null;
+   clearInventoryForm();
+   renderInventoryTable();
 }
-
 
 /* ==========================================
    SAVE / UPDATE PROPERTY
 ========================================== */
 
 function saveProperty() {
+   const name = document.getElementById("propertyName").value.trim();
+   const address = document.getElementById("propertyAddress").value.trim();
+   const units = Number(document.getElementById("propertyUnits").value);
+   const rent = Number(document.getElementById("propertyRent").value);
+   const details = buildPropertyDetailsFromForm();
+   const typeSelect = document.getElementById("propertyType");
+   const typeBase = typeSelect ? (typeSelect.value || 'Apartment') : 'Apartment';
+   const type = ["Office", "Shop", "Warehouse", "Other"].indexOf(typeBase) !== -1 ? "Commercial" : "Residential";
 
-    const name =
-        document.getElementById(
-            "propertyName"
-        ).value.trim();
+   if (!name || !address || !units || units < 1 || rent < 0) {
+       alert("Please fill in all property details correctly.");
+       return;
+   }
 
+   if (!details.propertyStatus || !details.furnishingStatus || !typeBase) {
+       alert("Please complete the required property fields.");
+       return;
+   }
 
-    const address =
-        document.getElementById(
-            "propertyAddress"
-        ).value.trim();
+   if (editingPropertyId !== null) {
+       const property = properties.find(function (p) {
+           return p.id === editingPropertyId;
+       });
 
+       if (!property) {
+           return;
+       }
 
-    const units =
-        Number(
-            document.getElementById(
-                "propertyUnits"
-            ).value
-        );
+       property.name = name;
+       property.type = type;
+       property.address = address;
+       property.units = units;
+       property.rent = rent;
+       property.status = details.propertyStatus || property.status || "Available";
+       property.occupied = Math.min(Number(property.occupied) || 0, units);
+       property.propertyDetails = details;
 
+       saveProperties();
+       renderProperties();
+       closePropertyForm();
+       alert("Property updated successfully!");
+       return;
+   }
 
-    const rent =
-        Number(
-            document.getElementById(
-                "propertyRent"
-            ).value
-        );
+   const newProperty = {
+       id: Date.now(),
+       type: type,
+       name: name,
+       address: address,
+       units: units,
+       occupied: 0,
+       rent: rent,
+       status: details.propertyStatus || "Available",
+       propertyDetails: details
+   };
 
-
-    if (
-        !name ||
-        !address ||
-        !units ||
-        units < 1 ||
-        rent < 0
-    ) {
-
-        alert(
-            "Please fill in all property details correctly."
-        );
-
-        return;
-
-    }
-
-
-    /* EDIT EXISTING PROPERTY */
-
-    if (
-        editingPropertyId !== null
-    ) {
-
-        const property =
-            properties.find(
-                p =>
-                    p.id ===
-                    editingPropertyId
-            );
-
-
-        if (!property) {
-            return;
-        }
-
-
-        property.name =
-            name;
-
-
-        property.address =
-            address;
-
-
-        property.units =
-            units;
-
-
-        property.rent =
-            rent;
-
-
-        property.occupied =
-            Math.min(
-                property.occupied,
-                units
-            );
-
-
-        saveProperties();
-
-        renderProperties();
-
-        closePropertyForm();
-
-
-        alert(
-            "Property updated successfully!"
-        );
-
-
-        return;
-
-    }
-
-
-    /* ADD NEW PROPERTY */
-
-    const newProperty = {
-
-        id:
-            Date.now(),
-
-        name:
-            name,
-
-        address:
-            address,
-
-        units:
-            units,
-
-        occupied:
-            0,
-
-        rent:
-            rent,
-
-        status:
-            "Active"
-
-    };
-
-
-    properties.push(
-        newProperty
-    );
-
-
-    saveProperties();
-
-    renderProperties();
-
-    closePropertyForm();
-
-
-    alert(
-        "Property added successfully!"
-    );
-
+   properties.push(newProperty);
+   saveProperties();
+   renderProperties();
+   closePropertyForm();
+   alert("Property added successfully!");
 }
 
 
@@ -1077,99 +2205,79 @@ function saveProperty() {
 
 function renderProperties() {
 
-    const tbody =
-        document.getElementById(
-            "propertyTableBody"
-        );
-
-
-    tbody.innerHTML = "";
-
-
-    properties.forEach(
-        function(property) {
-
-            const row =
-                document.createElement("tr");
-
-
-            row.innerHTML = `
-
-                <td>
-                    <strong>
-                        ${escapeHtml(property.name)}
-                    </strong>
-                </td>
-
-                <td>
-                    ${escapeHtml(property.address)}
-                </td>
-
-                <td>
-                    ${property.units}
-                </td>
-
-                <td>
-                    ${property.occupied}
-                </td>
-
-                <td>
-                    ₹${Number(property.rent)
-                        .toLocaleString("en-IN")}
-                </td>
-
-                <td>
-                    <span class="status paid">
-                        ${escapeHtml(property.status)}
-                    </span>
-                </td>
-
-                <td class="actions-cell">
-
-                    <button
-                        type="button"
-                        class="action-btn view-btn"
-                        data-action="view"
-                        data-id="${property.id}">
-
-                        View
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="action-btn edit-btn"
-                        data-action="edit"
-                        data-id="${property.id}">
-
-                        Edit
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="action-btn delete-btn"
-                        data-action="delete"
-                        data-id="${property.id}">
-
-                        Delete
-
-                    </button>
-
-                </td>
-
-            `;
-
-
-            tbody.appendChild(row);
-
-        }
+const residentialTbody =
+    document.getElementById(
+        "residentialPropertyTableBody"
     );
 
+const commercialTbody =
+    document.getElementById(
+        "commercialPropertyTableBody"
+    );
 
-    updateSummary();
+residentialTbody.innerHTML = "";
+commercialTbody.innerHTML = "";
+
+const residentialProperties = properties.filter(function(property) {
+    return String(property.type || "Residential").toLowerCase() === "residential";
+});
+
+const commercialProperties = properties.filter(function(property) {
+    return String(property.type || "Residential").toLowerCase() === "commercial";
+});
+
+function renderRows(list, tbody) {
+    if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:28px; color:#64748b;">No properties found.</td></tr>';
+        return;
+    }
+
+    list.forEach(function(property) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>
+                <strong>
+                    ${escapeHtml(property.name)}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHtml(property.address)}
+            </td>
+
+            <td>
+                ${property.units}
+            </td>
+
+            <td>
+                ${property.occupied}
+            </td>
+
+            <td>
+                ₹${Number(property.rent).toLocaleString("en-IN")}
+            </td>
+
+            <td>
+                <span class="status paid">
+                    ${escapeHtml(property.status)}
+                </span>
+            </td>
+
+            <td class="actions-cell">
+                <button type="button" class="action-btn view-btn" data-action="view" data-id="${property.id}">View</button>
+                <button type="button" class="action-btn edit-btn" data-action="edit" data-id="${property.id}">Edit</button>
+                <button type="button" class="action-btn delete-btn" data-action="delete" data-id="${property.id}">Delete</button>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+renderRows(residentialProperties, residentialTbody);
+renderRows(commercialProperties, commercialTbody);
+
+updateSummary();
 
 }
 
@@ -1281,113 +2389,85 @@ function viewProperty(id) {
     }
 
 
-    const available =
-        Math.max(
-            property.units -
-            property.occupied,
-            0
-        );
+    const details = property.propertyDetails || createDefaultPropertyDetails();
+    const available = Math.max(property.units - property.occupied, 0);
+    const facilityNames = (details.facilities || []).map(function (facility) {
+        return facility && facility.name ? facility.name : null;
+    }).filter(Boolean);
+    const inventoryRows = (details.inventory || []).length ? (details.inventory || []).slice(0, 5).map(function (item) {
+        return '<tr><td>' + escapeHtml(item.name || '-') + '</td><td>' + escapeHtml(item.category || 'Other') + '</td><td>' + (Number(item.quantity) || 0) + '</td></tr>';
+    }).join('') : '<tr><td colspan="3" style="text-align:center; color:#64748b;">No inventory added.</td></tr>';
 
-
-    document.getElementById(
-        "detailsContent"
-    ).innerHTML = `
-
+    document.getElementById("detailsContent").innerHTML = `
         <div class="details-grid">
-
             <div class="detail-item">
-
-                <span>
-                    Property Name
-                </span>
-
-                <strong>
-                    ${escapeHtml(property.name)}
-                </strong>
-
+                <span>Property Name</span>
+                <strong>${escapeHtml(property.name)}</strong>
             </div>
-
-
             <div class="detail-item">
-
-                <span>
-                    Status
-                </span>
-
-                <strong>
-                    ${escapeHtml(property.status)}
-                </strong>
-
+                <span>Property Type</span>
+                <strong>${escapeHtml(details.propertyType || property.type || "Residential")}</strong>
             </div>
-
-
             <div class="detail-item">
-
-                <span>
-                    Address
-                </span>
-
-                <strong>
-                    ${escapeHtml(property.address)}
-                </strong>
-
+                <span>Furnishing Status</span>
+                <strong>${escapeHtml(details.furnishingStatus || "Unfurnished")}</strong>
             </div>
-
-
             <div class="detail-item">
-
-                <span>
-                    Total Units
-                </span>
-
-                <strong>
-                    ${property.units}
-                </strong>
-
+                <span>Status</span>
+                <strong>${escapeHtml(property.status)}</strong>
             </div>
-
-
             <div class="detail-item">
-
-                <span>
-                    Occupied Units
-                </span>
-
-                <strong>
-                    ${property.occupied}
-                </strong>
-
+                <span>Address</span>
+                <strong>${escapeHtml(property.address)}</strong>
             </div>
-
-
             <div class="detail-item">
-
-                <span>
-                    Available Units
-                </span>
-
-                <strong>
-                    ${available}
-                </strong>
-
+                <span>Area / Locality</span>
+                <strong>${escapeHtml(details.areaLocality || '-')}</strong>
             </div>
-
-
             <div class="detail-item">
-
-                <span>
-                    Monthly Rent
-                </span>
-
-                <strong>
-                    ₹${Number(property.rent)
-                        .toLocaleString("en-IN")}
-                </strong>
-
+                <span>Bedrooms</span>
+                <strong>${escapeHtml(details.bedrooms || '-')}</strong>
             </div>
-
+            <div class="detail-item">
+                <span>Bathrooms</span>
+                <strong>${escapeHtml(details.bathrooms || '-')}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Meter Number</span>
+                <strong>${escapeHtml(details.electrical.meterNumber || '-')}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Electricity Responsibility</span>
+                <strong>${escapeHtml(details.electrical.billResponsibility || '-')}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Monthly Rent</span>
+                <strong>₹${Number(property.rent).toLocaleString("en-IN")}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Available Units</span>
+                <strong>${available}</strong>
+            </div>
         </div>
 
+        <div class="detail-section" style="margin-top: 18px;">
+            <div class="detail-section-header">Furnishing</div>
+            <div class="detail-section-body">
+                <p>${facilityNames.length ? escapeHtml(facilityNames.join(', ')) : 'No facility details available.'}</p>
+            </div>
+        </div>
+
+        <div class="detail-section" style="margin-top: 18px;">
+            <div class="detail-section-header">Inventory</div>
+            <div class="detail-section-body">
+                <table class="mini-table">
+                    <thead>
+                        <tr><th>Item</th><th>Category</th><th>Qty</th></tr>
+                    </thead>
+                    <tbody>${inventoryRows}</tbody>
+                </table>
+            </div>
+        </div>
     `;
 
 
@@ -1536,12 +2616,27 @@ document
 
 document
     .getElementById(
-        "detailsCloseBtn"
+       "addInventoryItemBtn"
     )
     .addEventListener(
         "click",
-        closeDetails
+       addInventoryItem
     );
+
+
+document.querySelectorAll('input[name="furnishingStatus"]').forEach(function (radio) {
+   radio.addEventListener("change", renderFacilityChecklist);
+});
+
+
+document
+   .getElementById(
+       "detailsCloseBtn"
+   )
+   .addEventListener(
+       "click",
+       closeDetails
+   );
 
 
 /* ==========================================
@@ -1549,54 +2644,61 @@ document
 ========================================== */
 
 document
-    .getElementById(
-        "propertyTableBody"
-    )
     .addEventListener(
         "click",
         function(event) {
-
-            const button =
-                event.target.closest(
-                    "button[data-action]"
-                );
-
-
-            if (!button) {
+            const button = event.target.closest("button[data-action]");
+            if (button) {
+                const action = button.dataset.action;
+                const id = Number(button.dataset.id);
+                if (action === "view") {
+                    viewProperty(id);
+                }
+                if (action === "edit") {
+                    editProperty(id);
+                }
+                if (action === "delete") {
+                    deleteProperty(id);
+                }
                 return;
             }
 
-
-            const action =
-                button.dataset.action;
-
-
-            const id =
-                Number(
-                    button.dataset.id
-                );
-
-
-            if (action === "view") {
-
-                viewProperty(id);
-
+            const inventoryButton = event.target.closest("button[data-inventory-action]");
+            if (!inventoryButton) {
+                return;
             }
 
-
-            if (action === "edit") {
-
-                editProperty(id);
-
+            const inventoryAction = inventoryButton.dataset.inventoryAction;
+            const inventoryIndex = Number(inventoryButton.dataset.index);
+            if (inventoryAction === "edit") {
+                const item = currentPropertyDetails && Array.isArray(currentPropertyDetails.inventory) ? currentPropertyDetails.inventory[inventoryIndex] : null;
+                if (!item) {
+                    return;
+                }
+                currentInventoryEditIndex = inventoryIndex;
+                document.getElementById('inventoryCategory').value = item.category || 'Furniture';
+                document.getElementById('inventoryItemName').value = item.name || '';
+                document.getElementById('inventoryQuantity').value = Number(item.quantity) || 1;
+                document.getElementById('inventoryBrand').value = item.brand || '';
+                document.getElementById('inventoryModel').value = item.model || '';
+                document.getElementById('inventorySerial').value = item.serialNumber || '';
+                document.getElementById('inventoryCondition').value = item.condition || 'Good';
+                document.getElementById('inventoryPurchaseDate').value = item.purchaseDate || '';
+                document.getElementById('inventoryWarrantyExpiry').value = item.warrantyExpiry || '';
+                document.getElementById('inventoryEstimatedValue').value = Number(item.estimatedValue) || '';
+                document.getElementById('inventoryRemarks').value = item.remarks || '';
+                const addButton = document.getElementById('addInventoryItemBtn');
+                if (addButton) {
+                    addButton.textContent = 'Update Item';
+                }
             }
-
-
-            if (action === "delete") {
-
-                deleteProperty(id);
-
+            if (inventoryAction === "delete") {
+                if (!currentPropertyDetails || !Array.isArray(currentPropertyDetails.inventory)) {
+                    return;
+                }
+                currentPropertyDetails.inventory.splice(inventoryIndex, 1);
+                renderInventoryTable();
             }
-
         }
     );
 

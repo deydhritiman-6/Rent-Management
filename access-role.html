@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Role - Rent Management</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/sidebar.js" defer></script>
+    <script src="js/mobile-menu.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/access-role.js" defer></script>
+</head>
+<body>
+    <div class="app">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content access-role-page">
+            <header class="topbar">
+                <div>
+                    <h1>Access Role</h1>
+                    <p>Manage users, roles, permissions, and system access.</p>
+                </div>
+                <div class="admin-area">
+                    <button type="button" class="btn secondary-btn" data-action="logout">Logout</button>
+                </div>
+            </header>
+
+            <section class="section-grid">
+                <div class="panel-card">
+                    <h3>Users</h3>
+                    <div class="access-row">
+                        <div>
+                            <strong id="userCountValue">0</strong>
+                            <span>Total users</span>
+                        </div>
+                        <span class="access-tag">Active</span>
+                    </div>
+                    <div class="access-row">
+                        <div>
+                            <strong id="roleCountValue">0</strong>
+                            <span>Roles</span>
+                        </div>
+                        <span class="access-tag">RBAC</span>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <h3>Permissions</h3>
+                    <div class="access-row">
+                        <div>
+                            <strong id="permissionCountValue">0</strong>
+                            <span>Configured permissions</span>
+                        </div>
+                        <span class="access-tag">Granular</span>
+                    </div>
+                    <div class="access-row">
+                        <div>
+                            <strong id="superAdminCountValue">0</strong>
+                            <span>Super Admin</span>
+                        </div>
+                        <span class="access-tag">Protected</span>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <h3>Audit</h3>
+                    <div class="access-row">
+                        <div>
+                            <strong id="auditCountValue">0</strong>
+                            <span>Recent events</span>
+                        </div>
+                        <span class="access-tag">Secure</span>
+                    </div>
+                    <div class="access-row">
+                        <div>
+                            <strong id="sessionRoleValue">-</strong>
+                            <span>Current role</span>
+                        </div>
+                        <span class="access-tag">Session</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+                    <div>
+                        <h3 style="margin:0;">Users</h3>
+                    </div>
+                    <button type="button" class="btn primary-btn" id="openUserFormBtn">Create User</button>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section-grid">
+                <div class="panel-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+                        <h3 style="margin:0;">Roles</h3>
+                        <button type="button" class="btn secondary-btn" id="openRoleFormBtn">Create New Role</button>
+                    </div>
+                    <div id="rolesList" class="role-list"></div>
+                </div>
+
+                <div class="panel-card">
+                    <h3>Permissions</h3>
+                    <div id="permissionsList" class="permission-grid"></div>
+                </div>
+            </section>
+
+            <section class="panel-card">
+                <h3>Access Matrix</h3>
+                <div class="table-wrap">
+                    <table class="data-table" id="accessMatrixTable"></table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="userFormModal" class="access-denied-wrap" style="display:none;">
+        <div class="form-card" style="width:min(560px,100%);">
+            <h3 id="userFormTitle">Create User</h3>
+            <form id="userForm">
+                <div class="user-form-grid">
+                    <div class="form-group">
+                        <label for="userName">Name</label>
+                        <input id="userName" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input id="userEmail" type="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Phone</label>
+                        <input id="userPhone" type="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">Role</label>
+                        <select id="userRole"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="userStatus">Status</label>
+                        <select id="userStatus">
+                            <option>Active</option>
+                            <option>Disabled</option>
+                            <option>Pending</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Password</label>
+                        <input id="userPassword" type="password" placeholder="Leave blank to keep current">
+                    </div>
+                </div>
+                <div id="userPermissionList" class="permission-grid" style="margin-top:14px;"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn secondary-btn" id="cancelUserBtn">Cancel</button>
+                    <button type="submit" class="btn primary-btn">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="roleFormModal" class="access-denied-wrap" style="display:none;">
+        <div class="form-card" style="width:min(620px,100%);">
+            <h3 id="roleFormTitle">Create Role</h3>
+            <form id="roleForm">
+                <div class="role-form-grid">
+                    <div class="form-group" style="grid-column:1 / -1;">
+                        <label for="roleName">Role Name</label>
+                        <input id="roleName" type="text" required>
+                    </div>
+                    <div class="form-group" style="grid-column:1 / -1;">
+                        <label for="roleDescription">Description</label>
+                        <textarea id="roleDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div id="rolePermissionList" class="permission-grid" style="margin-top:14px;"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn secondary-btn" id="cancelRoleBtn">Cancel</button>
+                    <button type="submit" class="btn primary-btn">Save Role</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

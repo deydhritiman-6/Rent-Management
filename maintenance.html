@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Vendors - Rent Management</title>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/sidebar.js" defer></script>
+    <script src="js/mobile-menu.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/maintenance.js" defer></script>
+
+    <style>
+        .maintenance-page {
+            min-width: 0;
+        }
+
+        .maintenance-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .maintenance-card {
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(148,163,184,0.16);
+            border-radius: 18px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+            padding: 22px;
+        }
+
+        .maintenance-card h2 {
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .maintenance-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .maintenance-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .maintenance-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .maintenance-field label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .maintenance-field input,
+        .maintenance-field select,
+        .maintenance-field textarea {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #d6deeb;
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: #fff;
+            color: #0f172a;
+            font: inherit;
+            outline: none;
+        }
+
+        .maintenance-field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .maintenance-field input:focus,
+        .maintenance-field select:focus,
+        .maintenance-field textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .maintenance-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .maintenance-btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .maintenance-btn.secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .maintenance-btn.primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .maintenance-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 980px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eef2f7;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .vendor-status {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .vendor-status.available {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .vendor-status.busy {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .vendor-status.unavailable {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .vendor-actions-cell {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .mini-btn {
+            border: 0;
+            border-radius: 7px;
+            padding: 7px 9px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .mini-btn.delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .mini-btn.view {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        @media (max-width: 900px) {
+            .maintenance-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .maintenance-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div id="sidebar-container"></div>
+
+        <main class="main-content maintenance-page">
+            <div class="topbar">
+                <div>
+                    <h1>Maintenance Vendors</h1>
+                    <p>Manage trusted service vendors for property maintenance and repairs</p>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-icon blue">🛠️</div>
+                    <div>
+                        <span>Total Vendors</span>
+                        <strong id="totalVendors">0</strong>
+                        <small>Registered contacts</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon green">✓</div>
+                    <div>
+                        <span>Available</span>
+                        <strong id="availableVendors">0</strong>
+                        <small>Ready for work</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon purple">🏚️</div>
+                    <div>
+                        <span>Properties Covered</span>
+                        <strong id="propertiesCovered">0</strong>
+                        <small>Active maintenance zones</small>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon orange">₹</div>
+                    <div>
+                        <span>Avg. Rate</span>
+                        <strong id="avgRate">₹0</strong>
+                        <small>Monthly base rate</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="maintenance-layout">
+                <section class="maintenance-card">
+                    <h2>Add Vendor</h2>
+
+                    <form id="maintenanceForm" class="maintenance-form">
+                        <div class="maintenance-field">
+                            <label for="vendorName">Vendor Name</label>
+                            <input id="vendorName" type="text" placeholder="e.g. Rajesh Electrician" required>
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="vendorCategory">Category</label>
+                            <select id="vendorCategory">
+                                <option value="Electrician">Electrician</option>
+                                <option value="Plumber">Plumber</option>
+                                <option value="Painter">Painter</option>
+                                <option value="Mason">Mason</option>
+                                <option value="Tile Worker">Tile Worker</option>
+                                <option value="Carpenter">Carpenter</option>
+                                <option value="General Maintenance">General Maintenance</option>
+                            </select>
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="companyName">Business / Company</label>
+                            <input id="companyName" type="text" placeholder="e.g. Shree Power Works">
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="vendorPhone">Phone</label>
+                            <input id="vendorPhone" type="tel" placeholder="+91 98765 43210">
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="vendorEmail">Email</label>
+                            <input id="vendorEmail" type="email" placeholder="vendor@email.com">
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="serviceArea">Service Area</label>
+                            <input id="serviceArea" type="text" placeholder="e.g. North Sector, City Center">
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="propertiesCovered">Properties Covered</label>
+                            <input id="propertiesCovered" type="number" min="0" value="1">
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="dailyRate">Daily Rate</label>
+                            <input id="dailyRate" type="number" min="0" step="100" value="1200">
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="status">Status</label>
+                            <select id="status">
+                                <option value="Available">Available</option>
+                                <option value="Busy">Busy</option>
+                                <option value="Unavailable">Unavailable</option>
+                            </select>
+                        </div>
+
+                        <div class="maintenance-field">
+                            <label for="rating">Rating</label>
+                            <input id="rating" type="number" min="1" max="5" step="0.1" value="4.5">
+                        </div>
+
+                        <div class="maintenance-field full">
+                            <label for="specialties">Specialties</label>
+                            <textarea id="specialties" placeholder="e.g. Wiring repair, fan installation, inverter backup systems"></textarea>
+                        </div>
+
+                        <div class="maintenance-field full">
+                            <div class="maintenance-actions">
+                                <button type="button" id="resetMaintenanceForm" class="maintenance-btn secondary">Clear</button>
+                                <button type="submit" class="maintenance-btn primary">Save Vendor</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="maintenance-card">
+                    <h2>Vendor Overview</h2>
+                    <div id="vendorOverview">
+                        <p class="empty-state" style="margin:0; padding:20px; color:#64748b;">No vendor selected.</p>
+                    </div>
+                </section>
+            </div>
+
+            <section class="maintenance-card">
+                <h2>Vendor Directory</h2>
+                <div class="maintenance-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vendor</th>
+                                <th>Category</th>
+                                <th>Service Area</th>
+                                <th>Properties</th>
+                                <th>Rate</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenanceTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -18,6 +18,7 @@
 
     <script src="js/sidebar.js" defer></script>
     <script src="js/mobile-menu.js" defer></script>
+    <script src="js/auth.js" defer></script>
     <script src="js/dashboard.js" defer></script>
 
 </head>
@@ -41,7 +42,25 @@
                 </div>
 
                 <div class="admin-area">
-                    <div class="notification">🔔</div>
+                    <div class="notification-wrapper">
+                        <button id="notificationBellBtn" class="notification" type="button" aria-label="Notifications" title="Notifications">
+                            <span aria-hidden="true">🔔</span>
+                            <span id="notificationBadge" class="notification-badge hidden">0</span>
+                        </button>
+
+                        <div id="notificationPanel" class="notification-panel hidden" role="dialog" aria-live="polite" aria-label="Notifications panel">
+                            <div class="notification-header">
+                                <div>
+                                    <h3>Notifications</h3>
+                                    <small id="notificationMeta">0 total</small>
+                                </div>
+                                <button type="button" id="markAllReadBtn" class="mark-all-read-btn">Mark all as read</button>
+                            </div>
+
+                            <div id="notificationSummary" class="notification-summary"></div>
+                            <div id="notificationList" class="notification-list"></div>
+                        </div>
+                    </div>
 
                     <div class="admin-profile">
                         <div class="avatar">A</div>
@@ -50,6 +69,7 @@
                             <span>Admin</span>
                         </div>
                     </div>
+                    <button type="button" class="btn secondary-btn" data-action="logout">Logout</button>
                 </div>
 
             </header>
@@ -254,24 +274,24 @@
 
                 <div class="action-grid">
 
-                    <button>
+                    <button type="button" class="quick-action-btn" data-action="properties">
                         <span>＋</span>
                         Add Property
                     </button>
 
-                    <button>
+                    <button type="button" class="quick-action-btn" data-action="tenants">
                         <span>👤</span>
                         Add Tenant
                     </button>
 
-                    <button>
+                    <button type="button" class="quick-action-btn" data-action="payments">
                         <span>₹</span>
                         Record Payment
                     </button>
 
-                    <button>
+                    <button type="button" class="quick-action-btn" data-action="reports">
                         <span>🧾</span>
-                        Generate Receipt
+                        Generate Report
                     </button>
 
                 </div>

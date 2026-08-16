@@ -81,6 +81,38 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Security Deposit</span>
                         <strong>${formatCurrency(latest.securityDeposit)}</strong>
                     </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Tenant Phone</span>
+                        <strong>${latest.tenantPhone || 'Not provided'}</strong>
+                    </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Emergency Contact</span>
+                        <strong>${latest.emergencyContact || 'Not provided'}</strong>
+                    </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">ID / Aadhaar</span>
+                        <strong>${latest.tenantId || 'Not provided'}</strong>
+                    </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Maintenance</span>
+                        <strong>${formatCurrency(latest.maintenanceCharges)}</strong>
+                    </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Due Day</span>
+                        <strong>${latest.rentDueDay || '5'}</strong>
+                    </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Notice Period</span>
+                        <strong>${latest.noticePeriod || '1'} month(s)</strong>
+                    </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Parking</span>
+                        <strong>${latest.parkingIncluded || 'Included'}</strong>
+                    </div>
+                    <div class="detail-item" style="background:#f8fafc; border-radius:10px; padding:12px;">
+                        <span style="display:block; color:#64748b; font-size:11px; margin-bottom:4px;">Pets</span>
+                        <strong>${latest.petsAllowed || 'Yes'}</strong>
+                    </div>
                 </div>
                 <div>
                     <span class="agreement-status ${calculateStatusClass(status)}">${status}</span>
@@ -90,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <strong>${formatDate(latest.startDate)} - ${formatDate(latest.endDate)}</strong>
                 </div>
                 <div>
-                    <small style="display:block; color:#64748b; margin-bottom:4px;">Terms</small>
+                    <small style="display:block; color:#64748b; margin-bottom:4px;">Additional Terms</small>
                     <p style="color:#475569; line-height:1.5; margin:0;">${latest.terms ? latest.terms : 'No additional notes added.'}</p>
                 </div>
             </div>
@@ -118,14 +150,18 @@ document.addEventListener('DOMContentLoaded', function () {
         tableBody.innerHTML = list.map(function (agreement) {
             const status = getAgreementStatus(agreement);
             const title = agreement.tenantName || 'Unknown tenant';
+            const phoneValue = agreement.tenantPhone || '—';
             return `
                 <tr>
-                    <td><strong>${title}</strong></td>
-                    <td>${agreement.propertyName || '-'}</td>
-                    <td>${agreement.unit || '-'}</td>
+                    <td>
+                        <strong>${title}</strong><br>
+                        <small>${phoneValue}</small>
+                    </td>
+                    <td>${agreement.propertyName || '-'}<br><small>${agreement.tenantEmail || 'No email'}</small></td>
+                    <td>${agreement.unit || '-'}<br><small>Due ${agreement.rentDueDay || '5'}</small></td>
                     <td>${formatCurrency(agreement.monthlyRent)}</td>
                     <td>${formatDate(agreement.startDate)}<br><small>${formatDate(agreement.endDate)}</small></td>
-                    <td>${formatCurrency(agreement.securityDeposit)}</td>
+                    <td>${formatCurrency(agreement.securityDeposit)}<br><small>${formatCurrency(agreement.maintenanceCharges || 0)}</small></td>
                     <td><span class="agreement-status ${calculateStatusClass(status)}">${status}</span></td>
                     <td>
                         <div class="agreement-actions-cell">
@@ -151,10 +187,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const payload = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
             tenantName: document.getElementById('tenantName').value.trim(),
+            tenantPhone: document.getElementById('tenantPhone').value.trim(),
+            tenantEmail: document.getElementById('tenantEmail').value.trim(),
+            tenantId: document.getElementById('tenantId').value.trim(),
+            emergencyContact: document.getElementById('emergencyContact').value.trim(),
             propertyName: document.getElementById('propertyName').value.trim(),
             unit: document.getElementById('unit').value.trim(),
             monthlyRent: document.getElementById('monthlyRent').value,
             securityDeposit: document.getElementById('securityDeposit').value,
+            maintenanceCharges: document.getElementById('maintenanceCharges').value,
+            rentDueDay: document.getElementById('rentDueDay').value,
+            noticePeriod: document.getElementById('noticePeriod').value,
+            parkingIncluded: document.getElementById('parkingIncluded').value,
+            petsAllowed: document.getElementById('petsAllowed').value,
             status: document.getElementById('agreementStatus').value,
             startDate: document.getElementById('startDate').value,
             endDate: document.getElementById('endDate').value,

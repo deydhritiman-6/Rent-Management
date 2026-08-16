@@ -14,6 +14,7 @@
 
     <script src="js/sidebar.js" defer></script>
     <script src="js/mobile-menu.js" defer></script>
+    <script src="js/auth.js" defer></script>
     <script src="js/reminders.js" defer></script>
 
     <style>
@@ -473,6 +474,18 @@ Rent Management</textarea>
         const paid =
             Number(payment.paid) || 0;
 
+        const balance =
+            Number(payment.balance) ||
+            Math.max(0, monthly - paid);
+
+        if (
+            payment.dueDate &&
+            payment.dueDate < today() &&
+            balance > 0
+        ) {
+            return "Overdue";
+        }
+
         if (
             monthly > 0 &&
             paid >= monthly
@@ -485,13 +498,6 @@ Rent Management</textarea>
             paid < monthly
         ) {
             return "Partial";
-        }
-
-        if (
-            payment.dueDate &&
-            payment.dueDate < today()
-        ) {
-            return "Overdue";
         }
 
         return "Pending";
@@ -652,6 +658,18 @@ Rent Management</textarea>
 
     }
 
+    function openWhatsAppLink(url) {
+        const popup = window.open(
+            url,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+        if (!popup) {
+            window.location.href = url;
+        }
+    }
+
 
     function sendReminder(payment) {
 
@@ -697,11 +715,7 @@ Rent Management</textarea>
          * already prepared. The user presses Send
          * inside WhatsApp.
          */
-        window.open(
-            url,
-            "_blank",
-            "noopener,noreferrer"
-        );
+        openWhatsAppLink(url);
 
 
         reminderSent[payment.id] =
@@ -764,43 +778,16 @@ Rent Management</textarea>
 
 
         /*
-         * Browsers/WhatsApp can block multiple
-         * automatic tabs. Therefore each selected
-         * reminder is opened one at a time with a
-         * small delay.
+         * Launch the selected reminders directly in the same click flow,
+         * so the browser allows the WhatsApp windows to open.
          */
-        let index = 0;
-
-
-        function next() {
-
-            if (
-                index >= selectedPayments.length
-            ) {
-
-                render();
-
-                return;
-
+        selectedPayments.forEach(
+            function (payment) {
+                sendReminderWithoutPrompt(payment);
             }
+        );
 
-
-            sendReminderWithoutPrompt(
-                selectedPayments[index]
-            );
-
-            index++;
-
-            setTimeout(
-                next,
-                900
-            );
-
-        }
-
-
-        next();
-
+        render();
     }
 
 
@@ -837,11 +824,7 @@ Rent Management</textarea>
             );
 
 
-        window.open(
-            url,
-            "_blank",
-            "noopener,noreferrer"
-        );
+        openWhatsAppLink(url);
 
 
         reminderSent[payment.id] =

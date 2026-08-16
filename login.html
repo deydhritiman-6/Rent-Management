@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Rent Management</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/auth.js" defer></script>
+</head>
+<body class="login-body">
+    <div class="login-shell">
+        <div class="login-card">
+            <div class="login-brand">
+                <div class="login-brand-icon">RM</div>
+                <div>
+                    <h1>Rent Management</h1>
+                    <p>Secure Access Portal</p>
+                </div>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="login-field">
+                    <label for="loginEmail">Email</label>
+                    <input id="loginEmail" type="email" name="email" value="admin@example.com" required>
+                </div>
+
+                <div class="login-field">
+                    <label for="loginPassword">Password</label>
+                    <input id="loginPassword" type="password" name="password" value="admin123" required>
+                </div>
+
+                <button type="submit" class="btn primary-btn login-submit">Login</button>
+            </form>
+
+            <div id="loginMessage" class="login-message" aria-live="polite"></div>
+
+            <div class="demo-accounts">
+                <h3>Demo accounts</h3>
+                <ul>
+                    <li><strong>Super Admin:</strong> admin@example.com / admin123</li>
+                    <li><strong>Manager:</strong> manager@example.com / manager123</li>
+                    <li><strong>Staff:</strong> staff@example.com / staff123</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('loginForm');
+            const message = document.getElementById('loginMessage');
+
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const email = document.getElementById('loginEmail').value.trim();
+                    const password = document.getElementById('loginPassword').value.trim();
+
+                    const result = window.RentAuth.loginUser(email, password);
+                    if (!result.success) {
+                        message.textContent = result.message;
+                        message.className = 'login-message error';
+                        return;
+                    }
+
+                    message.textContent = 'Login successful. Redirecting...';
+                    message.className = 'login-message success';
+                    setTimeout(function () {
+                        window.location.href = 'index.html';
+                    }, 500);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
