@@ -224,6 +224,7 @@ body::after {
     bottom: 0;
     box-shadow: 18px 0 40px rgba(15, 23, 42, 0.18);
     border-right: 1px solid rgba(148, 163, 184, 0.15);
+    overflow: hidden;
 }
 
 .logo {
@@ -233,6 +234,7 @@ body::after {
     padding: 25px 20px;
     border-bottom: 1px solid rgba(148, 163, 184, 0.2);
     background: rgba(255, 255, 255, 0.02);
+    flex-shrink: 0;
 }
 
 .logo-icon {
@@ -263,6 +265,30 @@ body::after {
     display: flex;
     flex-direction: column;
     gap: 7px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+}
+
+.navigation::-webkit-scrollbar {
+    width: 7px;
+}
+
+.navigation::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.navigation::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.55);
+    border-radius: 999px;
+}
+
+.navigation::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.8);
 }
 
 .nav-item {
@@ -276,6 +302,7 @@ body::after {
     font-size: 14px;
     transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
     border: 1px solid transparent;
+    flex-shrink: 0;
 }
 
 .nav-item:hover {
@@ -303,6 +330,7 @@ body::after {
     padding: 20px;
     border-top: 1px solid rgba(148, 163, 184, 0.2);
     background: rgba(15, 23, 42, 0.35);
+    flex-shrink: 0;
 }
 
 .sidebar-footer strong {

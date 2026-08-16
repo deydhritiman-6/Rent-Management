@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     </div>
 
-    <nav class="navigation">
+    <nav class="navigation" id="sidebarNavigation">
 
         <a href="index.html"
            class="nav-item"
@@ -116,28 +116,76 @@ document.addEventListener('DOMContentLoaded', function () {
 
     container.innerHTML = sidebarHTML;
 
-    // Determine current page file name
-    let current = window.location.pathname.split('/').pop();
-    if (!current) current = 'index.html';
-
+    const navigation = container.querySelector('#sidebarNavigation');
     const navItems = container.querySelectorAll('.nav-item');
-    navItems.forEach(function (item) {
-        if (item.dataset && item.dataset.page === current) {
-            item.classList.add('active');
-        } else {
-            item.classList.remove('active');
+
+    function getCurrentPageName() {
+        let current = window.location.pathname.split('/').pop();
+        return current || 'index.html';
+    }
+
+    function centerActiveNavItem() {
+        if (!navigation) return;
+        const activeItem = navigation.querySelector('.nav-item.active');
+        if (!activeItem) return;
+
+        const navHeight = navigation.clientHeight;
+        const itemTop = activeItem.offsetTop;
+        const itemHeight = activeItem.offsetHeight;
+        const targetTop = Math.max(0, itemTop - (navHeight / 2) + (itemHeight / 2));
+
+        navigation.scrollTo({
+            top: targetTop,
+            behavior: 'smooth'
+        });
+    }
+
+    function applyActiveState() {
+        const currentPage = getCurrentPageName();
+        let activeItem = null;
+
+        navItems.forEach(function (item) {
+            const isActive = item.dataset && item.dataset.page === currentPage;
+            item.classList.toggle('active', isActive);
+            item.setAttribute('aria-current', isActive ? 'page' : 'false');
+            if (isActive) {
+                activeItem = item;
+            }
+        });
+
+        if (activeItem) {
+            window.requestAnimationFrame(function () {
+                centerActiveNavItem();
+            });
         }
+    }
+
+    navItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+            navItems.forEach(function (navItem) {
+                navItem.classList.toggle('active', navItem === item);
+                navItem.setAttribute('aria-current', navItem === item ? 'page' : 'false');
+            });
+
+            window.requestAnimationFrame(function () {
+                centerActiveNavItem();
+            });
+        });
     });
+
+    applyActiveState();
 
     if (window.RentAuth && typeof window.RentAuth.applyNavigationVisibility === 'function') {
         window.RentAuth.applyNavigationVisibility();
+        window.requestAnimationFrame(function () {
+            applyActiveState();
+        });
     }
 
     // Dispatch event so mobile-menu.js can initialize
     try {
         document.dispatchEvent(new CustomEvent('sidebarLoaded'));
     } catch (e) {
-        // Fallback
         document.dispatchEvent(new Event('sidebarLoaded'));
     }
 });
