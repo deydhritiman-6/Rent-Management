@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rent Agreements - Rent Management</title>
+    <title>Leave and License Agreement - Rent Management</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -20,120 +20,265 @@
             min-width: 0;
         }
 
-        .agreement-grid {
+        .agreement-layout {
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 22px;
+            align-items: start;
         }
 
-        .agreement-card {
+        .agreement-form-panel,
+        .agreement-preview-panel,
+        .drafts-panel {
             background: #fff;
-            border-radius: 14px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, .06);
-            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
         }
 
-        .agreement-card h2 {
-            margin-bottom: 16px;
-            font-size: 20px;
+        .agreement-form-panel,
+        .agreement-preview-panel {
+            padding: 22px;
+        }
+
+        .section-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+
+        .section-card h3 {
+            margin: 0 0 12px;
+            font-size: 17px;
             color: #0f172a;
         }
 
-        .agreement-form {
+        .field-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 14px;
         }
 
-        .agreement-field {
+        .form-group {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 8px;
         }
 
-        .agreement-field.full {
+        .form-group.full {
             grid-column: 1 / -1;
         }
 
-        .agreement-field label {
+        .form-group label {
             font-size: 12px;
             font-weight: 700;
             color: #334155;
         }
 
-        .agreement-field input,
-        .agreement-field select,
-        .agreement-field textarea {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             min-height: 42px;
             border: 1px solid #dbe2ea;
             border-radius: 9px;
-            padding: 10px 12px;
             background: #fff;
             color: #0f172a;
             font: inherit;
-            outline: none;
+            padding: 10px 12px;
         }
 
-        .agreement-field textarea {
-            min-height: 120px;
+        .form-group textarea {
+            min-height: 90px;
             resize: vertical;
         }
 
-        .agreement-field input:focus,
-        .agreement-field select:focus,
-        .agreement-field textarea:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        .agreement-actions {
+        .inline-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .inline-row input {
+            flex: 1;
+        }
+
+        .duration-options {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .duration-option {
+            border: 1px solid #dbe2ea;
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #334155;
+        }
+
+        .duration-option.active {
+            background: #e0f2fe;
+            border-color: #7dd3fc;
+            color: #0f172a;
+        }
+
+        .period-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .period-card {
+            border: 1px solid #dbe2ea;
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .period-card h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            color: #0f172a;
+        }
+
+        .period-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .gap-tag {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #fff7ed;
+            color: #9a5b00;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .agreement-preview {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 72vh;
+            overflow-y: auto;
+            color: #0f172a;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .agreement-preview h2 {
+            text-align: center;
+            margin: 0 0 16px;
+            font-size: 22px;
+            letter-spacing: 0.06em;
+        }
+
+        .agreement-preview h3 {
+            margin: 16px 0 8px;
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        .agreement-preview p {
+            margin: 0 0 10px;
+            color: #1e293b;
+        }
+
+        .agreement-preview ul {
+            margin: 8px 0 0 20px;
+            padding: 0;
+        }
+
+        .agreement-preview li {
+            margin-bottom: 6px;
+        }
+
+        .tiny-note {
+            display: block;
+            margin: 12px 0 0;
+            color: #7c8aa5;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .legal-note {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #9a5b00;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .agreement-actions-bar {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            margin-top: 18px;
+            margin-top: 16px;
+            flex-wrap: wrap;
         }
 
-        .agreement-btn {
+        .primary-btn,
+        .secondary-btn,
+        .ghost-btn {
             border: 0;
             border-radius: 9px;
-            padding: 11px 18px;
+            padding: 10px 16px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .agreement-btn.secondary {
-            background: #eef2f7;
-            color: #334155;
-        }
-
-        .agreement-btn.primary {
+        .primary-btn {
             background: #2563eb;
             color: #fff;
         }
 
-        .summary-grid {
-            margin-bottom: 20px;
+        .secondary-btn {
+            background: #e2e8f0;
+            color: #0f172a;
         }
 
-        .agreement-table-wrap {
-            width: 100%;
+        .ghost-btn {
+            background: #fff;
+            color: #334155;
+            border: 1px solid #dbe2ea;
+        }
+
+        .drafts-table-wrap {
             overflow-x: auto;
+            padding: 0 16px 16px;
         }
 
         table {
             width: 100%;
-            min-width: 900px;
             border-collapse: collapse;
+            min-width: 800px;
         }
 
         th, td {
+            border-bottom: 1px solid #edf2f7;
             padding: 12px 10px;
             text-align: left;
-            border-bottom: 1px solid #eef2f7;
             font-size: 13px;
+            color: #334155;
         }
 
         th {
@@ -142,61 +287,38 @@
             font-weight: 700;
         }
 
-        .agreement-status {
-            display: inline-flex;
+        .drafts-panel {
+            margin-top: 22px;
+        }
+
+        .drafts-header {
+            display: flex;
             align-items: center;
+            justify-content: space-between;
+            padding: 18px 18px 8px;
+        }
+
+        .drafts-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #0f172a;
+        }
+
+        .draft-pill {
+            background: #ecfeff;
+            color: #0f766e;
             border-radius: 999px;
-            padding: 5px 8px;
+            padding: 5px 10px;
             font-size: 11px;
             font-weight: 700;
         }
 
-        .agreement-status.active {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .agreement-status.expiring {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .agreement-status.expired {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .agreement-actions-cell {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .mini-btn {
-            border: 0;
-            border-radius: 7px;
-            padding: 7px 9px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .mini-btn.delete {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .mini-btn.view {
-            background: #eff6ff;
-            color: #1d4ed8;
-        }
-
-        @media (max-width: 900px) {
-            .agreement-grid {
+        @media (max-width: 980px) {
+            .agreement-layout {
                 grid-template-columns: 1fr;
             }
 
-            .agreement-form {
+            .field-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -209,194 +331,275 @@
         <main class="main-content agreement-page">
             <div class="topbar">
                 <div>
-                    <h1>Rent Agreements</h1>
-                    <p>Manage tenant lease records and rental terms</p>
+                    <h1>Leave and License Agreement</h1>
+                    <p>Draft generation, review, and storage for license arrangements</p>
                 </div>
             </div>
 
-            <div class="summary-grid">
-                <div class="summary-card">
-                    <div class="card-icon blue">📄</div>
-                    <div>
-                        <span>Total Agreements</span>
-                        <strong id="totalAgreements">0</strong>
-                        <small>Lease records</small>
-                    </div>
-                </div>
+            <section class="agreement-layout">
+                <form id="leaveLicenseForm" class="agreement-form-panel">
+                    <div class="section-card">
+                        <h3>Licensor and Licensee Details</h3>
+                        <div class="field-grid">
+                            <div class="form-group full">
+                                <label for="licenseeLookup">Select existing Licensee</label>
+                                <select id="licenseeLookup">
+                                    <option value="">Create manual licensee entry</option>
+                                </select>
+                            </div>
 
-                <div class="summary-card">
-                    <div class="card-icon green">✓</div>
-                    <div>
-                        <span>Active</span>
-                        <strong id="activeAgreements">0</strong>
-                        <small>Currently active</small>
-                    </div>
-                </div>
+                            <div class="form-group">
+                                <label for="licensorName">Licensor Full Name</label>
+                                <input id="licensorName" type="text" placeholder="Property owner full name">
+                            </div>
 
-                <div class="summary-card">
-                    <div class="card-icon purple">₹</div>
-                    <div>
-                        <span>Monthly Rent</span>
-                        <strong id="monthlyRentTotal">₹0</strong>
-                        <small>Combined rent</small>
-                    </div>
-                </div>
+                            <div class="form-group">
+                                <label for="licensorFatherName">Licensor Father/Spouse Name</label>
+                                <input id="licensorFatherName" type="text" placeholder="Father or spouse name">
+                            </div>
 
-                <div class="summary-card">
-                    <div class="card-icon orange">⚠</div>
-                    <div>
-                        <span>Expiring Soon</span>
-                        <strong id="expiringAgreements">0</strong>
-                        <small>Next 30 days</small>
-                    </div>
-                </div>
-            </div>
+                            <div class="form-group">
+                                <label for="licensorAge">Licensor Age</label>
+                                <input id="licensorAge" type="number" min="18" placeholder="Age">
+                            </div>
 
-            <div class="agreement-grid">
-                <section class="agreement-card">
-                    <h2>Add Rent Agreement</h2>
+                            <div class="form-group">
+                                <label for="licensorPan">Licensor PAN</label>
+                                <input id="licensorPan" type="text" placeholder="ABCDE1234F">
+                            </div>
 
-                    <form id="agreementForm" class="agreement-form">
-                        <div class="agreement-field">
-                            <label for="tenantName">Tenant Name</label>
-                            <input type="text" id="tenantName" required>
-                        </div>
+                            <div class="form-group">
+                                <label for="licensorAadhaar">Licensor Aadhaar / ID</label>
+                                <input id="licensorAadhaar" type="text" placeholder="Aadhaar / identification number">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="tenantPhone">Tenant Phone</label>
-                            <input type="tel" id="tenantPhone" placeholder="e.g. +91 98765 43210">
-                        </div>
+                            <div class="form-group full">
+                                <label for="licensorAddress">Licensor Permanent Address</label>
+                                <textarea id="licensorAddress" placeholder="Permanent address"></textarea>
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="tenantEmail">Tenant Email</label>
-                            <input type="email" id="tenantEmail" placeholder="tenant@email.com">
-                        </div>
+                            <div class="form-group">
+                                <label for="licensorMobile">Licensor Mobile Number</label>
+                                <input id="licensorMobile" type="tel" placeholder="+91 9876543210">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="tenantId">ID / Aadhaar / Passport</label>
-                            <input type="text" id="tenantId" placeholder="Document number">
-                        </div>
+                            <div class="form-group">
+                                <label for="licensorEmail">Licensor Email Address</label>
+                                <input id="licensorEmail" type="email" placeholder="licensor@email.com">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="propertyName">Property</label>
-                            <input type="text" id="propertyName" required>
-                        </div>
+                            <div class="form-group">
+                                <label for="licenseeName">Licensee Full Name</label>
+                                <input id="licenseeName" type="text" placeholder="Occupant full name">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="unit">Unit / Flat</label>
-                            <input type="text" id="unit" required>
-                        </div>
+                            <div class="form-group">
+                                <label for="licenseeFatherName">Licensee Father/Spouse Name</label>
+                                <input id="licenseeFatherName" type="text" placeholder="Father or spouse name">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="monthlyRent">Monthly Rent (₹)</label>
-                            <input type="number" id="monthlyRent" min="0" step="1" required>
-                        </div>
+                            <div class="form-group">
+                                <label for="licenseeAge">Licensee Age</label>
+                                <input id="licenseeAge" type="number" min="18" placeholder="Age">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="securityDeposit">Security Deposit (₹)</label>
-                            <input type="number" id="securityDeposit" min="0" step="1" required>
-                        </div>
+                            <div class="form-group">
+                                <label for="licenseePan">Licensee PAN</label>
+                                <input id="licenseePan" type="text" placeholder="ABCDE1234F">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="maintenanceCharges">Maintenance Charges (₹)</label>
-                            <input type="number" id="maintenanceCharges" min="0" step="1" value="0">
-                        </div>
+                            <div class="form-group">
+                                <label for="licenseeAadhaar">Licensee Aadhaar / ID</label>
+                                <input id="licenseeAadhaar" type="text" placeholder="Aadhaar / identification number">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="rentDueDay">Rent Due Day</label>
-                            <input type="number" id="rentDueDay" min="1" max="31" value="5">
-                        </div>
+                            <div class="form-group full">
+                                <label for="licenseeAddress">Licensee Permanent Address</label>
+                                <textarea id="licenseeAddress" placeholder="Permanent residential address"></textarea>
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="noticePeriod">Notice Period (Months)</label>
-                            <input type="number" id="noticePeriod" min="0" max="12" value="1">
-                        </div>
+                            <div class="form-group full">
+                                <label for="licenseeCurrentAddress">Licensee Current Address</label>
+                                <textarea id="licenseeCurrentAddress" placeholder="Current address if different">
+                                </textarea>
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="parkingIncluded">Parking</label>
-                            <select id="parkingIncluded">
-                                <option value="Included">Included</option>
-                                <option value="Not Included">Not Included</option>
-                                <option value="Paid Extra">Paid Extra</option>
-                            </select>
-                        </div>
+                            <div class="form-group">
+                                <label for="licenseeMobile">Licensee Mobile Number</label>
+                                <input id="licenseeMobile" type="tel" placeholder="+91 9876543210">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="petsAllowed">Pets Allowed</label>
-                            <select id="petsAllowed">
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Conditional">Conditional</option>
-                            </select>
-                        </div>
+                            <div class="form-group">
+                                <label for="licenseeEmail">Licensee Email Address</label>
+                                <input id="licenseeEmail" type="email" placeholder="licensee@email.com">
+                            </div>
 
-                        <div class="agreement-field">
-                            <label for="emergencyContact">Emergency Contact</label>
-                            <input type="text" id="emergencyContact" placeholder="Name and phone number">
-                        </div>
-
-                        <div class="agreement-field">
-                            <label for="agreementStatus">Status</label>
-                            <select id="agreementStatus">
-                                <option value="Active">Active</option>
-                                <option value="Expiring Soon">Expiring Soon</option>
-                                <option value="Expired">Expired</option>
-                            </select>
-                        </div>
-
-                        <div class="agreement-field">
-                            <label for="startDate">Start Date</label>
-                            <input type="date" id="startDate" required>
-                        </div>
-
-                        <div class="agreement-field">
-                            <label for="endDate">End Date</label>
-                            <input type="date" id="endDate">
-                        </div>
-
-                        <div class="agreement-field full">
-                            <label for="terms">Additional Terms / Notes</label>
-                            <textarea id="terms" placeholder="Example: House rules, maintenance responsibilities, visits, water bill sharing, lock-in, etc."></textarea>
-                        </div>
-
-                        <div class="agreement-field full">
-                            <div class="agreement-actions">
-                                <button type="button" class="agreement-btn secondary" id="resetAgreementForm">Reset</button>
-                                <button type="submit" class="agreement-btn primary">Save Agreement</button>
+                            <div class="form-group full">
+                                <label for="licenseePhoto">Licensee Photograph</label>
+                                <input id="licenseePhoto" type="file" accept="image/*">
                             </div>
                         </div>
-                    </form>
-                </section>
-
-                <section class="agreement-card">
-                    <h2>Agreement Overview</h2>
-                    <div id="agreementOverview" class="empty-state">No agreement selected.</div>
-                </section>
-            </div>
-
-            <section class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h2>Stored Agreements</h2>
-                        <p>All active and historical rental agreements</p>
                     </div>
-                </div>
 
-                <div class="agreement-table-wrap">
+                    <div class="section-card">
+                        <h3>Licensed Premises Details</h3>
+                        <div class="field-grid">
+                            <div class="form-group full">
+                                <label for="propertyLookup">Select existing property</label>
+                                <select id="propertyLookup">
+                                    <option value="">Manually enter property details</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyAddress">Property Address</label>
+                                <input id="propertyAddress" type="text" placeholder="Full property address">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyFlatNo">Flat / House Number</label>
+                                <input id="propertyFlatNo" type="text" placeholder="A-101 / House no.">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyBuildingName">Building Name</label>
+                                <input id="propertyBuildingName" type="text" placeholder="Building / tower name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyFloor">Floor</label>
+                                <input id="propertyFloor" type="text" placeholder="2nd Floor">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyArea">Area</label>
+                                <input id="propertyArea" type="text" placeholder="650 sq.ft. / 1000 sq.ft.">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyPinCode">PIN Code</label>
+                                <input id="propertyPinCode" type="text" placeholder="560001">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyParking">Parking</label>
+                                <input id="propertyParking" type="text" placeholder="Covered / Open / None">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="propertyType">Property Type</label>
+                                <select id="propertyType">
+                                    <option value="Residential">Residential</option>
+                                    <option value="Commercial">Commercial</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Agreement Duration</h3>
+                        <div class="duration-options">
+                            <button type="button" class="duration-option active" data-duration="11">11 Months</button>
+                            <button type="button" class="duration-option" data-duration="22">22 Months</button>
+                            <button type="button" class="duration-option" data-duration="33">33 Months</button>
+                        </div>
+                        <input type="hidden" id="selectedDuration" value="11">
+
+                        <div class="field-grid">
+                            <div class="form-group full">
+                                <label for="agreementStartDate">Agreement Start Date</label>
+                                <input id="agreementStartDate" type="date">
+                            </div>
+                        </div>
+
+                        <div id="durationSchedule" class="period-list"></div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>License Fee, Notice and Security</h3>
+                        <div class="field-grid">
+                            <div class="form-group">
+                                <label for="monthlyLicenseFee">Monthly License Fee</label>
+                                <input id="monthlyLicenseFee" type="number" min="0" step="1" placeholder="25000">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="securityDepositAmount">Security Deposit Amount</label>
+                                <input id="securityDepositAmount" type="number" min="0" step="1" placeholder="75000">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="noticePeriodDays">Notice Period</label>
+                                <div class="inline-row">
+                                    <input id="noticePeriodDays" type="number" min="1" max="365" value="30" placeholder="30">
+                                    <select id="noticePeriodUnit">
+                                        <option value="days">Days</option>
+                                        <option value="months">Months</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lockInPeriod">Minimum Stay / Lock-in Period</label>
+                                <input id="lockInPeriod" type="text" value="7 months" readonly>
+                            </div>
+
+                            <div class="form-group full">
+                                <label for="maintenanceUtilities">Maintenance and Utilities</label>
+                                <textarea id="maintenanceUtilities" placeholder="Describe responsibility for maintenance, repairs, utilities, society charges, and common area charges."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3>Draft Terms</h3>
+                        <div class="legal-note">
+                            Draft generated for review. Agreement terms, stamp duty, registration requirements, notice provisions and enforceability should be verified according to the applicable state law and reviewed by a qualified legal professional before execution.
+                        </div>
+
+                        <div class="field-grid" style="margin-top:12px;">
+                            <div class="form-group full">
+                                <label for="specialNotes">Additional Commercial / Legal Notes</label>
+                                <textarea id="specialNotes" placeholder="Optional clauses, jurisdiction details, escalation notes, and references for legal review."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agreement-actions-bar">
+                        <button type="button" class="ghost-btn" id="resetAgreementForm">Reset</button>
+                        <button type="button" class="secondary-btn" id="previewAgreementBtn">Preview Agreement</button>
+                        <button type="button" class="secondary-btn" id="printAgreementBtn">Print / Save as PDF</button>
+                        <button type="submit" class="primary-btn">Save Draft</button>
+                    </div>
+                </form>
+
+                <aside class="agreement-preview-panel">
+                    <div class="drafts-header" style="padding:0 0 14px;">
+                        <h3>Agreement Preview</h3>
+                        <span class="draft-pill">Draft</span>
+                    </div>
+                    <div id="agreementPreview" class="agreement-preview"></div>
+                </aside>
+            </section>
+
+            <section class="drafts-panel">
+                <div class="drafts-header">
+                    <h3>Saved Drafts</h3>
+                    <span class="draft-pill" id="draftCount">0</span>
+                </div>
+                <div class="drafts-table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th>Tenant</th>
+                                <th>Licensee</th>
                                 <th>Property</th>
-                                <th>Unit</th>
-                                <th>Rent</th>
-                                <th>Start / End</th>
-                                <th>Security</th>
-                                <th>Status</th>
+                                <th>License Period</th>
+                                <th>License Fee</th>
+                                <th>Security Deposit</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="agreementTableBody"></tbody>
+                        <tbody id="savedDraftsBody"></tbody>
                     </table>
                 </div>
             </section>
