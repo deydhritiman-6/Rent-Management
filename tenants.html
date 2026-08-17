@@ -827,6 +827,102 @@
                     </div>
 
 
+                    <!-- IDENTITY & DOCUMENTS (NEW) -->
+
+                    <div class="form-group full" id="identitySection" style="padding-top:10px;border-top:1px solid #eef2f7;margin-top:6px;">
+
+                        <label style="font-size:15px">Identity & Documents</label>
+
+                        <div style="display:flex;gap:12px;align-items:flex-start;margin-top:8px;">
+
+                            <div style="flex:0 0 120px;text-align:center;">
+                                <div id="tenantPhotoPreview" style="width:100px;height:100px;border-radius:8px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e6eefc;">
+                                    <span style="color:#64748b" id="tenantPhotoPlaceholder">No photo</span>
+                                </div>
+
+                                <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;">
+                                    <label class="action-btn view-btn" style="padding:6px 8px;cursor:pointer;">
+                                        <input id="tenantPhotoInput" type="file" accept="image/*" style="display:none">
+                                        Upload
+                                    </label>
+                                    <button type="button" id="tenantPhotoRemoveBtn" class="action-btn delete-btn" style="padding:6px 8px;display:none">Remove</button>
+                                </div>
+
+                                <small id="tenantPhotoError" style="color:#dc2626;display:block;margin-top:6px;min-height:18px"></small>
+                            </div>
+
+                            <div style="flex:1">
+
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+                                    <div class="form-group">
+                                        <label>Aadhaar Number <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantAadhaar" placeholder="Enter Aadhaar number">
+                                        <small id="tenantAadhaarError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>PAN Number <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantPAN" placeholder="Enter PAN number">
+                                        <small id="tenantPANError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                </div>
+
+                                <div id="propertyDocsArea" style="margin-top:12px;">
+
+                                    <!-- Residential: choose Service or Education and upload -->
+                                    <div id="residentialDocs" style="display:none">
+
+                                        <label>Additional Document (Residential) <span style="color:#dc2626">*</span></label>
+                                        <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+                                            <select id="tenantResidentialDocType" style="min-width:180px;padding:10px;border-radius:8px;border:1px solid #d7dee8;background:#fff;">
+                                                <option value="service">Service Document</option>
+                                                <option value="education">Education Document</option>
+                                            </select>
+
+                                            <label class="action-btn view-btn" style="padding:8px 10px;cursor:pointer;">
+                                                <input id="tenantResidentialDocInput" type="file" accept=".pdf,image/*,.doc,.docx" style="display:none">
+                                                Upload
+                                            </label>
+
+                                            <div id="tenantResidentialDocName" style="color:#334155"></div>
+                                            <button type="button" id="tenantResidentialDocRemove" class="action-btn delete-btn" style="display:none">Remove</button>
+
+                                        </div>
+
+                                        <small id="tenantResidentialDocError" style="color:#dc2626;display:block;min-height:18px;margin-top:6px"></small>
+
+                                    </div>
+
+                                    <!-- Commercial: business document -->
+                                    <div id="commercialDocs" style="display:none">
+
+                                        <label>Business Document <span style="color:#dc2626">*</span></label>
+
+                                        <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+                                            <label class="action-btn view-btn" style="padding:8px 10px;cursor:pointer;">
+                                                <input id="tenantBusinessDocInput" type="file" accept=".pdf,image/*,.doc,.docx" style="display:none">
+                                                Upload
+                                            </label>
+
+                                            <div id="tenantBusinessDocName" style="color:#334155"></div>
+                                            <button type="button" id="tenantBusinessDocRemove" class="action-btn delete-btn" style="display:none">Remove</button>
+
+                                        </div>
+
+                                        <small id="tenantBusinessDocError" style="color:#dc2626;display:block;min-height:18px;margin-top:6px"></small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
 
@@ -1066,6 +1162,9 @@ function openTenantForm(
         ).value =
             tenant.propertyId;
 
+        // adjust doc sections according to property type
+        showPropertyDocSections(tenant.propertyId);
+
 
         document.getElementById(
             "tenantUnit"
@@ -1096,6 +1195,46 @@ function openTenantForm(
         ).value =
             tenant.status;
 
+        // Load identity & documents if present
+        document.getElementById("tenantAadhaar").value = tenant.aadhaar || "";
+        document.getElementById("tenantPAN").value = tenant.pan || "";
+
+        // Photo
+        if (tenant.photo && tenant.photo.dataUrl) {
+            renderTenantPhotoPreview(tenant.photo.dataUrl);
+            document.getElementById('tenantPhotoRemoveBtn').style.display = 'inline-block';
+            // ensure form state does not override existing photo unless user acts
+            tenantFormState.photo = null;
+            tenantFormState.removeExistingPhoto = false;
+        } else {
+            clearTenantPhotoPreview();
+        }
+
+        // Documents
+        document.getElementById('tenantResidentialDocName').textContent = '';
+        document.getElementById('tenantBusinessDocName').textContent = '';
+        document.getElementById('tenantResidentialDocRemove').style.display = 'none';
+        document.getElementById('tenantBusinessDocRemove').style.display = 'none';
+        tenantFormState.residentialDoc = null;
+        tenantFormState.businessDoc = null;
+        tenantFormState.removeResidentialDoc = false;
+        tenantFormState.removeBusinessDoc = false;
+
+        if (Array.isArray(tenant.documents)) {
+            tenant.documents.forEach(function(doc) {
+                if (doc.type === 'residential') {
+                    document.getElementById('tenantResidentialDocName').textContent = doc.fileName || '';
+                    document.getElementById('tenantResidentialDocRemove').style.display = 'inline-block';
+                    // store existing doc info on dataset for potential replace
+                    document.getElementById('tenantResidentialDocName').dataset.existing = 'true';
+                }
+                if (doc.type === 'business') {
+                    document.getElementById('tenantBusinessDocName').textContent = doc.fileName || '';
+                    document.getElementById('tenantBusinessDocRemove').style.display = 'inline-block';
+                    document.getElementById('tenantBusinessDocName').dataset.existing = 'true';
+                }
+            });
+        }
 
     } else {
 
@@ -1194,6 +1333,27 @@ function clearTenantForm() {
     document.getElementById(
         "tenantStatus"
     ).value = "Active";
+
+    // clear identity fields
+    document.getElementById('tenantAadhaar').value = '';
+    document.getElementById('tenantPAN').value = '';
+    clearTenantPhotoPreview();
+    document.getElementById('tenantResidentialDocName').textContent = '';
+    document.getElementById('tenantBusinessDocName').textContent = '';
+    document.getElementById('tenantResidentialDocRemove').style.display = 'none';
+    document.getElementById('tenantBusinessDocRemove').style.display = 'none';
+    // clear form state for docs
+    tenantFormState.residentialDoc = null;
+    tenantFormState.businessDoc = null;
+    tenantFormState.photo = null;
+    tenantFormState.removeExistingPhoto = false;
+    tenantFormState.removeResidentialDoc = false;
+    tenantFormState.removeBusinessDoc = false;
+    document.getElementById('tenantAadhaarError').textContent = '';
+    document.getElementById('tenantPANError').textContent = '';
+    document.getElementById('tenantPhotoError').textContent = '';
+    document.getElementById('tenantResidentialDocError').textContent = '';
+    document.getElementById('tenantBusinessDocError').textContent = '';
 
 }
 
@@ -1452,6 +1612,371 @@ function saveTenants() {
     );
 
 }
+
+// =========================
+// Identity & Documents JS
+// =========================
+
+const tenantFormState = {
+    photo: null, // { fileName, dataUrl, uploadDate }
+    residentialDoc: null, // { fileName, dataUrl, uploadDate, docKind }
+    businessDoc: null,
+    removeExistingPhoto: false,
+    removeResidentialDoc: false,
+    removeBusinessDoc: false
+};
+
+function isCommercialPropertyType(property) {
+    if (!property || !property.type) return false;
+    const t = String(property.type).toLowerCase();
+    return /(office|shop|warehouse|commercial|retail)/.test(t);
+}
+
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+function renderTenantPhotoPreview(dataUrl) {
+    const preview = document.getElementById('tenantPhotoPreview');
+    preview.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    preview.appendChild(img);
+    document.getElementById('tenantPhotoPlaceholder').style.display = 'none';
+}
+
+function clearTenantPhotoPreview() {
+    const preview = document.getElementById('tenantPhotoPreview');
+    preview.innerHTML = '<span style="color:#64748b" id="tenantPhotoPlaceholder">No photo</span>';
+    tenantFormState.photo = null;
+    // Do not reset removeExistingPhoto here - the caller (e.g. remove button) controls that flag.
+    document.getElementById('tenantPhotoRemoveBtn').style.display = 'none';
+}
+
+function showPropertyDocSections(propertyId) {
+    const properties = getProperties();
+    const prop = properties.find(p => String(p.id) === String(propertyId));
+    const isCommercial = isCommercialPropertyType(prop);
+    document.getElementById('residentialDocs').style.display = isCommercial ? 'none' : 'block';
+    document.getElementById('commercialDocs').style.display = isCommercial ? 'block' : 'none';
+}
+
+// wire up inputs
+document.getElementById('tenantProperty').addEventListener('change', function() {
+    showPropertyDocSections(this.value);
+});
+
+// Photo input
+document.getElementById('tenantPhotoInput').addEventListener('change', async function(e) {
+    const file = this.files && this.files[0];
+    if (!file) return;
+    // validate type and size (max 3MB)
+    const maxSize = 3 * 1024 * 1024;
+    if (!file.type.startsWith('image/')) {
+        document.getElementById('tenantPhotoError').textContent = 'Only image files are allowed.';
+        return;
+    }
+    if (file.size > maxSize) {
+        document.getElementById('tenantPhotoError').textContent = 'Photo must be smaller than 3 MB.';
+        return;
+    }
+    document.getElementById('tenantPhotoError').textContent = '';
+    const dataUrl = await readFileAsDataURL(file);
+    tenantFormState.photo = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString() };
+    renderTenantPhotoPreview(dataUrl);
+    document.getElementById('tenantPhotoRemoveBtn').style.display = 'inline-block';
+});
+
+// Remove photo
+document.getElementById('tenantPhotoRemoveBtn').addEventListener('click', function() {
+    // Mark that existing photo (if any) should be removed
+    tenantFormState.photo = null;
+    tenantFormState.removeExistingPhoto = true;
+    clearTenantPhotoPreview();
+});
+
+// Residential doc input
+document.getElementById('tenantResidentialDocInput').addEventListener('change', async function(e) {
+    const file = this.files && this.files[0];
+    if (!file) return;
+    const maxSize = 6 * 1024 * 1024; // 6MB for docs
+    if (!/(pdf|image|msword|officedocument|application)/.test(file.type) && !/\.docx?$/.test(file.name)) {
+        document.getElementById('tenantResidentialDocError').textContent = 'Unsupported document format.';
+        return;
+    }
+    if (file.size > maxSize) {
+        document.getElementById('tenantResidentialDocError').textContent = 'Document must be smaller than 6 MB.';
+        return;
+    }
+    document.getElementById('tenantResidentialDocError').textContent = '';
+    const dataUrl = await readFileAsDataURL(file);
+    const kind = document.getElementById('tenantResidentialDocType').value || 'service';
+    tenantFormState.residentialDoc = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString(), docKind: kind };
+    document.getElementById('tenantResidentialDocName').textContent = file.name;
+    document.getElementById('tenantResidentialDocRemove').style.display = 'inline-block';
+});
+
+// Remove residential doc
+document.getElementById('tenantResidentialDocRemove').addEventListener('click', function() {
+    tenantFormState.residentialDoc = null;
+    tenantFormState.removeResidentialDoc = true;
+    document.getElementById('tenantResidentialDocName').textContent = '';
+    this.style.display = 'none';
+});
+
+// Business doc input
+document.getElementById('tenantBusinessDocInput').addEventListener('change', async function(e) {
+    const file = this.files && this.files[0];
+    if (!file) return;
+    const maxSize = 6 * 1024 * 1024;
+    if (!/(pdf|image|msword|officedocument|application)/.test(file.type) && !/\.docx?$/.test(file.name)) {
+        document.getElementById('tenantBusinessDocError').textContent = 'Unsupported document format.';
+        return;
+    }
+    if (file.size > maxSize) {
+        document.getElementById('tenantBusinessDocError').textContent = 'Document must be smaller than 6 MB.';
+        return;
+    }
+    document.getElementById('tenantBusinessDocError').textContent = '';
+    const dataUrl = await readFileAsDataURL(file);
+    tenantFormState.businessDoc = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString() };
+    document.getElementById('tenantBusinessDocName').textContent = file.name;
+    document.getElementById('tenantBusinessDocRemove').style.display = 'inline-block';
+});
+
+// Remove business doc
+document.getElementById('tenantBusinessDocRemove').addEventListener('click', function() {
+    tenantFormState.businessDoc = null;
+    tenantFormState.removeBusinessDoc = true;
+    document.getElementById('tenantBusinessDocName').textContent = '';
+    this.style.display = 'none';
+});
+
+// Aadhaar & PAN basic validators
+function validateAadhaar(aadhaar) {
+    const cleaned = String(aadhaar).replace(/\s+/g, '');
+    return /^\d{12}$/.test(cleaned);
+}
+function validatePAN(pan) {
+    return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(String(pan).trim());
+}
+
+// Enhance saveTenant with identity validations and storage
+const originalSaveTenant = saveTenant;
+async function enhancedSaveTenantWrapper() {
+    // clear previous errors
+    document.getElementById('tenantAadhaarError').textContent = '';
+    document.getElementById('tenantPANError').textContent = '';
+    document.getElementById('tenantPhotoError').textContent = '';
+    document.getElementById('tenantResidentialDocError').textContent = '';
+    document.getElementById('tenantBusinessDocError').textContent = '';
+
+    const aadhaar = document.getElementById('tenantAadhaar').value.trim();
+    const pan = document.getElementById('tenantPAN').value.trim();
+    const propertyId = document.getElementById('tenantProperty').value;
+
+    // run existing required validations first (they exist in saveTenant) by replicating relevant checks
+    const name = document.getElementById('tenantName').value.trim();
+    const mobile = document.getElementById('tenantMobile').value.trim();
+    const unit = document.getElementById('tenantUnit').value.trim();
+    const rent = Number(document.getElementById('tenantRent').value);
+    const leaseDate = document.getElementById('tenantLeaseDate').value;
+    if (!name || !mobile || !propertyId || !unit || !rent || !leaseDate) {
+        alert('Please fill in all required tenant details.');
+        return;
+    }
+
+    const properties = getProperties();
+    const property = properties.find(p => String(p.id) === String(propertyId));
+    if (!property) { alert('Selected property could not be found.'); return; }
+    const isCommercial = isCommercialPropertyType(property);
+
+    let hasError = false;
+    if (!validateAadhaar(aadhaar)) {
+        document.getElementById('tenantAadhaarError').textContent = 'Aadhaar must be a 12 digit number.';
+        hasError = true;
+    }
+    if (!validatePAN(pan)) {
+        document.getElementById('tenantPANError').textContent = 'PAN must follow format (e.g. ABCDE1234F).';
+        hasError = true;
+    }
+
+    // Photo required: either existing tenant.photo (if editing) or tenantFormState.photo
+    let existingTenant = null;
+    if (editingTenantId !== null) existingTenant = tenants.find(t => t.id === editingTenantId);
+    if (!(tenantFormState.photo || (existingTenant && existingTenant.photo && existingTenant.photo.dataUrl))) {
+        document.getElementById('tenantPhotoError').textContent = 'Tenant photo is required.';
+        hasError = true;
+    }
+
+    if (isCommercial) {
+        // business doc required
+        if (!(tenantFormState.businessDoc || (existingTenant && Array.isArray(existingTenant.documents) && existingTenant.documents.some(d => d.type === 'business')))) {
+            document.getElementById('tenantBusinessDocError').textContent = 'Business document is required for commercial tenants.';
+            hasError = true;
+        }
+    } else {
+        // residential: require either residential doc (service/education) or existing
+        if (!(tenantFormState.residentialDoc || (existingTenant && Array.isArray(existingTenant.documents) && existingTenant.documents.some(d => d.type === 'residential')))) {
+            document.getElementById('tenantResidentialDocError').textContent = 'Please upload service or education document for residential tenants.';
+            hasError = true;
+        }
+    }
+
+    if (hasError) return; // do not proceed
+
+    // Now proceed to call original saveTenant but first attach identity fields into the form values
+    // We'll copy some code from saveTenant's flow to ensure documents are attached to tenant objects
+
+    // Prepare tenant data similar to saveTenant's logic
+    const nameVal = name;
+    const mobileVal = mobile;
+    const emailVal = document.getElementById('tenantEmail').value.trim();
+    const unitVal = unit;
+    const rentVal = Number(document.getElementById('tenantRent').value);
+    const depositVal = Number(document.getElementById('tenantDeposit').value) || 0;
+    const leaseDateVal = leaseDate;
+    const statusVal = document.getElementById('tenantStatus').value;
+
+    if (editingTenantId !== null) {
+        const tenant = tenants.find(t => t.id === editingTenantId);
+        if (!tenant) return;
+        tenant.name = nameVal;
+        tenant.mobile = mobileVal;
+        tenant.email = emailVal;
+        tenant.propertyId = Number(propertyId);
+        tenant.propertyName = property.name;
+        tenant.unit = unitVal;
+        tenant.rent = rentVal;
+        tenant.deposit = depositVal;
+        tenant.leaseDate = leaseDateVal;
+        tenant.status = statusVal;
+        // identity
+        tenant.aadhaar = aadhaar;
+        tenant.pan = pan;
+        // photo
+        if (tenantFormState.photo) {
+            tenant.photo = tenantFormState.photo;
+        } else if (tenantFormState.removeExistingPhoto) {
+            // user removed existing photo and didn't upload a new one
+            delete tenant.photo;
+        }
+        // documents: merge existing and new
+        tenant.documents = tenant.documents || [];
+        if (tenantFormState.removeResidentialDoc) {
+            tenant.documents = tenant.documents.filter(d => d.type !== 'residential');
+        }
+        if (tenantFormState.residentialDoc) {
+            // remove existing residential documents and add new
+            tenant.documents = tenant.documents.filter(d => d.type !== 'residential');
+            tenant.documents.push(Object.assign({}, tenantFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
+        }
+        if (tenantFormState.removeBusinessDoc) {
+            tenant.documents = tenant.documents.filter(d => d.type !== 'business');
+        }
+        if (tenantFormState.businessDoc) {
+            tenant.documents = tenant.documents.filter(d => d.type !== 'business');
+            tenant.documents.push(Object.assign({}, tenantFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
+        }
+
+        saveTenants();
+        renderTenants();
+        updatePropertyOccupancy();
+        closeTenantForm();
+        alert('Tenant updated successfully!');
+        return;
+    }
+
+    // New tenant
+    const newTenant = {
+        id: Date.now(),
+        name: nameVal,
+        mobile: mobileVal,
+        email: document.getElementById('tenantEmail').value.trim(),
+        propertyId: Number(propertyId),
+        propertyName: property.name,
+        unit: unitVal,
+        rent: rentVal,
+        deposit: depositVal,
+        leaseDate: leaseDateVal,
+        status: statusVal,
+        aadhaar: aadhaar,
+        pan: pan,
+        photo: tenantFormState.photo ? tenantFormState.photo : null,
+        documents: []
+    };
+
+    if (tenantFormState.residentialDoc) {
+        newTenant.documents.push(Object.assign({}, tenantFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
+    }
+    if (tenantFormState.businessDoc) {
+        newTenant.documents.push(Object.assign({}, tenantFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
+    }
+
+    tenants.push(newTenant);
+    saveTenants();
+    renderTenants();
+    updatePropertyOccupancy();
+    closeTenantForm();
+    alert('Tenant added successfully!');
+}
+
+// Replace the save button handler
+document.getElementById('saveTenantBtn').removeEventListener('click', saveTenant);
+document.getElementById('saveTenantBtn').addEventListener('click', enhancedSaveTenantWrapper);
+
+// Ensure property doc sections are shown appropriately on initial load
+showPropertyDocSections(document.getElementById('tenantProperty').value);
+
+// Enhance viewTenant to show photo and documents
+const originalViewTenant = viewTenant;
+function viewTenant(id) {
+    const tenant = tenants.find(t => t.id === Number(id));
+    if (!tenant) return originalViewTenant(id);
+
+    const photoHtml = tenant.photo && tenant.photo.dataUrl ? `<div style="text-align:center;margin-bottom:12px"><img src="${tenant.photo.dataUrl}" style="width:120px;height:120px;border-radius:10px;object-fit:cover;border:1px solid #e6eefc" alt="Tenant Photo"></div>` : '';
+
+    let docsHtml = '';
+    if (Array.isArray(tenant.documents) && tenant.documents.length) {
+        docsHtml = '<div style="margin-top:12px">';
+        docsHtml += '<h4>Documents</h4>';
+        tenant.documents.forEach(d => {
+            docsHtml += `<div style="padding:8px;border-radius:8px;background:#f8fafc;margin-top:8px">`;
+            docsHtml += `<strong>${d.fileName || 'Document'}</strong> <span style="color:#64748b">(${d.type})</span>`;
+            docsHtml += `</div>`;
+        });
+        docsHtml += '</div>';
+    }
+
+    document.getElementById('tenantDetailsContent').innerHTML = `
+        ${photoHtml}
+        <div class="details-grid">
+            <div class="detail-item"><span>Tenant Name</span><strong>${escapeHtml(tenant.name)}</strong></div>
+            <div class="detail-item"><span>Status</span><strong>${tenant.status}</strong></div>
+            <div class="detail-item"><span>Mobile</span><strong>${escapeHtml(tenant.mobile)}</strong></div>
+            <div class="detail-item"><span>Email</span><strong>${escapeHtml(tenant.email || '-')}</strong></div>
+            <div class="detail-item"><span>Property</span><strong>${escapeHtml(tenant.propertyName)}</strong></div>
+            <div class="detail-item"><span>Unit</span><strong>${escapeHtml(tenant.unit)}</strong></div>
+            <div class="detail-item"><span>Monthly Rent</span><strong>₹${Number(tenant.rent).toLocaleString('en-IN')}</strong></div>
+            <div class="detail-item"><span>Security Deposit</span><strong>₹${Number(tenant.deposit).toLocaleString('en-IN')}</strong></div>
+            <div class="detail-item"><span>Lease Start</span><strong>${tenant.leaseDate}</strong></div>
+            <div class="detail-item"><span>Aadhaar</span><strong>${tenant.aadhaar || '-'}</strong></div>
+            <div class="detail-item"><span>PAN</span><strong>${tenant.pan || '-'}</strong></div>
+        </div>
+        ${docsHtml}
+    `;
+
+    document.getElementById('tenantDetailsOverlay').style.display = 'flex';
+}
+
 
 
 
