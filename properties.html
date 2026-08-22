@@ -927,6 +927,7 @@
                                         <option value="Shared">Shared</option>
                                         <option value="Prepaid">Prepaid</option>
                                         <option value="Smart Meter">Smart Meter</option>
+                                        <option value="sub-meter">Sub-meter</option>
                                     </select>
                                 </div>
                                 <div>
@@ -1039,9 +1040,20 @@
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
+
+                                <div >
+                                    <label for="gasProvider">Gas Provider</label>
+                                    <input type="text" id="gasProvider" placeholder="e.g. Indane">
+                                </div>
+
+                                <div >
+                                    <label for="gas connection owner's name">Gas Connection Owner's Name</label>
+                                    <input type="text" id="gasConnectionOwnerName" placeholder="e.g. John Doe">
+                                </div>
+                                
                                 <div>
-                                    <label for="gasMeterNumber">Gas Meter Number</label>
-                                    <input type="text" id="gasMeterNumber" placeholder="e.g. G-102">
+                                    <label for="gasConsumerNumber">Gas Consumer Number</label>
+                                    <input type="text" id="gasConsumerNumber" placeholder="e.g. GC-102">
                                 </div>
                                 <div>
                                     <label for="gasBillResponsibility">Gas Bill Responsibility</label>
@@ -1557,7 +1569,9 @@ function createDefaultPropertyDetails() {
        gas: {
            connectionAvailable: "No",
            type: "",
-           meterNumber: "",
+           provider: "",
+           connectionOwnerName: "",
+           consumerNumber: "",
            billResponsibility: ""
        },
        internet: {
@@ -1829,7 +1843,9 @@ function buildPropertyDetailsFromForm() {
 
    details.gas.connectionAvailable = document.querySelector('input[name="gasConnectionAvailable"]:checked') ? document.querySelector('input[name="gasConnectionAvailable"]:checked').value : 'No';
    details.gas.type = document.getElementById('gasType').value || '';
-   details.gas.meterNumber = document.getElementById('gasMeterNumber').value.trim();
+    details.gas.provider = document.getElementById('gasProvider').value.trim();
+    details.gas.connectionOwnerName = document.getElementById('gasConnectionOwnerName').value.trim();
+    details.gas.consumerNumber = document.getElementById('gasConsumerNumber').value.trim();
    details.gas.billResponsibility = document.getElementById('gasBillResponsibility').value || '';
 
    details.internet.available = document.querySelector('input[name="internetAvailable"]:checked') ? document.querySelector('input[name="internetAvailable"]:checked').value : 'No';
@@ -1917,7 +1933,9 @@ function applyPropertyDetailsToForm(details) {
 
    setRadioGroupValue('gasConnectionAvailable', normalized.gas.connectionAvailable || 'No');
    document.getElementById('gasType').value = normalized.gas.type || '';
-   document.getElementById('gasMeterNumber').value = normalized.gas.meterNumber || '';
+    document.getElementById('gasProvider').value = normalized.gas.provider || '';
+    document.getElementById('gasConnectionOwnerName').value = normalized.gas.connectionOwnerName || '';
+    document.getElementById('gasConsumerNumber').value = normalized.gas.consumerNumber || '';
    document.getElementById('gasBillResponsibility').value = normalized.gas.billResponsibility || '';
 
    setRadioGroupValue('internetAvailable', normalized.internet.available || 'No');
@@ -2106,7 +2124,9 @@ function clearForm() {
    document.getElementById('waterRemarks').value = '';
    setRadioGroupValue('gasConnectionAvailable', 'No');
    document.getElementById('gasType').value = '';
-   document.getElementById('gasMeterNumber').value = '';
+    document.getElementById('gasProvider').value = '';
+    document.getElementById('gasConnectionOwnerName').value = '';
+    document.getElementById('gasConsumerNumber').value = '';
    document.getElementById('gasBillResponsibility').value = '';
    setRadioGroupValue('internetAvailable', 'No');
    document.getElementById('internetProvider').value = '';
