@@ -680,11 +680,9 @@
                             Mobile Number
                         </label>
 
-                        <input
-                            type="tel"
-                            id="tenantMobile"
-                            placeholder="Enter mobile number">
-
+                        
+                        <input type="tel" id="tenantMobile" placeholder="Enter mobile number" inputmode="tel" maxlength="10" oninput="let v=this.value.replace(/[^\d+]/g,''); if(v.indexOf('+')>0){v=v.replace(/\+/g,(m,i)=>i===0?'+':'');} this.value=v;">
+    
                     </div>
 
 
@@ -866,6 +864,82 @@
                                         <input type="text" id="tenantPAN" placeholder="Enter PAN number">
                                         <small id="tenantPANError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Religion <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantReligion" placeholder="Enter religion">
+                                        <small id="tenantReligionError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Gender <span style="color:#dc2626">*</span></label>
+                                        <select id="tenantGender">
+                                            <option value="">Select Gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                        </select>
+                                        <small id="tenantGenderError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Nationality <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantNationality" placeholder="Enter nationality">
+                                        <small id="tenantNationalityError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Occupation <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantOccupation" placeholder="Enter occupation">
+                                        <small id="tenantOccupationError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Number of residents in the property <span style="color:#dc2626">*</span></label>
+                                        <input type="number" id="tenantResidentCount" placeholder="Enter number of residents">
+                                        <small id="tenantResidentCountError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Number of vehicles <span style="color:#dc2626">*</span></label>
+                                        <input type="number" id="tenantVehicleCount" placeholder="Enter number of vehicles">
+                                        <select id="tenantVehicleType" style="margin-top:6px;padding:10px;border-radius:8px;border:1px solid #d7dee8;background:#fff;">
+                                            <option value="">Select Vehicle Type</option>
+                                            <option value="2-wheeler">2-Wheeler</option>
+                                            <option value="4-wheeler">4-Wheeler</option>
+                                            <option value="none">none</option>
+                                        </select>
+                                        <small id="tenantVehicleCountError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Address <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantAddress" placeholder="Enter address">
+                                        <small id="tenantAddressError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Emergency Contact (Optional) <span style="color:#dc2626"></span></label>
+                                        <input type="text" id="tenantEmergencyContact" placeholder="Enter emergency contact">
+                                        <small id="tenantEmergencyContactError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Post Office <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantPostOffice" placeholder="Enter post office">
+                                        <small id="tenantPostOfficeError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Police Station <span style="color:#dc2626">*</span></label>
+                                        <input type="text" id="tenantPoliceStation" placeholder="Enter police station">
+                                        <small id="tenantPoliceStationError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
+
+                                    <div class="form-group">
+                                       <label>PIN Code (6 digits Mandatory) <span style="color:#dc2626">*</span></label>
+                                       <input type="number" id="tenantPinCode" placeholder="Enter PIN code" maxlength="6" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6); this.value = this.value.replace(/[^0-9]/g, '');">
+                                       <small id="tenantPinCodeError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                    </div>
 
                                 </div>
 
@@ -874,11 +948,13 @@
                                     <!-- Residential: choose Service or Education and upload -->
                                     <div id="residentialDocs" style="display:none">
 
-                                        <label>Additional Document (Residential) <span style="color:#dc2626">*</span></label>
+                                        <label>Additional Document (Residential) <span style="color:#dc2626"></span></label>
                                         <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
                                             <select id="tenantResidentialDocType" style="min-width:180px;padding:10px;border-radius:8px;border:1px solid #d7dee8;background:#fff;">
+                                                <option value="">Select Document Type</option>
                                                 <option value="service">Service Document</option>
                                                 <option value="education">Education Document</option>
+                                                <option value="business">Business Document</option>
                                             </select>
 
                                             <label class="action-btn view-btn" style="padding:8px 10px;cursor:pointer;">
