@@ -106,7 +106,7 @@
             font-size: 13px;
         }
 
-        .tenant-name {
+        .licensee-name {
             font-weight: 700;
             color: #0f172a;
         }
@@ -458,7 +458,7 @@
                     type="search"
                     id="rentSearch"
                     class="rent-search"
-                    placeholder="Search tenant, property or unit...">
+                    placeholder="Search licensee, property or unit...">
 
             </div>
 
@@ -468,7 +468,7 @@
 
                     <thead>
                         <tr>
-                            <th>Tenant</th>
+                            <th>licensee</th>
                             <th>Property</th>
                             <th>Due Date</th>
                             <th>Monthly Rent</th>
@@ -501,7 +501,7 @@
 
             <div>
                 <h2 id="rentModalTitle">Add Rent Payment</h2>
-                <p>Enter the tenant's rent payment details</p>
+                <p>Enter the licensee's rent payment details</p>
             </div>
 
             <button
@@ -519,11 +519,11 @@
             <div class="rent-form-grid">
 
                 <div class="rent-field">
-                    <label for="tenantName">Tenant *</label>
+                    <label for="licenseeName">licensee *</label>
                     <input
-                        id="tenantName"
+                        id="licenseeName"
                         required
-                        placeholder="Tenant name">
+                        placeholder="licensee name">
                 </div>
 
                 <div class="rent-field">
@@ -848,7 +848,7 @@ function renderTable() {
         payments.filter(payment => {
 
             const text = [
-                payment.tenantName,
+                payment.licenseeName,
                 payment.propertyName,
                 payment.unit,
                 payment.dueDate
@@ -891,8 +891,8 @@ function renderTable() {
         row.innerHTML = `
 
             <td>
-                <span class="tenant-name">
-                    ${escapeHtml(payment.tenantName || "Unknown")}
+                <span class="licensee-name">
+                    ${escapeHtml(payment.licenseeName || "Unknown")}
                 </span>
             </td>
 
@@ -990,8 +990,8 @@ function openRentModal(payment = null) {
                 : "Add Rent Payment";
 
 
-    document.getElementById("tenantName").value =
-        payment?.tenantName || "";
+    document.getElementById("licenseeName").value =
+        payment?.licenseeName || "";
 
     document.getElementById("propertyName").value =
         payment?.propertyName || "";
@@ -1020,7 +1020,7 @@ function openRentModal(payment = null) {
     overlay.classList.add("open");
 
     setTimeout(
-        () => document.getElementById("tenantName").focus(),
+        () => document.getElementById("licenseeName").focus(),
         50
     );
 
@@ -1075,8 +1075,8 @@ document.getElementById("rentForm")
         event.preventDefault();
 
 
-        const tenantName =
-            document.getElementById("tenantName")
+        const licenseeName =
+            document.getElementById("licenseeName")
                 .value.trim();
 
         const propertyName =
@@ -1112,13 +1112,13 @@ document.getElementById("rentForm")
                 .value;
 
 
-        if (!tenantName ||
+        if (!licenseeName ||
             !propertyName ||
             !dueDate ||
             monthly <= 0) {
 
             alert(
-                "Please fill in Tenant, Property, Due Date and Monthly Rent."
+                "Please fill in licensee, Property, Due Date and Monthly Rent."
             );
 
             return;
@@ -1156,7 +1156,7 @@ document.getElementById("rentForm")
                         .slice(2, 7)
                 ),
 
-            tenantName,
+            licenseeName,
             propertyName,
             unit,
             dueDate,
@@ -1293,7 +1293,7 @@ document.getElementById("rentTableBody")
 
                 const confirmed =
                     confirm(
-                        `Delete the rent payment for ${payment.tenantName || "this tenant"}?`
+                        `Delete the rent payment for ${payment.licenseeName || "this licensee"}?`
                     );
 
                 if (!confirmed) return;
@@ -1323,7 +1323,7 @@ function showDetails(payment) {
 
     const details = [
 
-        ["Tenant", payment.tenantName || "-"],
+        ["licensee", payment.licenseeName || "-"],
         ["Property", payment.propertyName || "-"],
         ["Unit / Flat", payment.unit || "-"],
         ["Due Date", formatDate(payment.dueDate)],

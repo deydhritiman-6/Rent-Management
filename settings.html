@@ -524,8 +524,8 @@
                     </div>
 
                     <div class="storage-stat">
-                        <span>Tenants</span>
-                        <strong id="tenantCount">0</strong>
+                        <span>licensees</span>
+                        <strong id="licenseeCount">0</strong>
                     </div>
 
                     <div class="storage-stat">
@@ -882,10 +882,10 @@
             ) || [];
 
 
-        const tenants =
+        const licensees =
             JSON.parse(
                 localStorage.getItem(
-                    "rentTenants"
+                    "rentlicensees"
                 )
             ) || [];
 
@@ -905,9 +905,9 @@
 
 
         document.getElementById(
-            "tenantCount"
+            "licenseeCount"
         ).textContent =
-            tenants.length;
+            licensees.length;
 
 
         document.getElementById(
@@ -953,7 +953,7 @@
 
         const confirmed =
             confirm(
-                "This will permanently remove Properties, Tenants and Rent Payments stored in this browser. Continue?"
+                "This will permanently remove Properties, licensees and Rent Payments stored in this browser. Continue?"
             );
 
 
@@ -979,7 +979,7 @@
 
 
         localStorage.removeItem(
-            "rentTenants"
+            "rentlicensees"
         );
 
 

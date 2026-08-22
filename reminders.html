@@ -186,7 +186,7 @@
 
             <div>
                 <h1>Rent Reminders</h1>
-                <p>Send WhatsApp reminders to tenants with overdue rent</p>
+                <p>Send WhatsApp reminders to licensees with overdue rent</p>
             </div>
 
             <div class="admin-area">
@@ -227,7 +227,7 @@
                 <div>
                     <span>WhatsApp Ready</span>
                     <strong id="whatsappReady">0</strong>
-                    <small>Tenants with phone number</small>
+                    <small>licensees with phone number</small>
                 </div>
             </div>
 
@@ -252,10 +252,10 @@
 
             <p>
                 Edit the message before sending. The system will replace the
-                placeholders automatically for each tenant.
+                placeholders automatically for each licensee.
             </p>
 
-            <textarea id="messageTemplate">Dear {tenantName},
+            <textarea id="messageTemplate">Dear {licenseeName},
 
 This is a friendly reminder that your rent payment of ₹{balance} for {propertyName} - {unit} is overdue.
 
@@ -268,7 +268,7 @@ Rent Management</textarea>
 
             <div class="placeholder-help">
                 Available placeholders:
-                <strong>{tenantName}</strong>,
+                <strong>{licenseeName}</strong>,
                 <strong>{propertyName}</strong>,
                 <strong>{unit}</strong>,
                 <strong>{monthlyRent}</strong>,
@@ -287,7 +287,7 @@ Rent Management</textarea>
 
                 <div>
                     <h2>Overdue Rent</h2>
-                    <p>Select tenants and send their reminder through WhatsApp</p>
+                    <p>Select licensees and send their reminder through WhatsApp</p>
                 </div>
 
             </div>
@@ -334,7 +334,7 @@ Rent Management</textarea>
 
                             <th class="select-cell">Select</th>
 
-                            <th>Tenant</th>
+                            <th>licensee</th>
 
                             <th>Property</th>
 
@@ -441,7 +441,7 @@ Rent Management</textarea>
 
         const candidates = [
 
-            payment.tenantPhone,
+            payment.licenseePhone,
             payment.phone,
             payment.phoneNumber,
             payment.mobile,
@@ -586,8 +586,8 @@ Rent Management</textarea>
 
         const values = {
 
-            "{tenantName}":
-                payment.tenantName || "Tenant",
+            "{licenseeName}":
+                payment.licenseeName || "licensee",
 
             "{propertyName}":
                 payment.propertyName || "",
@@ -681,7 +681,7 @@ Rent Management</textarea>
 
             alert(
                 "No WhatsApp/mobile number is available for " +
-                (payment.tenantName || "this tenant") +
+                (payment.licenseeName || "this licensee") +
                 "."
             );
 
@@ -900,7 +900,7 @@ Rent Management</textarea>
 
                     <td>
                         <strong>
-                            ${escapeHtml(payment.tenantName || "Unknown")}
+                            ${escapeHtml(payment.licenseeName || "Unknown")}
                         </strong>
                     </td>
 

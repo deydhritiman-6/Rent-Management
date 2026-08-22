@@ -117,10 +117,10 @@ document.addEventListener('DOMContentLoaded', function () {
         `).join('');
     }
 
-    function populateTenantSelection() {
-        const tenants = safeGetLocalStorage('rentTenants');
-        licenceeLookup.innerHTML = '<option value="">Create manual licensee entry</option>' + tenants.map(function (tenant) {
-            return `<option value="${tenant.id}">${tenant.name || 'Unnamed Licensee'} (${tenant.mobile || 'No mobile'})</option>`;
+    function populatelicenseeSelection() {
+        const licensees = safeGetLocalStorage('rentlicensees');
+        licenceeLookup.innerHTML = '<option value="">Create manual licensee entry</option>' + licensees.map(function (licensee) {
+            return `<option value="${licensee.id}">${licensee.name || 'Unnamed Licensee'} (${licensee.mobile || 'No mobile'})</option>`;
         }).join('');
     }
 
@@ -131,18 +131,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
     }
 
-    function populateFromTenant(tenantId) {
-        const tenants = safeGetLocalStorage('rentTenants');
-        const selectedTenant = tenants.find(item => String(item.id) === String(tenantId));
-        if (!selectedTenant) return;
+    function populateFromlicensee(licenseeId) {
+        const licensees = safeGetLocalStorage('rentlicensees');
+        const selectedlicensee = licensees.find(item => String(item.id) === String(licenseeId));
+        if (!selectedlicensee) return;
 
-        document.getElementById('licenseeName').value = selectedTenant.name || '';
-        document.getElementById('licenseeMobile').value = selectedTenant.mobile || '';
-        document.getElementById('licenseeEmail').value = selectedTenant.email || '';
-        document.getElementById('licenseeAadhaar').value = selectedTenant.aadhaar || '';
-        document.getElementById('licenseePan').value = selectedTenant.pan || '';
-        document.getElementById('licenseeCurrentAddress').value = selectedTenant.address || '';
-        document.getElementById('licenseeAddress').value = selectedTenant.permanentAddress || selectedTenant.address || '';
+        document.getElementById('licenseeName').value = selectedlicensee.name || '';
+        document.getElementById('licenseeMobile').value = selectedlicensee.mobile || '';
+        document.getElementById('licenseeEmail').value = selectedlicensee.email || '';
+        document.getElementById('licenseeAadhaar').value = selectedlicensee.aadhaar || '';
+        document.getElementById('licenseePan').value = selectedlicensee.pan || '';
+        document.getElementById('licenseeCurrentAddress').value = selectedlicensee.address || '';
+        document.getElementById('licenseeAddress').value = selectedlicensee.permanentAddress || selectedlicensee.address || '';
     }
 
     function populateFromProperty(propertyId) {
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>If the Licensee violates any of the terms and conditions of this Agreement, the Licensor shall have the right to terminate or revoke the License and require vacant possession of the Licensed Premises without waiting for the normal notice period, subject to applicable law and due process.</p>
 
             <h3>12. Termination / Revocation</h3>
-            <p>On termination or revocation of this Leave and License Arrangement, the Licensee shall promptly vacate the Licensed Premises and hand over possession to the Licensor in a clean and tenantable condition, subject to normal wear and tear and lawful deduction of amounts due.</p>
+            <p>On termination or revocation of this Leave and License Arrangement, the Licensee shall promptly vacate the Licensed Premises and hand over possession to the Licensor in a clean and licenseeable condition, subject to normal wear and tear and lawful deduction of amounts due.</p>
 
             <h3>13. One-Month Gap Between Separate License Periods</h3>
             <p>Each successive 11-month license period shall be separated by a one-month gap. No overlapping or back-to-back license periods are permitted without the required interregnum gap.</p>
@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     licenceeLookup.addEventListener('change', function () {
-        populateFromTenant(this.value);
+        populateFromlicensee(this.value);
     });
 
     propertyLookup.addEventListener('change', function () {
@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    populateTenantSelection();
+    populatelicenseeSelection();
     populatePropertySelection();
     renderDurationSchedule();
     renderPreview();

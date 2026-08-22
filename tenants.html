@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tenants - Rent Management</title>
+    <title>licensees - Rent Management</title>
 
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="shortcut icon" href="favicon.png" type="image/png">
@@ -19,7 +19,7 @@
     <style>
 
         /* ================================
-           TENANT ACTION BUTTONS
+           licensee ACTION BUTTONS
         ================================= */
 
         .actions-cell {
@@ -60,10 +60,10 @@
 
 
         /* ================================
-           TENANT MODAL
+           licensee MODAL
         ================================= */
 
-        .tenant-form-overlay {
+        .licensee-form-overlay {
 
             display: none;
 
@@ -83,7 +83,7 @@
         }
 
 
-        .tenant-form {
+        .licensee-form {
 
             width: min(600px, 95vw);
 
@@ -143,7 +143,7 @@
            FORM GRID
         ================================= */
 
-        .tenant-form-grid {
+        .licensee-form-grid {
 
             display: grid;
 
@@ -217,7 +217,7 @@
            FORM BUTTONS
         ================================= */
 
-        .tenant-form-buttons {
+        .licensee-form-buttons {
 
             display: flex;
 
@@ -229,7 +229,7 @@
         }
 
 
-        .tenant-form-buttons button {
+        .licensee-form-buttons button {
 
             border: none;
 
@@ -244,7 +244,7 @@
         }
 
 
-        .cancel-tenant {
+        .cancel-licensee {
 
             background: #eef2f7;
 
@@ -252,7 +252,7 @@
         }
 
 
-        .save-tenant {
+        .save-licensee {
 
             background: #2563eb;
 
@@ -264,7 +264,7 @@
            DETAILS MODAL
         ================================= */
 
-        .tenant-details-overlay {
+        .licensee-details-overlay {
 
             display: none;
 
@@ -285,7 +285,7 @@
         }
 
 
-        .tenant-details {
+        .licensee-details {
 
             width:
                 min(600px, 95vw);
@@ -344,7 +344,7 @@
 
         @media (max-width: 650px) {
 
-            .tenant-form-grid,
+            .licensee-form-grid,
             .details-grid {
 
                 grid-template-columns: 1fr;
@@ -382,11 +382,11 @@
             <div>
 
                 <h1>
-                    Tenants
+                    licensees
                 </h1>
 
                 <p>
-                    Manage all your tenants
+                    Manage all your licensees
                 </p>
 
             </div>
@@ -394,10 +394,10 @@
 
             <button
                 type="button"
-                id="addTenantBtn"
+                id="addlicenseeBtn"
                 class="add-property-btn">
 
-                + Add Tenant
+                + Add licensee
 
             </button>
 
@@ -423,16 +423,16 @@
                 <div>
 
                     <span>
-                        Total Tenants
+                        Total licensees
                     </span>
 
                     <strong
-                        id="totalTenants">
+                        id="totallicensees">
                         0
                     </strong>
 
                     <small>
-                        Registered tenants
+                        Registered licensees
                     </small>
 
                 </div>
@@ -451,11 +451,11 @@
                 <div>
 
                     <span>
-                        Active Tenants
+                        Active licensees
                     </span>
 
                     <strong
-                        id="activeTenants">
+                        id="activelicensees">
                         0
                     </strong>
 
@@ -511,7 +511,7 @@
                     </span>
 
                     <strong
-                        id="tenantMonthlyRent">
+                        id="licenseeMonthlyRent">
                         ₹0
                     </strong>
 
@@ -529,7 +529,7 @@
 
 
         <!-- ================================
-             TENANT LIST
+             licensee LIST
         ================================= -->
 
         <div class="panel">
@@ -540,11 +540,11 @@
                 <div>
 
                     <h2>
-                        Tenant List
+                        licensee List
                     </h2>
 
                     <p>
-                        All registered tenants
+                        All registered licensees
                     </p>
 
                 </div>
@@ -564,7 +564,7 @@
                         <tr>
 
                             <th>
-                                Tenant
+                                licensee
                             </th>
 
                             <th>
@@ -598,7 +598,7 @@
 
 
                     <tbody
-                        id="tenantTableBody">
+                        id="licenseeTableBody">
                     </tbody>
 
 
@@ -613,24 +613,24 @@
 
 
         <!-- ================================
-             ADD / EDIT TENANT FORM
+             ADD / EDIT licensee FORM
         ================================= -->
 
         <div
-            id="tenantForm"
-            class="tenant-form-overlay">
+            id="licenseeForm"
+            class="licensee-form-overlay">
 
 
-            <div class="tenant-form">
+            <div class="licensee-form">
 
 
                 <div class="form-header">
 
 
                     <h2
-                        id="tenantFormTitle">
+                        id="licenseeFormTitle">
 
-                        Add New Tenant
+                        Add New licensee
 
                     </h2>
 
@@ -638,7 +638,7 @@
                     <button
                         type="button"
                         class="close-form"
-                        id="closeTenantBtn">
+                        id="closelicenseeBtn">
 
                         ×
 
@@ -650,7 +650,7 @@
 
 
                 <div
-                    class="tenant-form-grid">
+                    class="licensee-form-grid">
 
 
                     <!-- NAME -->
@@ -659,13 +659,13 @@
                         class="form-group">
 
                         <label>
-                            Tenant Name
+                            licensee Name
                         </label>
 
                         <input
                             type="text"
-                            id="tenantName"
-                            placeholder="Enter tenant name">
+                            id="licenseeName"
+                            placeholder="Enter licensee name">
 
                     </div>
 
@@ -681,7 +681,7 @@
                         </label>
 
                         
-                        <input type="tel" id="tenantMobile" placeholder="Enter mobile number" inputmode="tel" maxlength="10" oninput="let v=this.value.replace(/[^\d+]/g,''); if(v.indexOf('+')>0){v=v.replace(/\+/g,(m,i)=>i===0?'+':'');} this.value=v;">
+                        <input type="tel" id="licenseeMobile" placeholder="Enter mobile number" inputmode="tel" maxlength="10" oninput="let v=this.value.replace(/[^\d+]/g,''); if(v.indexOf('+')>0){v=v.replace(/\+/g,(m,i)=>i===0?'+':'');} this.value=v;">
     
                     </div>
 
@@ -698,7 +698,7 @@
 
                         <input
                             type="email"
-                            id="tenantEmail"
+                            id="licenseeEmail"
                             placeholder="Enter email address">
 
                     </div>
@@ -715,7 +715,7 @@
                         </label>
 
                         <select
-                            id="tenantProperty">
+                            id="licenseeProperty">
 
                             <option value="">
                                 Select Property
@@ -738,7 +738,7 @@
 
                         <input
                             type="text"
-                            id="tenantUnit"
+                            id="licenseeUnit"
                             placeholder="Example: A-101">
 
                     </div>
@@ -756,7 +756,7 @@
 
                         <input
                             type="number"
-                            id="tenantRent"
+                            id="licenseeRent"
                             min="0"
                             placeholder="Enter monthly rent">
 
@@ -775,7 +775,7 @@
 
                         <input
                             type="number"
-                            id="tenantDeposit"
+                            id="licenseeDeposit"
                             min="0"
                             placeholder="Enter deposit amount">
 
@@ -794,7 +794,7 @@
 
                         <input
                             type="date"
-                            id="tenantLeaseDate">
+                            id="licenseeLeaseDate">
 
                     </div>
 
@@ -810,7 +810,7 @@
                         </label>
 
                         <select
-                            id="tenantStatus">
+                            id="licenseeStatus">
 
                             <option value="Active">
                                 Active
@@ -834,19 +834,19 @@
                         <div style="display:flex;gap:12px;align-items:flex-start;margin-top:8px;">
 
                             <div style="flex:0 0 120px;text-align:center;">
-                                <div id="tenantPhotoPreview" style="width:100px;height:100px;border-radius:8px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e6eefc;">
-                                    <span style="color:#64748b" id="tenantPhotoPlaceholder">No photo</span>
+                                <div id="licenseePhotoPreview" style="width:100px;height:100px;border-radius:8px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e6eefc;">
+                                    <span style="color:#64748b" id="licenseePhotoPlaceholder">No photo</span>
                                 </div>
 
                                 <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;">
                                     <label class="action-btn view-btn" style="padding:6px 8px;cursor:pointer;">
-                                        <input id="tenantPhotoInput" type="file" accept="image/*" style="display:none">
+                                        <input id="licenseePhotoInput" type="file" accept="image/*" style="display:none">
                                         Upload
                                     </label>
-                                    <button type="button" id="tenantPhotoRemoveBtn" class="action-btn delete-btn" style="padding:6px 8px;display:none">Remove</button>
+                                    <button type="button" id="licenseePhotoRemoveBtn" class="action-btn delete-btn" style="padding:6px 8px;display:none">Remove</button>
                                 </div>
 
-                                <small id="tenantPhotoError" style="color:#dc2626;display:block;margin-top:6px;min-height:18px"></small>
+                                <small id="licenseePhotoError" style="color:#dc2626;display:block;margin-top:6px;min-height:18px"></small>
                             </div>
 
                             <div style="flex:1">
@@ -855,90 +855,90 @@
 
                                     <div class="form-group">
                                         <label>Aadhaar Number <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantAadhaar" placeholder="Enter Aadhaar number">
-                                        <small id="tenantAadhaarError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseeAadhaar" placeholder="Enter Aadhaar number">
+                                        <small id="licenseeAadhaarError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>PAN Number <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantPAN" placeholder="Enter PAN number">
-                                        <small id="tenantPANError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseePAN" placeholder="Enter PAN number">
+                                        <small id="licenseePANError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
                                     
                                     <div class="form-group">
                                         <label>Religion <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantReligion" placeholder="Enter religion">
-                                        <small id="tenantReligionError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseeReligion" placeholder="Enter religion">
+                                        <small id="licenseeReligionError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Gender <span style="color:#dc2626">*</span></label>
-                                        <select id="tenantGender">
+                                        <select id="licenseeGender">
                                             <option value="">Select Gender</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                         </select>
-                                        <small id="tenantGenderError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <small id="licenseeGenderError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Nationality <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantNationality" placeholder="Enter nationality">
-                                        <small id="tenantNationalityError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseeNationality" placeholder="Enter nationality">
+                                        <small id="licenseeNationalityError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Occupation <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantOccupation" placeholder="Enter occupation">
-                                        <small id="tenantOccupationError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseeOccupation" placeholder="Enter occupation">
+                                        <small id="licenseeOccupationError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Number of residents in the property <span style="color:#dc2626">*</span></label>
-                                        <input type="number" id="tenantResidentCount" placeholder="Enter number of residents">
-                                        <small id="tenantResidentCountError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="number" id="licenseeResidentCount" placeholder="Enter number of residents">
+                                        <small id="licenseeResidentCountError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Number of vehicles <span style="color:#dc2626">*</span></label>
-                                        <input type="number" id="tenantVehicleCount" placeholder="Enter number of vehicles">
-                                        <select id="tenantVehicleType" style="margin-top:6px;padding:10px;border-radius:8px;border:1px solid #d7dee8;background:#fff;">
+                                        <input type="number" id="licenseeVehicleCount" placeholder="Enter number of vehicles">
+                                        <select id="licenseeVehicleType" style="margin-top:6px;padding:10px;border-radius:8px;border:1px solid #d7dee8;background:#fff;">
                                             <option value="">Select Vehicle Type</option>
                                             <option value="2-wheeler">2-Wheeler</option>
                                             <option value="4-wheeler">4-Wheeler</option>
                                             <option value="none">none</option>
                                         </select>
-                                        <small id="tenantVehicleCountError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <small id="licenseeVehicleCountError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Address <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantAddress" placeholder="Enter address">
-                                        <small id="tenantAddressError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseeAddress" placeholder="Enter address">
+                                        <small id="licenseeAddressError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Emergency Contact (Optional) <span style="color:#dc2626"></span></label>
-                                        <input type="text" id="tenantEmergencyContact" placeholder="Enter emergency contact">
-                                        <small id="tenantEmergencyContactError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseeEmergencyContact" placeholder="Enter emergency contact">
+                                        <small id="licenseeEmergencyContactError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Post Office <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantPostOffice" placeholder="Enter post office">
-                                        <small id="tenantPostOfficeError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseePostOffice" placeholder="Enter post office">
+                                        <small id="licenseePostOfficeError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Police Station <span style="color:#dc2626">*</span></label>
-                                        <input type="text" id="tenantPoliceStation" placeholder="Enter police station">
-                                        <small id="tenantPoliceStationError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                        <input type="text" id="licenseePoliceStation" placeholder="Enter police station">
+                                        <small id="licenseePoliceStationError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                     <div class="form-group">
                                        <label>PIN Code (6 digits Mandatory) <span style="color:#dc2626">*</span></label>
-                                       <input type="number" id="tenantPinCode" placeholder="Enter PIN code" maxlength="6" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6); this.value = this.value.replace(/[^0-9]/g, '');">
-                                       <small id="tenantPinCodeError" style="color:#dc2626;display:block;min-height:18px"></small>
+                                       <input type="number" id="licenseePinCode" placeholder="Enter PIN code" maxlength="6" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6); this.value = this.value.replace(/[^0-9]/g, '');">
+                                       <small id="licenseePinCodeError" style="color:#dc2626;display:block;min-height:18px"></small>
                                     </div>
 
                                 </div>
@@ -950,7 +950,7 @@
 
                                         <label>Additional Document (Residential) <span style="color:#dc2626"></span></label>
                                         <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
-                                            <select id="tenantResidentialDocType" style="min-width:180px;padding:10px;border-radius:8px;border:1px solid #d7dee8;background:#fff;">
+                                            <select id="licenseeResidentialDocType" style="min-width:180px;padding:10px;border-radius:8px;border:1px solid #d7dee8;background:#fff;">
                                                 <option value="">Select Document Type</option>
                                                 <option value="service">Service Document</option>
                                                 <option value="education">Education Document</option>
@@ -958,16 +958,16 @@
                                             </select>
 
                                             <label class="action-btn view-btn" style="padding:8px 10px;cursor:pointer;">
-                                                <input id="tenantResidentialDocInput" type="file" accept=".pdf,image/*,.doc,.docx" style="display:none">
+                                                <input id="licenseeResidentialDocInput" type="file" accept=".pdf,image/*,.doc,.docx" style="display:none">
                                                 Upload
                                             </label>
 
-                                            <div id="tenantResidentialDocName" style="color:#334155"></div>
-                                            <button type="button" id="tenantResidentialDocRemove" class="action-btn delete-btn" style="display:none">Remove</button>
+                                            <div id="licenseeResidentialDocName" style="color:#334155"></div>
+                                            <button type="button" id="licenseeResidentialDocRemove" class="action-btn delete-btn" style="display:none">Remove</button>
 
                                         </div>
 
-                                        <small id="tenantResidentialDocError" style="color:#dc2626;display:block;min-height:18px;margin-top:6px"></small>
+                                        <small id="licenseeResidentialDocError" style="color:#dc2626;display:block;min-height:18px;margin-top:6px"></small>
 
                                     </div>
 
@@ -978,16 +978,16 @@
 
                                         <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
                                             <label class="action-btn view-btn" style="padding:8px 10px;cursor:pointer;">
-                                                <input id="tenantBusinessDocInput" type="file" accept=".pdf,image/*,.doc,.docx" style="display:none">
+                                                <input id="licenseeBusinessDocInput" type="file" accept=".pdf,image/*,.doc,.docx" style="display:none">
                                                 Upload
                                             </label>
 
-                                            <div id="tenantBusinessDocName" style="color:#334155"></div>
-                                            <button type="button" id="tenantBusinessDocRemove" class="action-btn delete-btn" style="display:none">Remove</button>
+                                            <div id="licenseeBusinessDocName" style="color:#334155"></div>
+                                            <button type="button" id="licenseeBusinessDocRemove" class="action-btn delete-btn" style="display:none">Remove</button>
 
                                         </div>
 
-                                        <small id="tenantBusinessDocError" style="color:#dc2626;display:block;min-height:18px;margin-top:6px"></small>
+                                        <small id="licenseeBusinessDocError" style="color:#dc2626;display:block;min-height:18px;margin-top:6px"></small>
 
                                     </div>
 
@@ -1004,13 +1004,13 @@
 
 
                 <div
-                    class="tenant-form-buttons">
+                    class="licensee-form-buttons">
 
 
                     <button
                         type="button"
-                        class="cancel-tenant"
-                        id="cancelTenantBtn">
+                        class="cancel-licensee"
+                        id="cancellicenseeBtn">
 
                         Cancel
 
@@ -1019,10 +1019,10 @@
 
                     <button
                         type="button"
-                        class="save-tenant"
-                        id="saveTenantBtn">
+                        class="save-licensee"
+                        id="savelicenseeBtn">
 
-                        Save Tenant
+                        Save licensee
 
                     </button>
 
@@ -1042,17 +1042,17 @@
         ================================= -->
 
         <div
-            id="tenantDetailsOverlay"
-            class="tenant-details-overlay">
+            id="licenseeDetailsOverlay"
+            class="licensee-details-overlay">
 
 
-            <div class="tenant-details">
+            <div class="licensee-details">
 
 
                 <div class="form-header">
 
                     <h2>
-                        Tenant Details
+                        licensee Details
                     </h2>
 
 
@@ -1069,7 +1069,7 @@
 
 
                 <div
-                    id="tenantDetailsContent">
+                    id="licenseeDetailsContent">
                 </div>
 
 
@@ -1093,15 +1093,15 @@
    DATA
 ========================================== */
 
-let tenants =
+let licensees =
     JSON.parse(
         localStorage.getItem(
-            "rentTenants"
+            "rentlicensees"
         )
     ) || [];
 
 
-let editingTenantId = null;
+let editinglicenseeId = null;
 
 
 
@@ -1129,7 +1129,7 @@ function loadPropertyDropdown() {
 
     const select =
         document.getElementById(
-            "tenantProperty"
+            "licenseeProperty"
         );
 
 
@@ -1176,8 +1176,8 @@ function loadPropertyDropdown() {
    OPEN FORM
 ========================================== */
 
-function openTenantForm(
-    tenant = null
+function openlicenseeForm(
+    licensee = null
 ) {
 
     loadPropertyDropdown();
@@ -1185,148 +1185,148 @@ function openTenantForm(
 
     const form =
         document.getElementById(
-            "tenantForm"
+            "licenseeForm"
         );
 
 
     const title =
         document.getElementById(
-            "tenantFormTitle"
+            "licenseeFormTitle"
         );
 
 
     const saveButton =
         document.getElementById(
-            "saveTenantBtn"
+            "savelicenseeBtn"
         );
 
 
-    if (tenant) {
+    if (licensee) {
 
-        editingTenantId =
-            tenant.id;
+        editinglicenseeId =
+            licensee.id;
 
 
         title.textContent =
-            "Edit Tenant";
+            "Edit licensee";
 
 
         saveButton.textContent =
-            "Update Tenant";
+            "Update licensee";
 
 
         document.getElementById(
-            "tenantName"
+            "licenseeName"
         ).value =
-            tenant.name;
+            licensee.name;
 
 
         document.getElementById(
-            "tenantMobile"
+            "licenseeMobile"
         ).value =
-            tenant.mobile;
+            licensee.mobile;
 
 
         document.getElementById(
-            "tenantEmail"
+            "licenseeEmail"
         ).value =
-            tenant.email;
+            licensee.email;
 
 
         document.getElementById(
-            "tenantProperty"
+            "licenseeProperty"
         ).value =
-            tenant.propertyId;
+            licensee.propertyId;
 
         // adjust doc sections according to property type
-        showPropertyDocSections(tenant.propertyId);
+        showPropertyDocSections(licensee.propertyId);
 
 
         document.getElementById(
-            "tenantUnit"
+            "licenseeUnit"
         ).value =
-            tenant.unit;
+            licensee.unit;
 
 
         document.getElementById(
-            "tenantRent"
+            "licenseeRent"
         ).value =
-            tenant.rent;
+            licensee.rent;
 
 
         document.getElementById(
-            "tenantDeposit"
+            "licenseeDeposit"
         ).value =
-            tenant.deposit;
+            licensee.deposit;
 
 
         document.getElementById(
-            "tenantLeaseDate"
+            "licenseeLeaseDate"
         ).value =
-            tenant.leaseDate;
+            licensee.leaseDate;
 
 
         document.getElementById(
-            "tenantStatus"
+            "licenseeStatus"
         ).value =
-            tenant.status;
+            licensee.status;
 
         // Load identity & documents if present
-        document.getElementById("tenantAadhaar").value = tenant.aadhaar || "";
-        document.getElementById("tenantPAN").value = tenant.pan || "";
+        document.getElementById("licenseeAadhaar").value = licensee.aadhaar || "";
+        document.getElementById("licenseePAN").value = licensee.pan || "";
 
         // Photo
-        if (tenant.photo && tenant.photo.dataUrl) {
-            renderTenantPhotoPreview(tenant.photo.dataUrl);
-            document.getElementById('tenantPhotoRemoveBtn').style.display = 'inline-block';
+        if (licensee.photo && licensee.photo.dataUrl) {
+            renderlicenseePhotoPreview(licensee.photo.dataUrl);
+            document.getElementById('licenseePhotoRemoveBtn').style.display = 'inline-block';
             // ensure form state does not override existing photo unless user acts
-            tenantFormState.photo = null;
-            tenantFormState.removeExistingPhoto = false;
+            licenseeFormState.photo = null;
+            licenseeFormState.removeExistingPhoto = false;
         } else {
-            clearTenantPhotoPreview();
+            clearlicenseePhotoPreview();
         }
 
         // Documents
-        document.getElementById('tenantResidentialDocName').textContent = '';
-        document.getElementById('tenantBusinessDocName').textContent = '';
-        document.getElementById('tenantResidentialDocRemove').style.display = 'none';
-        document.getElementById('tenantBusinessDocRemove').style.display = 'none';
-        tenantFormState.residentialDoc = null;
-        tenantFormState.businessDoc = null;
-        tenantFormState.removeResidentialDoc = false;
-        tenantFormState.removeBusinessDoc = false;
+        document.getElementById('licenseeResidentialDocName').textContent = '';
+        document.getElementById('licenseeBusinessDocName').textContent = '';
+        document.getElementById('licenseeResidentialDocRemove').style.display = 'none';
+        document.getElementById('licenseeBusinessDocRemove').style.display = 'none';
+        licenseeFormState.residentialDoc = null;
+        licenseeFormState.businessDoc = null;
+        licenseeFormState.removeResidentialDoc = false;
+        licenseeFormState.removeBusinessDoc = false;
 
-        if (Array.isArray(tenant.documents)) {
-            tenant.documents.forEach(function(doc) {
+        if (Array.isArray(licensee.documents)) {
+            licensee.documents.forEach(function(doc) {
                 if (doc.type === 'residential') {
-                    document.getElementById('tenantResidentialDocName').textContent = doc.fileName || '';
-                    document.getElementById('tenantResidentialDocRemove').style.display = 'inline-block';
+                    document.getElementById('licenseeResidentialDocName').textContent = doc.fileName || '';
+                    document.getElementById('licenseeResidentialDocRemove').style.display = 'inline-block';
                     // store existing doc info on dataset for potential replace
-                    document.getElementById('tenantResidentialDocName').dataset.existing = 'true';
+                    document.getElementById('licenseeResidentialDocName').dataset.existing = 'true';
                 }
                 if (doc.type === 'business') {
-                    document.getElementById('tenantBusinessDocName').textContent = doc.fileName || '';
-                    document.getElementById('tenantBusinessDocRemove').style.display = 'inline-block';
-                    document.getElementById('tenantBusinessDocName').dataset.existing = 'true';
+                    document.getElementById('licenseeBusinessDocName').textContent = doc.fileName || '';
+                    document.getElementById('licenseeBusinessDocRemove').style.display = 'inline-block';
+                    document.getElementById('licenseeBusinessDocName').dataset.existing = 'true';
                 }
             });
         }
 
     } else {
 
-        editingTenantId =
+        editinglicenseeId =
             null;
 
 
         title.textContent =
-            "Add New Tenant";
+            "Add New licensee";
 
 
         saveButton.textContent =
-            "Save Tenant";
+            "Save licensee";
 
 
-        clearTenantForm();
+        clearlicenseeForm();
 
     }
 
@@ -1342,19 +1342,19 @@ function openTenantForm(
    CLOSE FORM
 ========================================== */
 
-function closeTenantForm() {
+function closelicenseeForm() {
 
     document.getElementById(
-        "tenantForm"
+        "licenseeForm"
     ).style.display =
         "none";
 
 
-    editingTenantId =
+    editinglicenseeId =
         null;
 
 
-    clearTenantForm();
+    clearlicenseeForm();
 
 }
 
@@ -1364,117 +1364,117 @@ function closeTenantForm() {
    CLEAR FORM
 ========================================== */
 
-function clearTenantForm() {
+function clearlicenseeForm() {
 
     document.getElementById(
-        "tenantName"
+        "licenseeName"
     ).value = "";
 
 
     document.getElementById(
-        "tenantMobile"
+        "licenseeMobile"
     ).value = "";
 
 
     document.getElementById(
-        "tenantEmail"
+        "licenseeEmail"
     ).value = "";
 
 
     document.getElementById(
-        "tenantProperty"
+        "licenseeProperty"
     ).value = "";
 
 
     document.getElementById(
-        "tenantUnit"
+        "licenseeUnit"
     ).value = "";
 
 
     document.getElementById(
-        "tenantRent"
+        "licenseeRent"
     ).value = "";
 
 
     document.getElementById(
-        "tenantDeposit"
+        "licenseeDeposit"
     ).value = "";
 
 
     document.getElementById(
-        "tenantLeaseDate"
+        "licenseeLeaseDate"
     ).value = "";
 
 
     document.getElementById(
-        "tenantStatus"
+        "licenseeStatus"
     ).value = "Active";
 
     // clear identity fields
-    document.getElementById('tenantAadhaar').value = '';
-    document.getElementById('tenantPAN').value = '';
-    clearTenantPhotoPreview();
-    document.getElementById('tenantResidentialDocName').textContent = '';
-    document.getElementById('tenantBusinessDocName').textContent = '';
-    document.getElementById('tenantResidentialDocRemove').style.display = 'none';
-    document.getElementById('tenantBusinessDocRemove').style.display = 'none';
+    document.getElementById('licenseeAadhaar').value = '';
+    document.getElementById('licenseePAN').value = '';
+    clearlicenseePhotoPreview();
+    document.getElementById('licenseeResidentialDocName').textContent = '';
+    document.getElementById('licenseeBusinessDocName').textContent = '';
+    document.getElementById('licenseeResidentialDocRemove').style.display = 'none';
+    document.getElementById('licenseeBusinessDocRemove').style.display = 'none';
     // clear form state for docs
-    tenantFormState.residentialDoc = null;
-    tenantFormState.businessDoc = null;
-    tenantFormState.photo = null;
-    tenantFormState.removeExistingPhoto = false;
-    tenantFormState.removeResidentialDoc = false;
-    tenantFormState.removeBusinessDoc = false;
-    document.getElementById('tenantAadhaarError').textContent = '';
-    document.getElementById('tenantPANError').textContent = '';
-    document.getElementById('tenantPhotoError').textContent = '';
-    document.getElementById('tenantResidentialDocError').textContent = '';
-    document.getElementById('tenantBusinessDocError').textContent = '';
+    licenseeFormState.residentialDoc = null;
+    licenseeFormState.businessDoc = null;
+    licenseeFormState.photo = null;
+    licenseeFormState.removeExistingPhoto = false;
+    licenseeFormState.removeResidentialDoc = false;
+    licenseeFormState.removeBusinessDoc = false;
+    document.getElementById('licenseeAadhaarError').textContent = '';
+    document.getElementById('licenseePANError').textContent = '';
+    document.getElementById('licenseePhotoError').textContent = '';
+    document.getElementById('licenseeResidentialDocError').textContent = '';
+    document.getElementById('licenseeBusinessDocError').textContent = '';
 
 }
 
 
 
 /* ==========================================
-   SAVE TENANT
+   SAVE licensee
 ========================================== */
 
-function saveTenant() {
+function savelicensee() {
 
     const name =
         document.getElementById(
-            "tenantName"
+            "licenseeName"
         ).value.trim();
 
 
     const mobile =
         document.getElementById(
-            "tenantMobile"
+            "licenseeMobile"
         ).value.trim();
 
 
     const email =
         document.getElementById(
-            "tenantEmail"
+            "licenseeEmail"
         ).value.trim();
 
 
     const propertyId =
         document.getElementById(
-            "tenantProperty"
+            "licenseeProperty"
         ).value;
 
 
     const unit =
         document.getElementById(
-            "tenantUnit"
+            "licenseeUnit"
         ).value.trim();
 
 
     const rent =
         Number(
             document.getElementById(
-                "tenantRent"
+                "licenseeRent"
             ).value
         );
 
@@ -1482,20 +1482,20 @@ function saveTenant() {
     const deposit =
         Number(
             document.getElementById(
-                "tenantDeposit"
+                "licenseeDeposit"
             ).value
         ) || 0;
 
 
     const leaseDate =
         document.getElementById(
-            "tenantLeaseDate"
+            "licenseeLeaseDate"
         ).value;
 
 
     const status =
         document.getElementById(
-            "tenantStatus"
+            "licenseeStatus"
         ).value;
 
 
@@ -1509,7 +1509,7 @@ function saveTenant() {
     ) {
 
         alert(
-            "Please fill in all required tenant details."
+            "Please fill in all required licensee details."
         );
 
         return;
@@ -1545,64 +1545,64 @@ function saveTenant() {
     /* EDIT */
 
     if (
-        editingTenantId !== null
+        editinglicenseeId !== null
     ) {
 
-        const tenant =
-            tenants.find(
+        const licensee =
+            licensees.find(
                 t =>
                     t.id ===
-                    editingTenantId
+                    editinglicenseeId
             );
 
 
-        if (!tenant) {
+        if (!licensee) {
             return;
         }
 
 
-        tenant.name =
+        licensee.name =
             name;
 
-        tenant.mobile =
+        licensee.mobile =
             mobile;
 
-        tenant.email =
+        licensee.email =
             email;
 
-        tenant.propertyId =
+        licensee.propertyId =
             Number(propertyId);
 
-        tenant.propertyName =
+        licensee.propertyName =
             property.name;
 
-        tenant.unit =
+        licensee.unit =
             unit;
 
-        tenant.rent =
+        licensee.rent =
             rent;
 
-        tenant.deposit =
+        licensee.deposit =
             deposit;
 
-        tenant.leaseDate =
+        licensee.leaseDate =
             leaseDate;
 
-        tenant.status =
+        licensee.status =
             status;
 
 
-        saveTenants();
+        savelicensees();
 
-        renderTenants();
+        renderlicensees();
 
         updatePropertyOccupancy();
 
-        closeTenantForm();
+        closelicenseeForm();
 
 
         alert(
-            "Tenant updated successfully!"
+            "licensee updated successfully!"
         );
 
 
@@ -1612,9 +1612,9 @@ function saveTenant() {
 
 
 
-    /* NEW TENANT */
+    /* NEW licensee */
 
-    const tenant = {
+    const licensee = {
 
         id:
             Date.now(),
@@ -1652,22 +1652,22 @@ function saveTenant() {
     };
 
 
-    tenants.push(
-        tenant
+    licensees.push(
+        licensee
     );
 
 
-    saveTenants();
+    savelicensees();
 
-    renderTenants();
+    renderlicensees();
 
     updatePropertyOccupancy();
 
-    closeTenantForm();
+    closelicenseeForm();
 
 
     alert(
-        "Tenant added successfully!"
+        "licensee added successfully!"
     );
 
 }
@@ -1675,15 +1675,15 @@ function saveTenant() {
 
 
 /* ==========================================
-   SAVE TENANTS
+   SAVE licenseeS
 ========================================== */
 
-function saveTenants() {
+function savelicensees() {
 
     localStorage.setItem(
-        "rentTenants",
+        "rentlicensees",
         JSON.stringify(
-            tenants
+            licensees
         )
     );
 
@@ -1693,7 +1693,7 @@ function saveTenants() {
 // Identity & Documents JS
 // =========================
 
-const tenantFormState = {
+const licenseeFormState = {
     photo: null, // { fileName, dataUrl, uploadDate }
     residentialDoc: null, // { fileName, dataUrl, uploadDate, docKind }
     businessDoc: null,
@@ -1717,8 +1717,8 @@ function readFileAsDataURL(file) {
     });
 }
 
-function renderTenantPhotoPreview(dataUrl) {
-    const preview = document.getElementById('tenantPhotoPreview');
+function renderlicenseePhotoPreview(dataUrl) {
+    const preview = document.getElementById('licenseePhotoPreview');
     preview.innerHTML = '';
     const img = document.createElement('img');
     img.src = dataUrl;
@@ -1726,15 +1726,15 @@ function renderTenantPhotoPreview(dataUrl) {
     img.style.height = '100%';
     img.style.objectFit = 'cover';
     preview.appendChild(img);
-    document.getElementById('tenantPhotoPlaceholder').style.display = 'none';
+    document.getElementById('licenseePhotoPlaceholder').style.display = 'none';
 }
 
-function clearTenantPhotoPreview() {
-    const preview = document.getElementById('tenantPhotoPreview');
-    preview.innerHTML = '<span style="color:#64748b" id="tenantPhotoPlaceholder">No photo</span>';
-    tenantFormState.photo = null;
+function clearlicenseePhotoPreview() {
+    const preview = document.getElementById('licenseePhotoPreview');
+    preview.innerHTML = '<span style="color:#64748b" id="licenseePhotoPlaceholder">No photo</span>';
+    licenseeFormState.photo = null;
     // Do not reset removeExistingPhoto here - the caller (e.g. remove button) controls that flag.
-    document.getElementById('tenantPhotoRemoveBtn').style.display = 'none';
+    document.getElementById('licenseePhotoRemoveBtn').style.display = 'none';
 }
 
 function showPropertyDocSections(propertyId) {
@@ -1746,93 +1746,93 @@ function showPropertyDocSections(propertyId) {
 }
 
 // wire up inputs
-document.getElementById('tenantProperty').addEventListener('change', function() {
+document.getElementById('licenseeProperty').addEventListener('change', function() {
     showPropertyDocSections(this.value);
 });
 
 // Photo input
-document.getElementById('tenantPhotoInput').addEventListener('change', async function(e) {
+document.getElementById('licenseePhotoInput').addEventListener('change', async function(e) {
     const file = this.files && this.files[0];
     if (!file) return;
     // validate type and size (max 3MB)
     const maxSize = 3 * 1024 * 1024;
     if (!file.type.startsWith('image/')) {
-        document.getElementById('tenantPhotoError').textContent = 'Only image files are allowed.';
+        document.getElementById('licenseePhotoError').textContent = 'Only image files are allowed.';
         return;
     }
     if (file.size > maxSize) {
-        document.getElementById('tenantPhotoError').textContent = 'Photo must be smaller than 3 MB.';
+        document.getElementById('licenseePhotoError').textContent = 'Photo must be smaller than 3 MB.';
         return;
     }
-    document.getElementById('tenantPhotoError').textContent = '';
+    document.getElementById('licenseePhotoError').textContent = '';
     const dataUrl = await readFileAsDataURL(file);
-    tenantFormState.photo = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString() };
-    renderTenantPhotoPreview(dataUrl);
-    document.getElementById('tenantPhotoRemoveBtn').style.display = 'inline-block';
+    licenseeFormState.photo = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString() };
+    renderlicenseePhotoPreview(dataUrl);
+    document.getElementById('licenseePhotoRemoveBtn').style.display = 'inline-block';
 });
 
 // Remove photo
-document.getElementById('tenantPhotoRemoveBtn').addEventListener('click', function() {
+document.getElementById('licenseePhotoRemoveBtn').addEventListener('click', function() {
     // Mark that existing photo (if any) should be removed
-    tenantFormState.photo = null;
-    tenantFormState.removeExistingPhoto = true;
-    clearTenantPhotoPreview();
+    licenseeFormState.photo = null;
+    licenseeFormState.removeExistingPhoto = true;
+    clearlicenseePhotoPreview();
 });
 
 // Residential doc input
-document.getElementById('tenantResidentialDocInput').addEventListener('change', async function(e) {
+document.getElementById('licenseeResidentialDocInput').addEventListener('change', async function(e) {
     const file = this.files && this.files[0];
     if (!file) return;
     const maxSize = 6 * 1024 * 1024; // 6MB for docs
     if (!/(pdf|image|msword|officedocument|application)/.test(file.type) && !/\.docx?$/.test(file.name)) {
-        document.getElementById('tenantResidentialDocError').textContent = 'Unsupported document format.';
+        document.getElementById('licenseeResidentialDocError').textContent = 'Unsupported document format.';
         return;
     }
     if (file.size > maxSize) {
-        document.getElementById('tenantResidentialDocError').textContent = 'Document must be smaller than 6 MB.';
+        document.getElementById('licenseeResidentialDocError').textContent = 'Document must be smaller than 6 MB.';
         return;
     }
-    document.getElementById('tenantResidentialDocError').textContent = '';
+    document.getElementById('licenseeResidentialDocError').textContent = '';
     const dataUrl = await readFileAsDataURL(file);
-    const kind = document.getElementById('tenantResidentialDocType').value || 'service';
-    tenantFormState.residentialDoc = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString(), docKind: kind };
-    document.getElementById('tenantResidentialDocName').textContent = file.name;
-    document.getElementById('tenantResidentialDocRemove').style.display = 'inline-block';
+    const kind = document.getElementById('licenseeResidentialDocType').value || 'service';
+    licenseeFormState.residentialDoc = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString(), docKind: kind };
+    document.getElementById('licenseeResidentialDocName').textContent = file.name;
+    document.getElementById('licenseeResidentialDocRemove').style.display = 'inline-block';
 });
 
 // Remove residential doc
-document.getElementById('tenantResidentialDocRemove').addEventListener('click', function() {
-    tenantFormState.residentialDoc = null;
-    tenantFormState.removeResidentialDoc = true;
-    document.getElementById('tenantResidentialDocName').textContent = '';
+document.getElementById('licenseeResidentialDocRemove').addEventListener('click', function() {
+    licenseeFormState.residentialDoc = null;
+    licenseeFormState.removeResidentialDoc = true;
+    document.getElementById('licenseeResidentialDocName').textContent = '';
     this.style.display = 'none';
 });
 
 // Business doc input
-document.getElementById('tenantBusinessDocInput').addEventListener('change', async function(e) {
+document.getElementById('licenseeBusinessDocInput').addEventListener('change', async function(e) {
     const file = this.files && this.files[0];
     if (!file) return;
     const maxSize = 6 * 1024 * 1024;
     if (!/(pdf|image|msword|officedocument|application)/.test(file.type) && !/\.docx?$/.test(file.name)) {
-        document.getElementById('tenantBusinessDocError').textContent = 'Unsupported document format.';
+        document.getElementById('licenseeBusinessDocError').textContent = 'Unsupported document format.';
         return;
     }
     if (file.size > maxSize) {
-        document.getElementById('tenantBusinessDocError').textContent = 'Document must be smaller than 6 MB.';
+        document.getElementById('licenseeBusinessDocError').textContent = 'Document must be smaller than 6 MB.';
         return;
     }
-    document.getElementById('tenantBusinessDocError').textContent = '';
+    document.getElementById('licenseeBusinessDocError').textContent = '';
     const dataUrl = await readFileAsDataURL(file);
-    tenantFormState.businessDoc = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString() };
-    document.getElementById('tenantBusinessDocName').textContent = file.name;
-    document.getElementById('tenantBusinessDocRemove').style.display = 'inline-block';
+    licenseeFormState.businessDoc = { fileName: file.name, dataUrl, uploadDate: new Date().toISOString() };
+    document.getElementById('licenseeBusinessDocName').textContent = file.name;
+    document.getElementById('licenseeBusinessDocRemove').style.display = 'inline-block';
 });
 
 // Remove business doc
-document.getElementById('tenantBusinessDocRemove').addEventListener('click', function() {
-    tenantFormState.businessDoc = null;
-    tenantFormState.removeBusinessDoc = true;
-    document.getElementById('tenantBusinessDocName').textContent = '';
+document.getElementById('licenseeBusinessDocRemove').addEventListener('click', function() {
+    licenseeFormState.businessDoc = null;
+    licenseeFormState.removeBusinessDoc = true;
+    document.getElementById('licenseeBusinessDocName').textContent = '';
     this.style.display = 'none';
 });
 
@@ -1845,28 +1845,28 @@ function validatePAN(pan) {
     return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(String(pan).trim());
 }
 
-// Enhance saveTenant with identity validations and storage
-const originalSaveTenant = saveTenant;
-async function enhancedSaveTenantWrapper() {
+// Enhance savelicensee with identity validations and storage
+const originalSavelicensee = savelicensee;
+async function enhancedSavelicenseeWrapper() {
     // clear previous errors
-    document.getElementById('tenantAadhaarError').textContent = '';
-    document.getElementById('tenantPANError').textContent = '';
-    document.getElementById('tenantPhotoError').textContent = '';
-    document.getElementById('tenantResidentialDocError').textContent = '';
-    document.getElementById('tenantBusinessDocError').textContent = '';
+    document.getElementById('licenseeAadhaarError').textContent = '';
+    document.getElementById('licenseePANError').textContent = '';
+    document.getElementById('licenseePhotoError').textContent = '';
+    document.getElementById('licenseeResidentialDocError').textContent = '';
+    document.getElementById('licenseeBusinessDocError').textContent = '';
 
-    const aadhaar = document.getElementById('tenantAadhaar').value.trim();
-    const pan = document.getElementById('tenantPAN').value.trim();
-    const propertyId = document.getElementById('tenantProperty').value;
+    const aadhaar = document.getElementById('licenseeAadhaar').value.trim();
+    const pan = document.getElementById('licenseePAN').value.trim();
+    const propertyId = document.getElementById('licenseeProperty').value;
 
-    // run existing required validations first (they exist in saveTenant) by replicating relevant checks
-    const name = document.getElementById('tenantName').value.trim();
-    const mobile = document.getElementById('tenantMobile').value.trim();
-    const unit = document.getElementById('tenantUnit').value.trim();
-    const rent = Number(document.getElementById('tenantRent').value);
-    const leaseDate = document.getElementById('tenantLeaseDate').value;
+    // run existing required validations first (they exist in savelicensee) by replicating relevant checks
+    const name = document.getElementById('licenseeName').value.trim();
+    const mobile = document.getElementById('licenseeMobile').value.trim();
+    const unit = document.getElementById('licenseeUnit').value.trim();
+    const rent = Number(document.getElementById('licenseeRent').value);
+    const leaseDate = document.getElementById('licenseeLeaseDate').value;
     if (!name || !mobile || !propertyId || !unit || !rent || !leaseDate) {
-        alert('Please fill in all required tenant details.');
+        alert('Please fill in all required licensee details.');
         return;
     }
 
@@ -1877,106 +1877,106 @@ async function enhancedSaveTenantWrapper() {
 
     let hasError = false;
     if (!validateAadhaar(aadhaar)) {
-        document.getElementById('tenantAadhaarError').textContent = 'Aadhaar must be a 12 digit number.';
+        document.getElementById('licenseeAadhaarError').textContent = 'Aadhaar must be a 12 digit number.';
         hasError = true;
     }
     if (!validatePAN(pan)) {
-        document.getElementById('tenantPANError').textContent = 'PAN must follow format (e.g. ABCDE1234F).';
+        document.getElementById('licenseePANError').textContent = 'PAN must follow format (e.g. ABCDE1234F).';
         hasError = true;
     }
 
-    // Photo required: either existing tenant.photo (if editing) or tenantFormState.photo
-    let existingTenant = null;
-    if (editingTenantId !== null) existingTenant = tenants.find(t => t.id === editingTenantId);
-    if (!(tenantFormState.photo || (existingTenant && existingTenant.photo && existingTenant.photo.dataUrl))) {
-        document.getElementById('tenantPhotoError').textContent = 'Tenant photo is required.';
+    // Photo required: either existing licensee.photo (if editing) or licenseeFormState.photo
+    let existinglicensee = null;
+    if (editinglicenseeId !== null) existinglicensee = licensees.find(t => t.id === editinglicenseeId);
+    if (!(licenseeFormState.photo || (existinglicensee && existinglicensee.photo && existinglicensee.photo.dataUrl))) {
+        document.getElementById('licenseePhotoError').textContent = 'licensee photo is required.';
         hasError = true;
     }
 
     if (isCommercial) {
         // business doc required
-        if (!(tenantFormState.businessDoc || (existingTenant && Array.isArray(existingTenant.documents) && existingTenant.documents.some(d => d.type === 'business')))) {
-            document.getElementById('tenantBusinessDocError').textContent = 'Business document is required for commercial tenants.';
+        if (!(licenseeFormState.businessDoc || (existinglicensee && Array.isArray(existinglicensee.documents) && existinglicensee.documents.some(d => d.type === 'business')))) {
+            document.getElementById('licenseeBusinessDocError').textContent = 'Business document is required for commercial licensees.';
             hasError = true;
         }
     } else {
         // residential: require either residential doc (service/education) or existing
-        if (!(tenantFormState.residentialDoc || (existingTenant && Array.isArray(existingTenant.documents) && existingTenant.documents.some(d => d.type === 'residential')))) {
-            document.getElementById('tenantResidentialDocError').textContent = 'Please upload service or education document for residential tenants.';
+        if (!(licenseeFormState.residentialDoc || (existinglicensee && Array.isArray(existinglicensee.documents) && existinglicensee.documents.some(d => d.type === 'residential')))) {
+            document.getElementById('licenseeResidentialDocError').textContent = 'Please upload service or education document for residential licensees.';
             hasError = true;
         }
     }
 
     if (hasError) return; // do not proceed
 
-    // Now proceed to call original saveTenant but first attach identity fields into the form values
-    // We'll copy some code from saveTenant's flow to ensure documents are attached to tenant objects
+    // Now proceed to call original savelicensee but first attach identity fields into the form values
+    // We'll copy some code from savelicensee's flow to ensure documents are attached to licensee objects
 
-    // Prepare tenant data similar to saveTenant's logic
+    // Prepare licensee data similar to savelicensee's logic
     const nameVal = name;
     const mobileVal = mobile;
-    const emailVal = document.getElementById('tenantEmail').value.trim();
+    const emailVal = document.getElementById('licenseeEmail').value.trim();
     const unitVal = unit;
-    const rentVal = Number(document.getElementById('tenantRent').value);
-    const depositVal = Number(document.getElementById('tenantDeposit').value) || 0;
+    const rentVal = Number(document.getElementById('licenseeRent').value);
+    const depositVal = Number(document.getElementById('licenseeDeposit').value) || 0;
     const leaseDateVal = leaseDate;
-    const statusVal = document.getElementById('tenantStatus').value;
+    const statusVal = document.getElementById('licenseeStatus').value;
 
-    if (editingTenantId !== null) {
-        const tenant = tenants.find(t => t.id === editingTenantId);
-        if (!tenant) return;
-        tenant.name = nameVal;
-        tenant.mobile = mobileVal;
-        tenant.email = emailVal;
-        tenant.propertyId = Number(propertyId);
-        tenant.propertyName = property.name;
-        tenant.unit = unitVal;
-        tenant.rent = rentVal;
-        tenant.deposit = depositVal;
-        tenant.leaseDate = leaseDateVal;
-        tenant.status = statusVal;
+    if (editinglicenseeId !== null) {
+        const licensee = licensees.find(t => t.id === editinglicenseeId);
+        if (!licensee) return;
+        licensee.name = nameVal;
+        licensee.mobile = mobileVal;
+        licensee.email = emailVal;
+        licensee.propertyId = Number(propertyId);
+        licensee.propertyName = property.name;
+        licensee.unit = unitVal;
+        licensee.rent = rentVal;
+        licensee.deposit = depositVal;
+        licensee.leaseDate = leaseDateVal;
+        licensee.status = statusVal;
         // identity
-        tenant.aadhaar = aadhaar;
-        tenant.pan = pan;
+        licensee.aadhaar = aadhaar;
+        licensee.pan = pan;
         // photo
-        if (tenantFormState.photo) {
-            tenant.photo = tenantFormState.photo;
-        } else if (tenantFormState.removeExistingPhoto) {
+        if (licenseeFormState.photo) {
+            licensee.photo = licenseeFormState.photo;
+        } else if (licenseeFormState.removeExistingPhoto) {
             // user removed existing photo and didn't upload a new one
-            delete tenant.photo;
+            delete licensee.photo;
         }
         // documents: merge existing and new
-        tenant.documents = tenant.documents || [];
-        if (tenantFormState.removeResidentialDoc) {
-            tenant.documents = tenant.documents.filter(d => d.type !== 'residential');
+        licensee.documents = licensee.documents || [];
+        if (licenseeFormState.removeResidentialDoc) {
+            licensee.documents = licensee.documents.filter(d => d.type !== 'residential');
         }
-        if (tenantFormState.residentialDoc) {
+        if (licenseeFormState.residentialDoc) {
             // remove existing residential documents and add new
-            tenant.documents = tenant.documents.filter(d => d.type !== 'residential');
-            tenant.documents.push(Object.assign({}, tenantFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
+            licensee.documents = licensee.documents.filter(d => d.type !== 'residential');
+            licensee.documents.push(Object.assign({}, licenseeFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
         }
-        if (tenantFormState.removeBusinessDoc) {
-            tenant.documents = tenant.documents.filter(d => d.type !== 'business');
+        if (licenseeFormState.removeBusinessDoc) {
+            licensee.documents = licensee.documents.filter(d => d.type !== 'business');
         }
-        if (tenantFormState.businessDoc) {
-            tenant.documents = tenant.documents.filter(d => d.type !== 'business');
-            tenant.documents.push(Object.assign({}, tenantFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
+        if (licenseeFormState.businessDoc) {
+            licensee.documents = licensee.documents.filter(d => d.type !== 'business');
+            licensee.documents.push(Object.assign({}, licenseeFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
         }
 
-        saveTenants();
-        renderTenants();
+        savelicensees();
+        renderlicensees();
         updatePropertyOccupancy();
-        closeTenantForm();
-        alert('Tenant updated successfully!');
+        closelicenseeForm();
+        alert('licensee updated successfully!');
         return;
     }
 
-    // New tenant
-    const newTenant = {
+    // New licensee
+    const newlicensee = {
         id: Date.now(),
         name: nameVal,
         mobile: mobileVal,
-        email: document.getElementById('tenantEmail').value.trim(),
+        email: document.getElementById('licenseeEmail').value.trim(),
         propertyId: Number(propertyId),
         propertyName: property.name,
         unit: unitVal,
@@ -1986,45 +1986,45 @@ async function enhancedSaveTenantWrapper() {
         status: statusVal,
         aadhaar: aadhaar,
         pan: pan,
-        photo: tenantFormState.photo ? tenantFormState.photo : null,
+        photo: licenseeFormState.photo ? licenseeFormState.photo : null,
         documents: []
     };
 
-    if (tenantFormState.residentialDoc) {
-        newTenant.documents.push(Object.assign({}, tenantFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
+    if (licenseeFormState.residentialDoc) {
+        newlicensee.documents.push(Object.assign({}, licenseeFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
     }
-    if (tenantFormState.businessDoc) {
-        newTenant.documents.push(Object.assign({}, tenantFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
+    if (licenseeFormState.businessDoc) {
+        newlicensee.documents.push(Object.assign({}, licenseeFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
     }
 
-    tenants.push(newTenant);
-    saveTenants();
-    renderTenants();
+    licensees.push(newlicensee);
+    savelicensees();
+    renderlicensees();
     updatePropertyOccupancy();
-    closeTenantForm();
-    alert('Tenant added successfully!');
+    closelicenseeForm();
+    alert('licensee added successfully!');
 }
 
 // Replace the save button handler
-document.getElementById('saveTenantBtn').removeEventListener('click', saveTenant);
-document.getElementById('saveTenantBtn').addEventListener('click', enhancedSaveTenantWrapper);
+document.getElementById('savelicenseeBtn').removeEventListener('click', savelicensee);
+document.getElementById('savelicenseeBtn').addEventListener('click', enhancedSavelicenseeWrapper);
 
 // Ensure property doc sections are shown appropriately on initial load
-showPropertyDocSections(document.getElementById('tenantProperty').value);
+showPropertyDocSections(document.getElementById('licenseeProperty').value);
 
-// Enhance viewTenant to show photo and documents
-const originalViewTenant = viewTenant;
-function viewTenant(id) {
-    const tenant = tenants.find(t => t.id === Number(id));
-    if (!tenant) return originalViewTenant(id);
+// Enhance viewlicensee to show photo and documents
+const originalViewlicensee = viewlicensee;
+function viewlicensee(id) {
+    const licensee = licensees.find(t => t.id === Number(id));
+    if (!licensee) return originalViewlicensee(id);
 
-    const photoHtml = tenant.photo && tenant.photo.dataUrl ? `<div style="text-align:center;margin-bottom:12px"><img src="${tenant.photo.dataUrl}" style="width:120px;height:120px;border-radius:10px;object-fit:cover;border:1px solid #e6eefc" alt="Tenant Photo"></div>` : '';
+    const photoHtml = licensee.photo && licensee.photo.dataUrl ? `<div style="text-align:center;margin-bottom:12px"><img src="${licensee.photo.dataUrl}" style="width:120px;height:120px;border-radius:10px;object-fit:cover;border:1px solid #e6eefc" alt="licensee Photo"></div>` : '';
 
     let docsHtml = '';
-    if (Array.isArray(tenant.documents) && tenant.documents.length) {
+    if (Array.isArray(licensee.documents) && licensee.documents.length) {
         docsHtml = '<div style="margin-top:12px">';
         docsHtml += '<h4>Documents</h4>';
-        tenant.documents.forEach(d => {
+        licensee.documents.forEach(d => {
             docsHtml += `<div style="padding:8px;border-radius:8px;background:#f8fafc;margin-top:8px">`;
             docsHtml += `<strong>${d.fileName || 'Document'}</strong> <span style="color:#64748b">(${d.type})</span>`;
             docsHtml += `</div>`;
@@ -2032,47 +2032,47 @@ function viewTenant(id) {
         docsHtml += '</div>';
     }
 
-    document.getElementById('tenantDetailsContent').innerHTML = `
+    document.getElementById('licenseeDetailsContent').innerHTML = `
         ${photoHtml}
         <div class="details-grid">
-            <div class="detail-item"><span>Tenant Name</span><strong>${escapeHtml(tenant.name)}</strong></div>
-            <div class="detail-item"><span>Status</span><strong>${tenant.status}</strong></div>
-            <div class="detail-item"><span>Mobile</span><strong>${escapeHtml(tenant.mobile)}</strong></div>
-            <div class="detail-item"><span>Email</span><strong>${escapeHtml(tenant.email || '-')}</strong></div>
-            <div class="detail-item"><span>Property</span><strong>${escapeHtml(tenant.propertyName)}</strong></div>
-            <div class="detail-item"><span>Unit</span><strong>${escapeHtml(tenant.unit)}</strong></div>
-            <div class="detail-item"><span>Monthly Rent</span><strong>₹${Number(tenant.rent).toLocaleString('en-IN')}</strong></div>
-            <div class="detail-item"><span>Security Deposit</span><strong>₹${Number(tenant.deposit).toLocaleString('en-IN')}</strong></div>
-            <div class="detail-item"><span>Lease Start</span><strong>${tenant.leaseDate}</strong></div>
-            <div class="detail-item"><span>Aadhaar</span><strong>${tenant.aadhaar || '-'}</strong></div>
-            <div class="detail-item"><span>PAN</span><strong>${tenant.pan || '-'}</strong></div>
+            <div class="detail-item"><span>licensee Name</span><strong>${escapeHtml(licensee.name)}</strong></div>
+            <div class="detail-item"><span>Status</span><strong>${licensee.status}</strong></div>
+            <div class="detail-item"><span>Mobile</span><strong>${escapeHtml(licensee.mobile)}</strong></div>
+            <div class="detail-item"><span>Email</span><strong>${escapeHtml(licensee.email || '-')}</strong></div>
+            <div class="detail-item"><span>Property</span><strong>${escapeHtml(licensee.propertyName)}</strong></div>
+            <div class="detail-item"><span>Unit</span><strong>${escapeHtml(licensee.unit)}</strong></div>
+            <div class="detail-item"><span>Monthly Rent</span><strong>₹${Number(licensee.rent).toLocaleString('en-IN')}</strong></div>
+            <div class="detail-item"><span>Security Deposit</span><strong>₹${Number(licensee.deposit).toLocaleString('en-IN')}</strong></div>
+            <div class="detail-item"><span>Lease Start</span><strong>${licensee.leaseDate}</strong></div>
+            <div class="detail-item"><span>Aadhaar</span><strong>${licensee.aadhaar || '-'}</strong></div>
+            <div class="detail-item"><span>PAN</span><strong>${licensee.pan || '-'}</strong></div>
         </div>
         ${docsHtml}
     `;
 
-    document.getElementById('tenantDetailsOverlay').style.display = 'flex';
+    document.getElementById('licenseeDetailsOverlay').style.display = 'flex';
 }
 
 
 
 
 /* ==========================================
-   RENDER TENANTS
+   RENDER licenseeS
 ========================================== */
 
-function renderTenants() {
+function renderlicensees() {
 
     const tbody =
         document.getElementById(
-            "tenantTableBody"
+            "licenseeTableBody"
         );
 
 
     tbody.innerHTML = "";
 
 
-    tenants.forEach(
-        function(tenant) {
+    licensees.forEach(
+        function(licensee) {
 
 
             const row =
@@ -2086,7 +2086,7 @@ function renderTenants() {
                 <td>
                     <strong>
                         ${escapeHtml(
-                            tenant.name
+                            licensee.name
                         )}
                     </strong>
                 </td>
@@ -2094,28 +2094,28 @@ function renderTenants() {
 
                 <td>
                     ${escapeHtml(
-                        tenant.mobile
+                        licensee.mobile
                     )}
                 </td>
 
 
                 <td>
                     ${escapeHtml(
-                        tenant.propertyName
+                        licensee.propertyName
                     )}
                 </td>
 
 
                 <td>
                     ${escapeHtml(
-                        tenant.unit
+                        licensee.unit
                     )}
                 </td>
 
 
                 <td>
                     ₹${Number(
-                        tenant.rent
+                        licensee.rent
                     ).toLocaleString(
                         "en-IN"
                     )}
@@ -2125,12 +2125,12 @@ function renderTenants() {
                 <td>
 
                     <span class="status ${
-                        tenant.status === "Active"
+                        licensee.status === "Active"
                             ? "paid"
                             : "pending"
                     }">
 
-                        ${tenant.status}
+                        ${licensee.status}
 
                     </span>
 
@@ -2145,7 +2145,7 @@ function renderTenants() {
                         type="button"
                         class="action-btn view-btn"
                         data-action="view"
-                        data-id="${tenant.id}">
+                        data-id="${licensee.id}">
 
                         View
 
@@ -2156,7 +2156,7 @@ function renderTenants() {
                         type="button"
                         class="action-btn edit-btn"
                         data-action="edit"
-                        data-id="${tenant.id}">
+                        data-id="${licensee.id}">
 
                         Edit
 
@@ -2167,7 +2167,7 @@ function renderTenants() {
                         type="button"
                         class="action-btn delete-btn"
                         data-action="delete"
-                        data-id="${tenant.id}">
+                        data-id="${licensee.id}">
 
                         Delete
 
@@ -2200,11 +2200,11 @@ function renderTenants() {
 function updateSummary() {
 
     const total =
-        tenants.length;
+        licensees.length;
 
 
     const active =
-        tenants.filter(
+        licensees.filter(
             t =>
                 t.status ===
                 "Active"
@@ -2212,7 +2212,7 @@ function updateSummary() {
 
 
     const occupied =
-        tenants.filter(
+        licensees.filter(
             t =>
                 t.status ===
                 "Active"
@@ -2220,7 +2220,7 @@ function updateSummary() {
 
 
     const monthlyRent =
-        tenants
+        licensees
             .filter(
                 t =>
                     t.status ===
@@ -2229,24 +2229,24 @@ function updateSummary() {
             .reduce(
                 (
                     sum,
-                    tenant
+                    licensee
                 ) =>
                     sum +
                     Number(
-                        tenant.rent
+                        licensee.rent
                     ),
                 0
             );
 
 
     document.getElementById(
-        "totalTenants"
+        "totallicensees"
     ).textContent =
         total;
 
 
     document.getElementById(
-        "activeTenants"
+        "activelicensees"
     ).textContent =
         active;
 
@@ -2258,7 +2258,7 @@ function updateSummary() {
 
 
     document.getElementById(
-        "tenantMonthlyRent"
+        "licenseeMonthlyRent"
     ).textContent =
         "₹" +
         monthlyRent.toLocaleString(
@@ -2283,16 +2283,16 @@ function updatePropertyOccupancy() {
         function(property) {
 
             const occupied =
-                tenants.filter(
-                    tenant =>
+                licensees.filter(
+                    licensee =>
 
-                        tenant.status ===
+                        licensee.status ===
                         "Active"
 
                         &&
 
                         Number(
-                            tenant.propertyId
+                            licensee.propertyId
                         ) ===
                         Number(
                             property.id
@@ -2324,26 +2324,26 @@ function updatePropertyOccupancy() {
 
 
 /* ==========================================
-   VIEW TENANT
+   VIEW licensee
 ========================================== */
 
-function viewTenant(id) {
+function viewlicensee(id) {
 
-    const tenant =
-        tenants.find(
+    const licensee =
+        licensees.find(
             t =>
                 t.id ===
                 Number(id)
         );
 
 
-    if (!tenant) {
+    if (!licensee) {
         return;
     }
 
 
     document.getElementById(
-        "tenantDetailsContent"
+        "licenseeDetailsContent"
     ).innerHTML = `
 
         <div class="details-grid">
@@ -2352,12 +2352,12 @@ function viewTenant(id) {
             <div class="detail-item">
 
                 <span>
-                    Tenant Name
+                    licensee Name
                 </span>
 
                 <strong>
                     ${escapeHtml(
-                        tenant.name
+                        licensee.name
                     )}
                 </strong>
 
@@ -2371,7 +2371,7 @@ function viewTenant(id) {
                 </span>
 
                 <strong>
-                    ${tenant.status}
+                    ${licensee.status}
                 </strong>
 
             </div>
@@ -2385,7 +2385,7 @@ function viewTenant(id) {
 
                 <strong>
                     ${escapeHtml(
-                        tenant.mobile
+                        licensee.mobile
                     )}
                 </strong>
 
@@ -2400,7 +2400,7 @@ function viewTenant(id) {
 
                 <strong>
                     ${escapeHtml(
-                        tenant.email ||
+                        licensee.email ||
                         "-"
                     )}
                 </strong>
@@ -2416,7 +2416,7 @@ function viewTenant(id) {
 
                 <strong>
                     ${escapeHtml(
-                        tenant.propertyName
+                        licensee.propertyName
                     )}
                 </strong>
 
@@ -2431,7 +2431,7 @@ function viewTenant(id) {
 
                 <strong>
                     ${escapeHtml(
-                        tenant.unit
+                        licensee.unit
                     )}
                 </strong>
 
@@ -2446,7 +2446,7 @@ function viewTenant(id) {
 
                 <strong>
                     ₹${Number(
-                        tenant.rent
+                        licensee.rent
                     ).toLocaleString(
                         "en-IN"
                     )}
@@ -2463,7 +2463,7 @@ function viewTenant(id) {
 
                 <strong>
                     ₹${Number(
-                        tenant.deposit
+                        licensee.deposit
                     ).toLocaleString(
                         "en-IN"
                     )}
@@ -2479,7 +2479,7 @@ function viewTenant(id) {
                 </span>
 
                 <strong>
-                    ${tenant.leaseDate}
+                    ${licensee.leaseDate}
                 </strong>
 
             </div>
@@ -2491,7 +2491,7 @@ function viewTenant(id) {
 
 
     document.getElementById(
-        "tenantDetailsOverlay"
+        "licenseeDetailsOverlay"
     ).style.display =
         "flex";
 
@@ -2500,26 +2500,26 @@ function viewTenant(id) {
 
 
 /* ==========================================
-   EDIT TENANT
+   EDIT licensee
 ========================================== */
 
-function editTenant(id) {
+function editlicensee(id) {
 
-    const tenant =
-        tenants.find(
+    const licensee =
+        licensees.find(
             t =>
                 t.id ===
                 Number(id)
         );
 
 
-    if (!tenant) {
+    if (!licensee) {
         return;
     }
 
 
-    openTenantForm(
-        tenant
+    openlicenseeForm(
+        licensee
     );
 
 }
@@ -2527,27 +2527,27 @@ function editTenant(id) {
 
 
 /* ==========================================
-   DELETE TENANT
+   DELETE licensee
 ========================================== */
 
-function deleteTenant(id) {
+function deletelicensee(id) {
 
-    const tenant =
-        tenants.find(
+    const licensee =
+        licensees.find(
             t =>
                 t.id ===
                 Number(id)
         );
 
 
-    if (!tenant) {
+    if (!licensee) {
         return;
     }
 
 
     const confirmed =
         confirm(
-            `Are you sure you want to delete "${tenant.name}"?`
+            `Are you sure you want to delete "${licensee.name}"?`
         );
 
 
@@ -2556,23 +2556,23 @@ function deleteTenant(id) {
     }
 
 
-    tenants =
-        tenants.filter(
+    licensees =
+        licensees.filter(
             t =>
                 t.id !==
                 Number(id)
         );
 
 
-    saveTenants();
+    savelicensees();
 
-    renderTenants();
+    renderlicensees();
 
     updatePropertyOccupancy();
 
 
     alert(
-        "Tenant deleted successfully!"
+        "licensee deleted successfully!"
     );
 
 }
@@ -2585,13 +2585,13 @@ function deleteTenant(id) {
 
 document
     .getElementById(
-        "addTenantBtn"
+        "addlicenseeBtn"
     )
     .addEventListener(
         "click",
         function() {
 
-            openTenantForm();
+            openlicenseeForm();
 
         }
     );
@@ -2599,31 +2599,31 @@ document
 
 document
     .getElementById(
-        "closeTenantBtn"
+        "closelicenseeBtn"
     )
     .addEventListener(
         "click",
-        closeTenantForm
+        closelicenseeForm
     );
 
 
 document
     .getElementById(
-        "cancelTenantBtn"
+        "cancellicenseeBtn"
     )
     .addEventListener(
         "click",
-        closeTenantForm
+        closelicenseeForm
     );
 
 
 document
     .getElementById(
-        "saveTenantBtn"
+        "savelicenseeBtn"
     )
     .addEventListener(
         "click",
-        saveTenant
+        savelicensee
     );
 
 
@@ -2636,7 +2636,7 @@ document
         function() {
 
             document.getElementById(
-                "tenantDetailsOverlay"
+                "licenseeDetailsOverlay"
             ).style.display =
                 "none";
 
@@ -2651,7 +2651,7 @@ document
 
 document
     .getElementById(
-        "tenantTableBody"
+        "licenseeTableBody"
     )
     .addEventListener(
         "click",
@@ -2682,7 +2682,7 @@ document
                 action === "view"
             ) {
 
-                viewTenant(id);
+                viewlicensee(id);
 
             }
 
@@ -2691,7 +2691,7 @@ document
                 action === "edit"
             ) {
 
-                editTenant(id);
+                editlicensee(id);
 
             }
 
@@ -2700,7 +2700,7 @@ document
                 action === "delete"
             ) {
 
-                deleteTenant(id);
+                deletelicensee(id);
 
             }
 
@@ -2739,7 +2739,7 @@ function escapeHtml(value) {
 
 loadPropertyDropdown();
 
-renderTenants();
+renderlicensees();
 
 updatePropertyOccupancy();
 

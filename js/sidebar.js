@@ -48,11 +48,11 @@ document.addEventListener('DOMContentLoaded', function () {
             Maintenance
         </a>
 
-        <a href="tenants.html"
+        <a href="licensees.html"
            class="nav-item"
-           data-page="tenants.html">
+           data-page="licensees.html">
             <span>👥</span>
-            Tenants
+            licensees
         </a>
 
         <a href="rent-collection.html"

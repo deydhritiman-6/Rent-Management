@@ -184,7 +184,7 @@
 
             <div>
                 <h1>Reports</h1>
-                <p>View rental, tenant and payment reports</p>
+                <p>View rental, licensee and payment reports</p>
             </div>
 
             <button
@@ -354,7 +354,7 @@
 
                 <h3>Property Occupancy</h3>
 
-                <p>Current occupancy based on active tenants</p>
+                <p>Current occupancy based on active licensees</p>
 
                 <table class="report-table">
 
@@ -374,25 +374,25 @@
             </div>
 
 
-            <!-- TENANT REPORT -->
+            <!-- licensee REPORT -->
             <div class="report-card">
 
-                <h3>Tenant Report</h3>
+                <h3>licensee Report</h3>
 
-                <p>Active tenant information for the selected property</p>
+                <p>Active licensee information for the selected property</p>
 
                 <table class="report-table">
 
                     <thead>
                         <tr>
-                            <th>Tenant</th>
+                            <th>licensee</th>
                             <th>Property</th>
                             <th>Unit</th>
                             <th>Rent</th>
                         </tr>
                     </thead>
 
-                    <tbody id="tenantReportBody"></tbody>
+                    <tbody id="licenseeReportBody"></tbody>
 
                 </table>
 
@@ -410,7 +410,7 @@
 
                     <thead>
                         <tr>
-                            <th>Tenant</th>
+                            <th>licensee</th>
                             <th>Due</th>
                             <th>Paid</th>
                             <th>Balance</th>
@@ -428,7 +428,7 @@
 
 
         <div class="report-note">
-            Reports are generated from the current Properties, Tenants and Rent Collection
+            Reports are generated from the current Properties, licensees and Rent Collection
             data stored in your browser's local storage.
         </div>
 
@@ -440,7 +440,7 @@
 <script>
 
     let properties = [];
-    let tenants = [];
+    let licensees = [];
     let rentPayments = [];
 
 
@@ -451,9 +451,9 @@
                 localStorage.getItem("rentProperties")
             ) || [];
 
-        tenants =
+        licensees =
             JSON.parse(
-                localStorage.getItem("rentTenants")
+                localStorage.getItem("rentlicensees")
             ) || [];
 
         rentPayments =
@@ -893,18 +893,18 @@
         properties.forEach(
             function(property) {
 
-                const activeTenants =
-                    tenants.filter(
-                        tenant =>
-                            tenant.status === "Active" &&
-                            Number(tenant.propertyId) ===
+                const activelicensees =
+                    licensees.filter(
+                        licensee =>
+                            licensee.status === "Active" &&
+                            Number(licensee.propertyId) ===
                             Number(property.id)
                     );
 
 
                 const occupied =
                     Math.min(
-                        activeTenants.length,
+                        activelicensees.length,
                         Number(property.units) || 0
                     );
 
@@ -950,11 +950,11 @@
     }
 
 
-    function renderTenants() {
+    function renderlicensees() {
 
         const tbody =
             document.getElementById(
-                "tenantReportBody"
+                "licenseeReportBody"
             );
 
         tbody.innerHTML = "";
@@ -967,11 +967,11 @@
 
 
         const filtered =
-            tenants.filter(
-                function(tenant) {
+            licensees.filter(
+                function(licensee) {
 
                     if (
-                        tenant.status !==
+                        licensee.status !==
                         "Active"
                     ) {
                         return false;
@@ -986,7 +986,7 @@
 
 
                     return (
-                        String(tenant.propertyId) ===
+                        String(licensee.propertyId) ===
                         String(propertyId)
                     );
 
@@ -999,7 +999,7 @@
         ) {
 
             tbody.innerHTML =
-                `<tr><td colspan="4" class="empty-state">No active tenants found.</td></tr>`;
+                `<tr><td colspan="4" class="empty-state">No active licensees found.</td></tr>`;
 
             return;
 
@@ -1007,7 +1007,7 @@
 
 
         filtered.forEach(
-            function(tenant) {
+            function(licensee) {
 
                 const row =
                     document.createElement("tr");
@@ -1016,19 +1016,19 @@
                 row.innerHTML = `
 
                     <td>
-                        ${escapeHtml(tenant.name)}
+                        ${escapeHtml(licensee.name)}
                     </td>
 
                     <td>
-                        ${escapeHtml(tenant.propertyName)}
+                        ${escapeHtml(licensee.propertyName)}
                     </td>
 
                     <td>
-                        ${escapeHtml(tenant.unit)}
+                        ${escapeHtml(licensee.unit)}
                     </td>
 
                     <td class="amount">
-                        ${money(tenant.rent)}
+                        ${money(licensee.rent)}
                     </td>
 
                 `;
@@ -1074,7 +1074,7 @@
                 row.innerHTML = `
 
                     <td>
-                        ${escapeHtml(payment.tenantName)}
+                        ${escapeHtml(payment.licenseeName)}
                     </td>
 
                     <td>
@@ -1114,7 +1114,7 @@
         renderSummary(payments);
         renderPaymentSummary(payments);
         renderOccupancy();
-        renderTenants();
+        renderlicensees();
         renderPayments(payments);
 
     }

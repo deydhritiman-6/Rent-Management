@@ -53,7 +53,7 @@
 <button type="button" class="clear-filter-btn" id="clearFilterBtn">Clear Filter</button>
 </div>
 <div class="table-container">
-<table><thead><tr><th>Tenant</th><th>Property</th><th>Payment Date</th><th>Due Date</th><th>Paid Amount</th><th>Method</th><th>Status</th><th>Actions</th></tr></thead>
+<table><thead><tr><th>licensee</th><th>Property</th><th>Payment Date</th><th>Due Date</th><th>Paid Amount</th><th>Method</th><th>Status</th><th>Actions</th></tr></thead>
 <tbody id="paymentTableBody"></tbody></table>
 </div>
 </div>
@@ -107,7 +107,7 @@ function render(){
   rows.forEach(p=>{
    const cls=p.status==="Paid"?"paid":p.status==="Partial"?"partial":p.status==="Overdue"?"overdue":"pending";
    const tr=document.createElement("tr");
-   tr.innerHTML=`<td><strong>${esc(p.tenantName)}</strong></td>
+   tr.innerHTML=`<td><strong>${esc(p.licenseeName)}</strong></td>
    <td>${esc(p.propertyName)}<br><small>${esc(p.unit)}</small></td>
    <td>${fmt(p.paymentDate)}</td><td>${fmt(p.dueDate)}</td>
    <td>₹${Number(p.paid||0).toLocaleString("en-IN")}</td>
@@ -135,7 +135,7 @@ function summary(){
 function viewPayment(id){
  const p=rentPayments.find(x=>Number(x.id)===Number(id)); if(!p)return;
  document.getElementById("detailsContent").innerHTML=`<div class="details-grid">
- <div class="detail-item"><span>Tenant</span><strong>${esc(p.tenantName)}</strong></div>
+ <div class="detail-item"><span>licensee</span><strong>${esc(p.licenseeName)}</strong></div>
  <div class="detail-item"><span>Property</span><strong>${esc(p.propertyName)}</strong></div>
  <div class="detail-item"><span>Unit</span><strong>${esc(p.unit)}</strong></div>
  <div class="detail-item"><span>Due Date</span><strong>${fmt(p.dueDate)}</strong></div>
@@ -149,7 +149,7 @@ function viewPayment(id){
 }
 function deletePayment(id){
  const p=rentPayments.find(x=>Number(x.id)===Number(id));if(!p)return;
- if(!confirm(`Are you sure you want to delete this payment for "${p.tenantName}"?`))return;
+ if(!confirm(`Are you sure you want to delete this payment for "${p.licenseeName}"?`))return;
  rentPayments=rentPayments.filter(x=>Number(x.id)!==Number(id));
  localStorage.setItem("rentPayments",JSON.stringify(rentPayments));
  render();

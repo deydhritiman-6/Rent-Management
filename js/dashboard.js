@@ -30,7 +30,7 @@ const NotificationService = {
             title: notification.title,
             message: notification.message,
             propertyId: notification.propertyId || '',
-            tenantId: notification.tenantId || '',
+            licenseeId: notification.licenseeId || '',
             paymentId: notification.paymentId || '',
             reminderId: notification.reminderId || '',
             priority: notification.priority || 'medium',
@@ -116,10 +116,10 @@ const NotificationService = {
 
         const paymentList = JSON.parse(localStorage.getItem('rentPayments') || '[]');
         const propertyList = JSON.parse(localStorage.getItem('rentProperties') || '[]');
-        const tenantList = JSON.parse(localStorage.getItem('rentTenants') || '[]');
+        const licenseeList = JSON.parse(localStorage.getItem('rentlicensees') || '[]');
 
         paymentList.forEach((payment) => {
-            if (!payment || !payment.property || !payment.tenant) {
+            if (!payment || !payment.property || !payment.licensee) {
                 return;
             }
 
@@ -131,12 +131,12 @@ const NotificationService = {
 
             if (overdue) {
                 candidates.push(this.create({
-                    id: `RENT_OVERDUE_${payment.property}_${payment.tenant}_${payment.dueDate || 'unknown'}`,
+                    id: `RENT_OVERDUE_${payment.property}_${payment.licensee}_${payment.dueDate || 'unknown'}`,
                     type: 'RENT_OVERDUE',
                     title: 'Rent overdue',
-                    message: `${payment.property} rent is overdue for ${payment.tenant}.`,
+                    message: `${payment.property} rent is overdue for ${payment.licensee}.`,
                     propertyId: payment.propertyId || payment.property,
-                    tenantId: payment.tenantId || payment.tenant,
+                    licenseeId: payment.licenseeId || payment.licensee,
                     paymentId: payment.id || payment.paymentId || '',
                     priority: 'high',
                     isRead: false,
@@ -146,12 +146,12 @@ const NotificationService = {
                 }));
             } else if (dueSoon && dueDays !== null && dueDays <= 3) {
                 candidates.push(this.create({
-                    id: `RENT_DUE_${payment.property}_${payment.tenant}_${payment.dueDate || 'unknown'}`,
+                    id: `RENT_DUE_${payment.property}_${payment.licensee}_${payment.dueDate || 'unknown'}`,
                     type: 'RENT_DUE',
                     title: dueDays === 0 ? 'Rent due today' : 'Rent due soon',
-                    message: `${payment.property} rent is due ${dueDays === 0 ? 'today' : 'in ' + dueDays + ' days'} for ${payment.tenant}.`,
+                    message: `${payment.property} rent is due ${dueDays === 0 ? 'today' : 'in ' + dueDays + ' days'} for ${payment.licensee}.`,
                     propertyId: payment.propertyId || payment.property,
-                    tenantId: payment.tenantId || payment.tenant,
+                    licenseeId: payment.licenseeId || payment.licensee,
                     paymentId: payment.id || payment.paymentId || '',
                     priority: 'medium',
                     isRead: false,
@@ -163,12 +163,12 @@ const NotificationService = {
 
             if (status === 'paid' && payment.amount) {
                 candidates.push(this.create({
-                    id: `PAYMENT_${payment.property}_${payment.tenant}_${payment.date || 'unknown'}`,
+                    id: `PAYMENT_${payment.property}_${payment.licensee}_${payment.date || 'unknown'}`,
                     type: 'PAYMENT',
                     title: 'Payment received',
-                    message: `${payment.tenant} paid ${payment.amount} for ${payment.property}.`,
+                    message: `${payment.licensee} paid ${payment.amount} for ${payment.property}.`,
                     propertyId: payment.propertyId || payment.property,
-                    tenantId: payment.tenantId || payment.tenant,
+                    licenseeId: payment.licenseeId || payment.licensee,
                     paymentId: payment.id || payment.paymentId || '',
                     priority: 'low',
                     isRead: false,
@@ -207,7 +207,7 @@ const NotificationService = {
                 title: reminder.title,
                 message: reminder.description || 'Reminder needs attention.',
                 propertyId: reminder.propertyId || '',
-                tenantId: reminder.tenantId || '',
+                licenseeId: reminder.licenseeId || '',
                 reminderId: reminder.id || '',
                 priority: 'medium',
                 isRead: false,
@@ -228,7 +228,7 @@ const NotificationService = {
                 title: alert.title || 'Emergency alert',
                 message: alert.message,
                 propertyId: alert.propertyId || '',
-                tenantId: alert.tenantId || '',
+                licenseeId: alert.licenseeId || '',
                 priority: 'critical',
                 isRead: false,
                 createdAt: alert.createdAt || new Date().toISOString(),
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const action = this.getAttribute('data-action');
             const destinations = {
                 properties: 'properties.html',
-                tenants: 'tenants.html',
+                licensees: 'licensees.html',
                 payments: 'payments.html',
                 reports: 'reports.html'
             };
