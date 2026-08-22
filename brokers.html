@@ -292,7 +292,13 @@
                         </div>
 
                         <div class="broker-field">
-                            <label for="commissionRate">Commission Rate (%)</label>
+                            <label for="commissionRate">Commission</label>
+                            <select id="commissionType">
+                                <option value="commissionType">Select Type</option>
+                                <option value="Percentage">Percentage (%)</option>
+                                <option value="Fixed">Fixed Amount (₹)</option>
+                                <option value="One Month">One MonthL Licensee Fee</option>
+                            </select>
                             <input id="commissionRate" type="number" min="0" step="0.1" value="2">
                         </div>
 
