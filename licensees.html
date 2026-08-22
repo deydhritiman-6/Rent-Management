@@ -265,11 +265,8 @@
         ================================= */
 
         .licensee-details-overlay {
-
             display: none;
-
             position: fixed;
-
             inset: 0;
 
             z-index: 100000;
@@ -277,37 +274,29 @@
             align-items: center;
 
             justify-content: center;
-
-            background:
-                rgba(15,23,42,.55);
-
+            background: rgba(15,23,42,.55);
             padding: 20px;
+            overflow-y: auto;
         }
 
 
         .licensee-details {
-
-            width:
-                min(600px, 95vw);
-
+            width: min(760px, 94vw);
+            max-width: 760px;
+            max-height: 88vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-sizing: border-box;
             background: white;
-
             border-radius: 18px;
-
-            padding: 28px;
-
-            box-shadow:
-                0 25px 70px rgba(0,0,0,.25);
+            padding: 24px;
+            box-shadow: 0 25px 70px rgba(0,0,0,.25);
         }
 
 
         .details-grid {
-
             display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
         }
 
@@ -337,8 +326,10 @@
 
 
         .detail-item strong {
-
             font-size: 15px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
 
@@ -346,8 +337,15 @@
 
             .licensee-form-grid,
             .details-grid {
-
                 grid-template-columns: 1fr;
+            }
+
+            .licensee-details {
+                width: calc(100vw - 24px);
+                max-width: none;
+                max-height: 90vh;
+                padding: 18px;
+                border-radius: 14px;
             }
 
         }
@@ -823,11 +821,16 @@
                         </select>
 
                         <div class="form-group">
-                            <label>Broker's Name<spanstyle="color:#dc2626">*</span></label>
-                            <input type="text" id="licenseeBrokers" placeholder="Enter broker's name">
-                            <small id="licenseeBrokersError" style="color:#dc2626;display:block;min-height:18px"></small>
-                        </div>
-
+    <label>Broker's Name<span style="color:#dc2626">*</span></label>
+    <select id="licenseeBrokers" style="width:100%; min-height:42px; border:1px solid #d6deeb; border-radius:10px; padding:10px 12px; outline:none; background:#fff;">
+        <option value="" disabled selected>Select or enter broker's name</option>
+    </select>
+    
+    <div id="manualBrokerContainer" style="display: none; margin-top: 8px;">
+        <input type="text" id="manualBrokerInput" placeholder="Enter manual broker's name" style="width:100%; min-height:42px; border:1px solid #d6deeb; border-radius:10px; padding:10px 12px; outline:none;">
+    </div>
+    <small id="licenseeBrokersError" style="color:#dc2626;display:block;min-height:18px"></small>
+</div>
                     </div>
 
 
@@ -1179,6 +1182,78 @@ function loadPropertyDropdown() {
 
 
 /* ==========================================
+   BROKER SYNC
+========================================== */
+
+function getBrokersForLicensee() {
+    try {
+        const saved = JSON.parse(localStorage.getItem("rentBrokers") || "[]");
+        return Array.isArray(saved) ? saved : [];
+    } catch (error) {
+        console.error("Unable to load brokers:", error);
+        return [];
+    }
+}
+
+function loadLicenseeBrokerDropdown(selectedBroker = "") {
+    const select = document.getElementById("licenseeBrokers");
+    if (!select) return;
+    const brokers = getBrokersForLicensee();
+    const names = [];
+    brokers.forEach(function (broker) {
+        const name = typeof broker === "object" ? String(broker.brokerName || "").trim() : String(broker || "").trim();
+        if (name && !names.includes(name)) names.push(name);
+    });
+    select.innerHTML = "";
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.disabled = true;
+    placeholder.textContent = "Select or enter broker's name";
+    select.appendChild(placeholder);
+    names.forEach(function (name) {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+    });
+    const manualOption = document.createElement("option");
+    manualOption.value = "__MANUAL__";
+    manualOption.textContent = "+ Add Manual Broker Name";
+    select.appendChild(manualOption);
+    if (selectedBroker) {
+        const matching = Array.from(select.options).find(option => option.value === selectedBroker);
+        if (matching) {
+            select.value = selectedBroker;
+        } else {
+            const oldOption = document.createElement("option");
+            oldOption.value = selectedBroker;
+            oldOption.textContent = selectedBroker + " (Previously Selected)";
+            select.insertBefore(oldOption, manualOption);
+            select.value = selectedBroker;
+        }
+    } else {
+        select.value = "";
+    }
+}
+
+function getSelectedLicenseeBrokerName() {
+    const select = document.getElementById("licenseeBrokers");
+    const manualInput = document.getElementById("manualBrokerInput");
+    if (!select) return "";
+    return select.value === "__MANUAL__" ? (manualInput ? manualInput.value.trim() : "") : select.value.trim();
+}
+
+function syncManualBrokerField() {
+    const select = document.getElementById("licenseeBrokers");
+    const container = document.getElementById("manualBrokerContainer");
+    const input = document.getElementById("manualBrokerInput");
+    if (!select || !container) return;
+    const isManual = select.value === "__MANUAL__";
+    container.style.display = isManual ? "block" : "none";
+    if (!isManual && input) input.value = "";
+}
+
+/* ==========================================
    OPEN FORM
 ========================================== */
 
@@ -1188,6 +1263,7 @@ function openlicenseeForm(
 
     loadPropertyDropdown();
 
+    loadLicenseeBrokerDropdown(licensee ? (licensee.brokerName || "") : "");
 
     const form =
         document.getElementById(
@@ -1276,6 +1352,19 @@ function openlicenseeForm(
             "licenseeStatus"
         ).value =
             licensee.status;
+
+        document.getElementById('licenseeReligion').value = licensee.religion || '';
+        document.getElementById('licenseeGender').value = licensee.gender || '';
+        document.getElementById('licenseeNationality').value = licensee.nationality || '';
+        document.getElementById('licenseeOccupation').value = licensee.occupation || '';
+        document.getElementById('licenseeResidentCount').value = licensee.residentCount || '';
+        document.getElementById('licenseeVehicleCount').value = licensee.vehicleCount || '';
+        document.getElementById('licenseeVehicleType').value = licensee.vehicleType || '';
+        document.getElementById('licenseeAddress').value = licensee.address || '';
+        document.getElementById('licenseeEmergencyContact').value = licensee.emergencyContact || '';
+        document.getElementById('licenseePostOffice').value = licensee.postOffice || '';
+        document.getElementById('licenseePoliceStation').value = licensee.policeStation || '';
+        document.getElementById('licenseePinCode').value = licensee.pinCode || '';
 
         // Load identity & documents if present
         document.getElementById("licenseeAadhaar").value = licensee.aadhaar || "";
@@ -1416,6 +1505,19 @@ function clearlicenseeForm() {
         "licenseeStatus"
     ).value = "Active";
 
+    document.getElementById('licenseeReligion').value = '';
+    document.getElementById('licenseeGender').value = '';
+    document.getElementById('licenseeNationality').value = '';
+    document.getElementById('licenseeOccupation').value = '';
+    document.getElementById('licenseeResidentCount').value = '';
+    document.getElementById('licenseeVehicleCount').value = '';
+    document.getElementById('licenseeVehicleType').value = '';
+    document.getElementById('licenseeAddress').value = '';
+    document.getElementById('licenseeEmergencyContact').value = '';
+    document.getElementById('licenseePostOffice').value = '';
+    document.getElementById('licenseePoliceStation').value = '';
+    document.getElementById('licenseePinCode').value = '';
+
     // clear identity fields
     document.getElementById('licenseeAadhaar').value = '';
     document.getElementById('licenseePAN').value = '';
@@ -1442,257 +1544,225 @@ function clearlicenseeForm() {
 
 
 /* ==========================================
-   SAVE licensee
+   SAVE licensee & BROKER SYNC
 ========================================== */
 
-function savelicensee() {
-
-    const name =
-        document.getElementById(
-            "licenseeName"
-        ).value.trim();
-
-
-    const mobile =
-        document.getElementById(
-            "licenseeMobile"
-        ).value.trim();
-
-
-    const email =
-        document.getElementById(
-            "licenseeEmail"
-        ).value.trim();
-
-
-    const propertyId =
-        document.getElementById(
-            "licenseeProperty"
-        ).value;
-
-
-    const unit =
-        document.getElementById(
-            "licenseeUnit"
-        ).value.trim();
-
-
-    const rent =
-        Number(
-            document.getElementById(
-                "licenseeRent"
-            ).value
-        );
-
-
-    const deposit =
-        Number(
-            document.getElementById(
-                "licenseeDeposit"
-            ).value
-        ) || 0;
-
-
-    const leaseDate =
-        document.getElementById(
-            "licenseeLeaseDate"
-        ).value;
-
-
-    const status =
-        document.getElementById(
-            "licenseeStatus"
-        ).value;
-
-
-    if (
-        !name ||
-        !mobile ||
-        !propertyId ||
-        !unit ||
-        !rent ||
-        !leaseDate
-    ) {
-
-        alert(
-            "Please fill in all required licensee details."
-        );
-
-        return;
-
-    }
-
-
-
-    const properties =
-        getProperties();
-
-
-    const property =
-        properties.find(
-            p =>
-                String(p.id) ===
-                String(propertyId)
-        );
-
-
-    if (!property) {
-
-        alert(
-            "Selected property could not be found."
-        );
-
-        return;
-
-    }
-
-
-
-    /* EDIT */
-
-    if (
-        editinglicenseeId !== null
-    ) {
-
-        const licensee =
-            licensees.find(
-                t =>
-                    t.id ===
-                    editinglicenseeId
-            );
-
-
-        if (!licensee) {
-            return;
+function ensureBrokerSaved(brokerName) {
+    if (!brokerName || brokerName === '__MANUAL__') return;
+    try {
+        const brokers = JSON.parse(localStorage.getItem("rentBrokers") || "[]");
+        const exists = Array.isArray(brokers) && brokers.some(b => {
+            const name = typeof b === "object" ? String(b.brokerName || "").trim() : String(b || "").trim();
+            return name.toLowerCase() === brokerName.trim().toLowerCase();
+        });
+        if (!exists) {
+            const newBroker = {
+                id: 'broker-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
+                brokerName: brokerName.trim(),
+                companyName: 'Direct Partner',
+                brokerPhone: '',
+                brokerEmail: '',
+                propertyType: 'Residential',
+                region: '',
+                propertiesManaged: 1,
+                commissionType: 'Percentage',
+                commissionRate: 2,
+                status: 'Active',
+                rating: 4.5,
+                notes: 'Created via Licensee Management'
+            };
+            brokers.push(newBroker);
+            localStorage.setItem("rentBrokers", JSON.stringify(brokers));
         }
-
-
-        licensee.name =
-            name;
-
-        licensee.mobile =
-            mobile;
-
-        licensee.email =
-            email;
-
-        licensee.propertyId =
-            Number(propertyId);
-
-        licensee.propertyName =
-            property.name;
-
-        licensee.unit =
-            unit;
-
-        licensee.rent =
-            rent;
-
-        licensee.deposit =
-            deposit;
-
-        licensee.leaseDate =
-            leaseDate;
-
-        licensee.status =
-            status;
-
-
-        savelicensees();
-
-        renderlicensees();
-
-        updatePropertyOccupancy();
-
-        closelicenseeForm();
-
-
-        alert(
-            "licensee updated successfully!"
-        );
-
-
-        return;
-
+    } catch (e) {
+        console.error("Error auto-saving broker:", e);
     }
-
-
-
-    /* NEW licensee */
-
-    const licensee = {
-
-        id:
-            Date.now(),
-
-        name:
-            name,
-
-        mobile:
-            mobile,
-
-        email:
-            email,
-
-        propertyId:
-            Number(propertyId),
-
-        propertyName:
-            property.name,
-
-        unit:
-            unit,
-
-        rent:
-            rent,
-
-        deposit:
-            deposit,
-
-        leaseDate:
-            leaseDate,
-
-        status:
-            status
-
-    };
-
-
-    licensees.push(
-        licensee
-    );
-
-
-    savelicensees();
-
-    renderlicensees();
-
-    updatePropertyOccupancy();
-
-    closelicenseeForm();
-
-
-    alert(
-        "licensee added successfully!"
-    );
-
 }
 
+function savelicensee() {
+    // clear previous errors
+    const aadhaarErr = document.getElementById('licenseeAadhaarError');
+    const panErr = document.getElementById('licenseePANError');
+    const photoErr = document.getElementById('licenseePhotoError');
+    const resDocErr = document.getElementById('licenseeResidentialDocError');
+    const busDocErr = document.getElementById('licenseeBusinessDocError');
+    const brokerErr = document.getElementById('licenseeBrokersError');
 
+    if (aadhaarErr) aadhaarErr.textContent = '';
+    if (panErr) panErr.textContent = '';
+    if (photoErr) photoErr.textContent = '';
+    if (resDocErr) resDocErr.textContent = '';
+    if (busDocErr) busDocErr.textContent = '';
+    if (brokerErr) brokerErr.textContent = '';
+
+    const name = document.getElementById("licenseeName").value.trim();
+    const mobile = document.getElementById("licenseeMobile").value.trim();
+    const email = document.getElementById("licenseeEmail").value.trim();
+    const propertyId = document.getElementById("licenseeProperty").value;
+    const unit = document.getElementById("licenseeUnit").value.trim();
+    const rent = Number(document.getElementById("licenseeRent").value);
+    const deposit = Number(document.getElementById("licenseeDeposit").value) || 0;
+    const leaseDate = document.getElementById("licenseeLeaseDate").value;
+    const status = document.getElementById("licenseeStatus").value;
+
+    const brokerName = getSelectedLicenseeBrokerName();
+    const religion = document.getElementById('licenseeReligion').value.trim();
+    const gender = document.getElementById('licenseeGender').value;
+    const nationality = document.getElementById('licenseeNationality').value.trim();
+    const occupation = document.getElementById('licenseeOccupation').value.trim();
+    const residentCount = document.getElementById('licenseeResidentCount').value;
+    const vehicleCount = document.getElementById('licenseeVehicleCount').value;
+    const vehicleType = document.getElementById('licenseeVehicleType').value;
+    const address = document.getElementById('licenseeAddress').value.trim();
+    const emergencyContact = document.getElementById('licenseeEmergencyContact').value.trim();
+    const postOffice = document.getElementById('licenseePostOffice').value.trim();
+    const policeStation = document.getElementById('licenseePoliceStation').value.trim();
+    const pinCode = document.getElementById('licenseePinCode').value.trim();
+
+    const aadhaar = document.getElementById('licenseeAadhaar').value.trim();
+    const pan = document.getElementById('licenseePAN').value.trim();
+
+    if (!name || !mobile || !propertyId || !unit || !rent || !leaseDate) {
+        alert("Please fill in all required licensee details (Name, Mobile, Property, Unit, Monthly Rent, Lease Date).");
+        return;
+    }
+
+    const properties = getProperties();
+    const property = properties.find(p => String(p.id) === String(propertyId));
+    if (!property) {
+        alert("Selected property could not be found.");
+        return;
+    }
+
+    let hasError = false;
+    if (aadhaar && !validateAadhaar(aadhaar)) {
+        if (aadhaarErr) aadhaarErr.textContent = 'Aadhaar must be a 12 digit number.';
+        hasError = true;
+    }
+    if (pan && !validatePAN(pan)) {
+        if (panErr) panErr.textContent = 'PAN must follow format (e.g. ABCDE1234F).';
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    if (brokerName) {
+        ensureBrokerSaved(brokerName);
+    }
+
+    let existingLicensee = null;
+    if (editinglicenseeId !== null) {
+        existingLicensee = licensees.find(t => String(t.id) === String(editinglicenseeId));
+    }
+
+    let photoData = licenseeFormState.photo;
+    if (!photoData && existingLicensee && existingLicensee.photo && !licenseeFormState.removeExistingPhoto) {
+        photoData = existingLicensee.photo;
+    }
+
+    let documents = existingLicensee && Array.isArray(existingLicensee.documents) ? [...existingLicensee.documents] : [];
+    if (licenseeFormState.removeResidentialDoc) {
+        documents = documents.filter(d => d.type !== 'residential');
+    }
+    if (licenseeFormState.residentialDoc) {
+        documents = documents.filter(d => d.type !== 'residential');
+        documents.push(Object.assign({}, licenseeFormState.residentialDoc, { type: 'residential' }));
+    }
+    if (licenseeFormState.removeBusinessDoc) {
+        documents = documents.filter(d => d.type !== 'business');
+    }
+    if (licenseeFormState.businessDoc) {
+        documents = documents.filter(d => d.type !== 'business');
+        documents.push(Object.assign({}, licenseeFormState.businessDoc, { type: 'business' }));
+    }
+
+    if (editinglicenseeId !== null && existingLicensee) {
+        existingLicensee.name = name;
+        existingLicensee.mobile = mobile;
+        existingLicensee.email = email;
+        existingLicensee.propertyId = Number(propertyId);
+        existingLicensee.propertyName = property.name;
+        existingLicensee.unit = unit;
+        existingLicensee.rent = rent;
+        existingLicensee.deposit = deposit;
+        existingLicensee.leaseDate = leaseDate;
+        existingLicensee.status = status;
+        existingLicensee.brokerName = brokerName;
+        existingLicensee.religion = religion;
+        existingLicensee.gender = gender;
+        existingLicensee.nationality = nationality;
+        existingLicensee.occupation = occupation;
+        existingLicensee.residentCount = residentCount;
+        existingLicensee.vehicleCount = vehicleCount;
+        existingLicensee.vehicleType = vehicleType;
+        existingLicensee.address = address;
+        existingLicensee.emergencyContact = emergencyContact;
+        existingLicensee.postOffice = postOffice;
+        existingLicensee.policeStation = policeStation;
+        existingLicensee.pinCode = pinCode;
+        existingLicensee.aadhaar = aadhaar;
+        existingLicensee.pan = pan;
+        existingLicensee.photo = photoData;
+        existingLicensee.documents = documents;
+
+        savelicensees();
+        renderlicensees();
+        updatePropertyOccupancy();
+        closelicenseeForm();
+        alert("licensee updated successfully!");
+        return;
+    }
+
+    const newLicensee = {
+        id: Date.now(),
+        name,
+        mobile,
+        email,
+        propertyId: Number(propertyId),
+        propertyName: property.name,
+        unit,
+        rent,
+        deposit,
+        leaseDate,
+        status,
+        brokerName,
+        religion,
+        gender,
+        nationality,
+        occupation,
+        residentCount,
+        vehicleCount,
+        vehicleType,
+        address,
+        emergencyContact,
+        postOffice,
+        policeStation,
+        pinCode,
+        aadhaar,
+        pan,
+        photo: photoData,
+        documents
+    };
+
+    licensees.push(newLicensee);
+    savelicensees();
+    renderlicensees();
+    updatePropertyOccupancy();
+    closelicenseeForm();
+    alert("licensee added successfully!");
+}
 
 /* ==========================================
    SAVE licenseeS
 ========================================== */
 
 function savelicensees() {
-
     localStorage.setItem(
         "rentlicensees",
         JSON.stringify(
             licensees
         )
     );
-
 }
 
 // =========================
@@ -1739,7 +1809,6 @@ function clearlicenseePhotoPreview() {
     const preview = document.getElementById('licenseePhotoPreview');
     preview.innerHTML = '<span style="color:#64748b" id="licenseePhotoPlaceholder">No photo</span>';
     licenseeFormState.photo = null;
-    // Do not reset removeExistingPhoto here - the caller (e.g. remove button) controls that flag.
     document.getElementById('licenseePhotoRemoveBtn').style.display = 'none';
 }
 
@@ -1760,7 +1829,6 @@ document.getElementById('licenseeProperty').addEventListener('change', function(
 document.getElementById('licenseePhotoInput').addEventListener('change', async function(e) {
     const file = this.files && this.files[0];
     if (!file) return;
-    // validate type and size (max 3MB)
     const maxSize = 3 * 1024 * 1024;
     if (!file.type.startsWith('image/')) {
         document.getElementById('licenseePhotoError').textContent = 'Only image files are allowed.';
@@ -1779,7 +1847,6 @@ document.getElementById('licenseePhotoInput').addEventListener('change', async f
 
 // Remove photo
 document.getElementById('licenseePhotoRemoveBtn').addEventListener('click', function() {
-    // Mark that existing photo (if any) should be removed
     licenseeFormState.photo = null;
     licenseeFormState.removeExistingPhoto = true;
     clearlicenseePhotoPreview();
@@ -1789,7 +1856,7 @@ document.getElementById('licenseePhotoRemoveBtn').addEventListener('click', func
 document.getElementById('licenseeResidentialDocInput').addEventListener('change', async function(e) {
     const file = this.files && this.files[0];
     if (!file) return;
-    const maxSize = 6 * 1024 * 1024; // 6MB for docs
+    const maxSize = 6 * 1024 * 1024;
     if (!/(pdf|image|msword|officedocument|application)/.test(file.type) && !/\.docx?$/.test(file.name)) {
         document.getElementById('licenseeResidentialDocError').textContent = 'Unsupported document format.';
         return;
@@ -1851,216 +1918,8 @@ function validatePAN(pan) {
     return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(String(pan).trim());
 }
 
-// Enhance savelicensee with identity validations and storage
-const originalSavelicensee = savelicensee;
-async function enhancedSavelicenseeWrapper() {
-    // clear previous errors
-    document.getElementById('licenseeAadhaarError').textContent = '';
-    document.getElementById('licenseePANError').textContent = '';
-    document.getElementById('licenseePhotoError').textContent = '';
-    document.getElementById('licenseeResidentialDocError').textContent = '';
-    document.getElementById('licenseeBusinessDocError').textContent = '';
-
-    const aadhaar = document.getElementById('licenseeAadhaar').value.trim();
-    const pan = document.getElementById('licenseePAN').value.trim();
-    const propertyId = document.getElementById('licenseeProperty').value;
-
-    // run existing required validations first (they exist in savelicensee) by replicating relevant checks
-    const name = document.getElementById('licenseeName').value.trim();
-    const mobile = document.getElementById('licenseeMobile').value.trim();
-    const unit = document.getElementById('licenseeUnit').value.trim();
-    const rent = Number(document.getElementById('licenseeRent').value);
-    const leaseDate = document.getElementById('licenseeLeaseDate').value;
-    if (!name || !mobile || !propertyId || !unit || !rent || !leaseDate) {
-        alert('Please fill in all required licensee details.');
-        return;
-    }
-
-    const properties = getProperties();
-    const property = properties.find(p => String(p.id) === String(propertyId));
-    if (!property) { alert('Selected property could not be found.'); return; }
-    const isCommercial = isCommercialPropertyType(property);
-
-    let hasError = false;
-    if (!validateAadhaar(aadhaar)) {
-        document.getElementById('licenseeAadhaarError').textContent = 'Aadhaar must be a 12 digit number.';
-        hasError = true;
-    }
-    if (!validatePAN(pan)) {
-        document.getElementById('licenseePANError').textContent = 'PAN must follow format (e.g. ABCDE1234F).';
-        hasError = true;
-    }
-
-    // Photo required: either existing licensee.photo (if editing) or licenseeFormState.photo
-    let existinglicensee = null;
-    if (editinglicenseeId !== null) existinglicensee = licensees.find(t => t.id === editinglicenseeId);
-    if (!(licenseeFormState.photo || (existinglicensee && existinglicensee.photo && existinglicensee.photo.dataUrl))) {
-        document.getElementById('licenseePhotoError').textContent = 'licensee photo is required.';
-        hasError = true;
-    }
-
-    if (isCommercial) {
-        // business doc required
-        if (!(licenseeFormState.businessDoc || (existinglicensee && Array.isArray(existinglicensee.documents) && existinglicensee.documents.some(d => d.type === 'business')))) {
-            document.getElementById('licenseeBusinessDocError').textContent = 'Business document is required for commercial licensees.';
-            hasError = true;
-        }
-    } else {
-        // residential: require either residential doc (service/education) or existing
-        if (!(licenseeFormState.residentialDoc || (existinglicensee && Array.isArray(existinglicensee.documents) && existinglicensee.documents.some(d => d.type === 'residential')))) {
-            document.getElementById('licenseeResidentialDocError').textContent = 'Please upload service or education document for residential licensees.';
-            hasError = true;
-        }
-    }
-
-    if (hasError) return; // do not proceed
-
-    // Now proceed to call original savelicensee but first attach identity fields into the form values
-    // We'll copy some code from savelicensee's flow to ensure documents are attached to licensee objects
-
-    // Prepare licensee data similar to savelicensee's logic
-    const nameVal = name;
-    const mobileVal = mobile;
-    const emailVal = document.getElementById('licenseeEmail').value.trim();
-    const unitVal = unit;
-    const rentVal = Number(document.getElementById('licenseeRent').value);
-    const depositVal = Number(document.getElementById('licenseeDeposit').value) || 0;
-    const leaseDateVal = leaseDate;
-    const statusVal = document.getElementById('licenseeStatus').value;
-
-    if (editinglicenseeId !== null) {
-        const licensee = licensees.find(t => t.id === editinglicenseeId);
-        if (!licensee) return;
-        licensee.name = nameVal;
-        licensee.mobile = mobileVal;
-        licensee.email = emailVal;
-        licensee.propertyId = Number(propertyId);
-        licensee.propertyName = property.name;
-        licensee.unit = unitVal;
-        licensee.rent = rentVal;
-        licensee.deposit = depositVal;
-        licensee.leaseDate = leaseDateVal;
-        licensee.status = statusVal;
-        // identity
-        licensee.aadhaar = aadhaar;
-        licensee.pan = pan;
-        // photo
-        if (licenseeFormState.photo) {
-            licensee.photo = licenseeFormState.photo;
-        } else if (licenseeFormState.removeExistingPhoto) {
-            // user removed existing photo and didn't upload a new one
-            delete licensee.photo;
-        }
-        // documents: merge existing and new
-        licensee.documents = licensee.documents || [];
-        if (licenseeFormState.removeResidentialDoc) {
-            licensee.documents = licensee.documents.filter(d => d.type !== 'residential');
-        }
-        if (licenseeFormState.residentialDoc) {
-            // remove existing residential documents and add new
-            licensee.documents = licensee.documents.filter(d => d.type !== 'residential');
-            licensee.documents.push(Object.assign({}, licenseeFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
-        }
-        if (licenseeFormState.removeBusinessDoc) {
-            licensee.documents = licensee.documents.filter(d => d.type !== 'business');
-        }
-        if (licenseeFormState.businessDoc) {
-            licensee.documents = licensee.documents.filter(d => d.type !== 'business');
-            licensee.documents.push(Object.assign({}, licenseeFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
-        }
-
-        savelicensees();
-        renderlicensees();
-        updatePropertyOccupancy();
-        closelicenseeForm();
-        alert('licensee updated successfully!');
-        return;
-    }
-
-    // New licensee
-    const newlicensee = {
-        id: Date.now(),
-        name: nameVal,
-        mobile: mobileVal,
-        email: document.getElementById('licenseeEmail').value.trim(),
-        propertyId: Number(propertyId),
-        propertyName: property.name,
-        unit: unitVal,
-        rent: rentVal,
-        deposit: depositVal,
-        leaseDate: leaseDateVal,
-        status: statusVal,
-        aadhaar: aadhaar,
-        pan: pan,
-        photo: licenseeFormState.photo ? licenseeFormState.photo : null,
-        documents: []
-    };
-
-    if (licenseeFormState.residentialDoc) {
-        newlicensee.documents.push(Object.assign({}, licenseeFormState.residentialDoc, { type: 'residential', propertyType: isCommercial ? 'commercial' : 'residential' }));
-    }
-    if (licenseeFormState.businessDoc) {
-        newlicensee.documents.push(Object.assign({}, licenseeFormState.businessDoc, { type: 'business', propertyType: isCommercial ? 'commercial' : 'residential' }));
-    }
-
-    licensees.push(newlicensee);
-    savelicensees();
-    renderlicensees();
-    updatePropertyOccupancy();
-    closelicenseeForm();
-    alert('licensee added successfully!');
-}
-
-// Replace the save button handler
-document.getElementById('savelicenseeBtn').removeEventListener('click', savelicensee);
-document.getElementById('savelicenseeBtn').addEventListener('click', enhancedSavelicenseeWrapper);
-
 // Ensure property doc sections are shown appropriately on initial load
 showPropertyDocSections(document.getElementById('licenseeProperty').value);
-
-// Enhance viewlicensee to show photo and documents
-const originalViewlicensee = viewlicensee;
-function viewlicensee(id) {
-    const licensee = licensees.find(t => t.id === Number(id));
-    if (!licensee) return originalViewlicensee(id);
-
-    const photoHtml = licensee.photo && licensee.photo.dataUrl ? `<div style="text-align:center;margin-bottom:12px"><img src="${licensee.photo.dataUrl}" style="width:120px;height:120px;border-radius:10px;object-fit:cover;border:1px solid #e6eefc" alt="licensee Photo"></div>` : '';
-
-    let docsHtml = '';
-    if (Array.isArray(licensee.documents) && licensee.documents.length) {
-        docsHtml = '<div style="margin-top:12px">';
-        docsHtml += '<h4>Documents</h4>';
-        licensee.documents.forEach(d => {
-            docsHtml += `<div style="padding:8px;border-radius:8px;background:#f8fafc;margin-top:8px">`;
-            docsHtml += `<strong>${d.fileName || 'Document'}</strong> <span style="color:#64748b">(${d.type})</span>`;
-            docsHtml += `</div>`;
-        });
-        docsHtml += '</div>';
-    }
-
-    document.getElementById('licenseeDetailsContent').innerHTML = `
-        ${photoHtml}
-        <div class="details-grid">
-            <div class="detail-item"><span>licensee Name</span><strong>${escapeHtml(licensee.name)}</strong></div>
-            <div class="detail-item"><span>Status</span><strong>${licensee.status}</strong></div>
-            <div class="detail-item"><span>Mobile</span><strong>${escapeHtml(licensee.mobile)}</strong></div>
-            <div class="detail-item"><span>Email</span><strong>${escapeHtml(licensee.email || '-')}</strong></div>
-            <div class="detail-item"><span>Property</span><strong>${escapeHtml(licensee.propertyName)}</strong></div>
-            <div class="detail-item"><span>Unit</span><strong>${escapeHtml(licensee.unit)}</strong></div>
-            <div class="detail-item"><span>Monthly Rent</span><strong>₹${Number(licensee.rent).toLocaleString('en-IN')}</strong></div>
-            <div class="detail-item"><span>Security Deposit</span><strong>₹${Number(licensee.deposit).toLocaleString('en-IN')}</strong></div>
-            <div class="detail-item"><span>Lease Start</span><strong>${licensee.leaseDate}</strong></div>
-            <div class="detail-item"><span>Aadhaar</span><strong>${licensee.aadhaar || '-'}</strong></div>
-            <div class="detail-item"><span>PAN</span><strong>${licensee.pan || '-'}</strong></div>
-        </div>
-        ${docsHtml}
-    `;
-
-    document.getElementById('licenseeDetailsOverlay').style.display = 'flex';
-}
-
-
-
 
 /* ==========================================
    RENDER licenseeS
@@ -2330,177 +2189,179 @@ function updatePropertyOccupancy() {
 
 
 /* ==========================================
-   VIEW licensee
+   LICENSEE COLLECTION / DETAILS HELPERS
+========================================== */
+
+function getRentPaymentsForLicensee(licensee) {
+
+    let payments = [];
+
+    try {
+        const stored = JSON.parse(
+            localStorage.getItem("rentPayments") || "[]"
+        );
+        payments = Array.isArray(stored) ? stored : [];
+    } catch (error) {
+        payments = [];
+    }
+
+    return payments.filter(function (payment) {
+
+        const paymentLicenseeId =
+            payment.licenseeId ??
+            payment.tenantId ??
+            "";
+
+        if (
+            paymentLicenseeId !== "" &&
+            String(paymentLicenseeId) === String(licensee.id)
+        ) {
+            return true;
+        }
+
+        const paymentName = String(
+            payment.licenseeName ||
+            payment.tenantName ||
+            payment.name ||
+            ""
+        ).trim().toLowerCase();
+
+        const licenseeName = String(
+            licensee.name || ""
+        ).trim().toLowerCase();
+
+        if (
+            paymentName &&
+            licenseeName &&
+            paymentName === licenseeName
+        ) {
+            return true;
+        }
+
+        const paymentProperty = String(
+            payment.propertyName ||
+            ""
+        ).trim().toLowerCase();
+
+        const licenseeProperty = String(
+            licensee.propertyName ||
+            ""
+        ).trim().toLowerCase();
+
+        const paymentUnit = String(
+            payment.unit ||
+            ""
+        ).trim().toLowerCase();
+
+        const licenseeUnit = String(
+            licensee.unit ||
+            ""
+        ).trim().toLowerCase();
+
+        return (
+            paymentProperty &&
+            licenseeProperty &&
+            paymentProperty === licenseeProperty &&
+            paymentUnit &&
+            licenseeUnit &&
+            paymentUnit === licenseeUnit
+        );
+    });
+}
+
+function getPaymentPaidAmount(payment) {
+    return Number(
+        payment.paidAmount ??
+        payment.paid ??
+        payment.amountPaid ??
+        payment.amount ??
+        0
+    ) || 0;
+}
+
+function getLicenseeTotalCollection(licensee) {
+    return getRentPaymentsForLicensee(licensee).reduce(
+        function (total, payment) {
+            return total + getPaymentPaidAmount(payment);
+        },
+        0
+    );
+}
+
+function formatLicenseeDetailDate(value) {
+    if (!value) return "-";
+    return escapeHtml(value);
+}
+
+
+/* ==========================================
+   VIEW LICENSEE - ALL DETAILS
 ========================================== */
 
 function viewlicensee(id) {
+    const licensee = licensees.find(function (item) {
+        return String(item.id) === String(id);
+    });
 
-    const licensee =
-        licensees.find(
-            t =>
-                t.id ===
-                Number(id)
-        );
+    if (!licensee) return;
 
-
-    if (!licensee) {
-        return;
-    }
-
-
-    document.getElementById(
-        "licenseeDetailsContent"
-    ).innerHTML = `
-
-        <div class="details-grid">
-
-
-            <div class="detail-item">
-
-                <span>
-                    licensee Name
-                </span>
-
-                <strong>
-                    ${escapeHtml(
-                        licensee.name
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Status
-                </span>
-
-                <strong>
-                    ${licensee.status}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Mobile
-                </span>
-
-                <strong>
-                    ${escapeHtml(
-                        licensee.mobile
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Email
-                </span>
-
-                <strong>
-                    ${escapeHtml(
-                        licensee.email ||
-                        "-"
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Property
-                </span>
-
-                <strong>
-                    ${escapeHtml(
-                        licensee.propertyName
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Unit
-                </span>
-
-                <strong>
-                    ${escapeHtml(
-                        licensee.unit
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Monthly Rent
-                </span>
-
-                <strong>
-                    ₹${Number(
-                        licensee.rent
-                    ).toLocaleString(
-                        "en-IN"
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Security Deposit
-                </span>
-
-                <strong>
-                    ₹${Number(
-                        licensee.deposit
-                    ).toLocaleString(
-                        "en-IN"
-                    )}
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>
-                    Lease Start
-                </span>
-
-                <strong>
-                    ${licensee.leaseDate}
-                </strong>
-
-            </div>
-
-
+    const totalCollection = getLicenseeTotalCollection(licensee);
+    const photoHtml = licensee.photo && licensee.photo.dataUrl ? `
+        <div style="text-align:center;margin-bottom:18px;">
+            <img src="${licensee.photo.dataUrl}" style="width:130px;height:130px;border-radius:12px;object-fit:cover;border:1px solid #e6eefc;" alt="Licensee Photo">
         </div>
+    ` : '';
 
+    let docsHtml = `
+        <div style="margin-top:18px;">
+            <h4 style="margin:0 0 10px;color:#0f172a;">Identity & Documents</h4>
+            <div class="details-grid">
+                <div class="detail-item"><span>Aadhaar Number</span><strong>${escapeHtml(licensee.aadhaar || '-')}</strong></div>
+                <div class="detail-item"><span>PAN Number</span><strong>${escapeHtml(licensee.pan || '-')}</strong></div>
+    `;
+    if (Array.isArray(licensee.documents) && licensee.documents.length) {
+        licensee.documents.forEach(function (doc) {
+            docsHtml += `<div class="detail-item"><span>${escapeHtml(doc.type || 'Document')}</span><strong>${escapeHtml(doc.fileName || 'Uploaded')}</strong></div>`;
+        });
+    } else {
+        docsHtml += `<div class="detail-item"><span>Additional Documents</span><strong>-</strong></div>`;
+    }
+    docsHtml += `</div></div>`;
+
+    const vehicleCount = licensee.vehicleCount ?? '-';
+    const vehicleType = licensee.vehicleType || '-';
+    const residents = licensee.residentCount ?? '-';
+
+    document.getElementById('licenseeDetailsContent').innerHTML = `
+        ${photoHtml}
+        <div class="details-grid">
+            <div class="detail-item"><span>Licensee Name</span><strong>${escapeHtml(licensee.name || '-')}</strong></div>
+            <div class="detail-item"><span>Status</span><strong>${escapeHtml(licensee.status || '-')}</strong></div>
+            <div class="detail-item"><span>Mobile Number</span><strong>${escapeHtml(licensee.mobile || '-')}</strong></div>
+            <div class="detail-item"><span>Email Address</span><strong>${escapeHtml(licensee.email || '-')}</strong></div>
+            <div class="detail-item"><span>Property</span><strong>${escapeHtml(licensee.propertyName || '-')}</strong></div>
+            <div class="detail-item"><span>Unit / Flat</span><strong>${escapeHtml(licensee.unit || '-')}</strong></div>
+            <div class="detail-item"><span>Monthly Rent</span><strong>₹${(Number(licensee.rent) || 0).toLocaleString('en-IN')}</strong></div>
+            <div class="detail-item"><span>Security Deposit</span><strong>₹${(Number(licensee.deposit) || 0).toLocaleString('en-IN')}</strong></div>
+            <div class="detail-item"><span>Agreement / Lease Start Date</span><strong>${escapeHtml(licensee.leaseDate || '-')}</strong></div>
+            <div class="detail-item"><span>Broker's Name</span><strong>${escapeHtml(licensee.brokerName || '-')}</strong></div>
+            <div class="detail-item"><span>Religion</span><strong>${escapeHtml(licensee.religion || '-')}</strong></div>
+            <div class="detail-item"><span>Gender</span><strong>${escapeHtml(licensee.gender || '-')}</strong></div>
+            <div class="detail-item"><span>Nationality</span><strong>${escapeHtml(licensee.nationality || '-')}</strong></div>
+            <div class="detail-item"><span>Occupation</span><strong>${escapeHtml(licensee.occupation || '-')}</strong></div>
+            <div class="detail-item"><span>Number of Residents</span><strong>${escapeHtml(residents)}</strong></div>
+            <div class="detail-item"><span>Number of Vehicles</span><strong>${escapeHtml(vehicleCount)}${vehicleType !== '-' ? ' (' + escapeHtml(vehicleType) + ')' : ''}</strong></div>
+            <div class="detail-item"><span>Address</span><strong>${escapeHtml(licensee.address || '-')}</strong></div>
+            <div class="detail-item"><span>Emergency Contact</span><strong>${escapeHtml(licensee.emergencyContact || '-')}</strong></div>
+            <div class="detail-item"><span>Post Office</span><strong>${escapeHtml(licensee.postOffice || '-')}</strong></div>
+            <div class="detail-item"><span>Police Station</span><strong>${escapeHtml(licensee.policeStation || '-')}</strong></div>
+            <div class="detail-item"><span>PIN Code</span><strong>${escapeHtml(licensee.pinCode || '-')}</strong></div>
+            <div class="detail-item" style="border:1px solid #bfdbfe;background:#eff6ff;"><span>Total Collection</span><strong>₹${totalCollection.toLocaleString('en-IN')}</strong></div>
+        </div>
+        ${docsHtml}
     `;
 
-
-    document.getElementById(
-        "licenseeDetailsOverlay"
-    ).style.display =
-        "flex";
-
+    document.getElementById('licenseeDetailsOverlay').style.display = 'flex';
 }
 
 
@@ -2514,8 +2375,8 @@ function editlicensee(id) {
     const licensee =
         licensees.find(
             t =>
-                t.id ===
-                Number(id)
+                String(t.id) ===
+                String(id)
         );
 
 
@@ -2541,8 +2402,8 @@ function deletelicensee(id) {
     const licensee =
         licensees.find(
             t =>
-                t.id ===
-                Number(id)
+                String(t.id) ===
+                String(id)
         );
 
 
@@ -2565,8 +2426,8 @@ function deletelicensee(id) {
     licensees =
         licensees.filter(
             t =>
-                t.id !==
-                Number(id)
+                String(t.id) !==
+                String(id)
         );
 
 
@@ -2652,6 +2513,30 @@ document
 
 
 /* ==========================================
+   BROKER FIELD EVENTS
+========================================== */
+
+document.getElementById("licenseeBrokers").addEventListener("change", function () {
+    syncManualBrokerField();
+});
+
+const manualBrokerInputElement = document.getElementById("manualBrokerInput");
+if (manualBrokerInputElement) {
+    manualBrokerInputElement.addEventListener("input", function () {
+        const error = document.getElementById("licenseeBrokersError");
+        if (error) error.textContent = "";
+    });
+}
+
+window.addEventListener("storage", function (event) {
+    if (event.key === "rentBrokers") {
+        const currentBroker = getSelectedLicenseeBrokerName();
+        loadLicenseeBrokerDropdown(currentBroker);
+        syncManualBrokerField();
+    }
+});
+
+/* ==========================================
    TABLE ACTIONS
 ========================================== */
 
@@ -2679,9 +2564,7 @@ document
 
 
             const id =
-                Number(
-                    button.dataset.id
-                );
+                button.dataset.id;
 
 
             if (
@@ -2744,6 +2627,8 @@ function escapeHtml(value) {
 ========================================== */
 
 loadPropertyDropdown();
+loadLicenseeBrokerDropdown();
+syncManualBrokerField();
 
 renderlicensees();
 
