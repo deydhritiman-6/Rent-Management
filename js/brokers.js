@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const tableBody = document.getElementById('brokerTableBody');
     const overview = document.getElementById('brokerOverview');
     const resetButton = document.getElementById('resetBrokerForm');
+    const formTitle = document.getElementById('brokerFormTitle');
+    const saveButton = document.getElementById('saveBrokerBtn');
+    const editingBrokerIdInput = document.getElementById('editingBrokerId');
     let selectedBrokerId = null;
 
     function getDefaultBrokers() {
@@ -21,7 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 commissionRate: 2.5,
                 status: 'Active',
                 rating: 4.8,
-                notes: 'Strong residential network and quick closure record.'
+                historyLicenseeName: 'Vikram Rao',
+                historyPropertyName: 'Greenwood Villa #12',
+                historyAgreementDates: '01 Jan 2024 - 31 Dec 2024',
+                notes: 'Strong residential network and quick closure record. Preferred agent for North City properties.',
+                createdAt: new Date().toISOString()
             },
             {
                 id: 'broker-2',
@@ -36,7 +43,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 commissionRate: 3.0,
                 status: 'Pending',
                 rating: 4.4,
-                notes: 'Good for office and retail lead generation.'
+                historyLicenseeName: 'Apex Logistics Ltd',
+                historyPropertyName: 'West Hub Office #402',
+                historyAgreementDates: '15 Mar 2024 - 14 Mar 2025',
+                notes: 'Good for office and retail lead generation in West Avenue commercial zone.',
+                createdAt: new Date().toISOString()
             }
         ];
     }
@@ -50,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) {
             return getDefaultBrokers();
         }
-
         return getDefaultBrokers();
     }
 
@@ -61,6 +71,22 @@ document.addEventListener('DOMContentLoaded', function () {
     function formatCurrency(value) {
         const amount = Number(value) || 0;
         return '₹' + amount.toLocaleString('en-IN');
+    }
+
+    function getInitials(name) {
+        if (!name) return 'BK';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.slice(0, 2).toUpperCase();
+    }
+
+    function renderStars(rating) {
+        const num = Number(rating) || 0;
+        const fullStars = Math.floor(num);
+        const halfStar = num % 1 >= 0.4 ? '½' : '';
+        return '⭐'.repeat(fullStars) + (halfStar ? '⭐' : '') + ` (${num.toFixed(1)} / 5.0)`;
     }
 
     function getLicensees() {
@@ -75,6 +101,15 @@ document.addEventListener('DOMContentLoaded', function () {
     function getRentPayments() {
         try {
             const stored = JSON.parse(localStorage.getItem('rentPayments') || '[]');
+            return Array.isArray(stored) ? stored : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function getRentAgreements() {
+        try {
+            const stored = JSON.parse(localStorage.getItem('rentAgreements') || '[]');
             return Array.isArray(stored) ? stored : [];
         } catch (error) {
             return [];
@@ -174,9 +209,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (type === 'Fixed') {
             return '₹' + rate.toLocaleString('en-IN') + ' Fixed';
         } else if (type === 'One Month') {
-            return '1 Month Fee';
+            return '1 Month Licensee Fee';
         } else {
-            return rate.toFixed(1) + '%';
+            return rate.toFixed(1) + '% of Rent';
         }
     }
 
@@ -225,6 +260,48 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function resetFormState() {
+        if (form) form.reset();
+        if (editingBrokerIdInput) editingBrokerIdInput.value = '';
+        if (formTitle) formTitle.textContent = 'Add Broker';
+        if (saveButton) saveButton.textContent = 'Save Broker';
+    }
+
+    function populateFormForEdit(brokerId) {
+        const list = getBrokers();
+        const broker = list.find(b => String(b.id) === String(brokerId));
+        if (!broker) return;
+
+        if (editingBrokerIdInput) editingBrokerIdInput.value = broker.id;
+        document.getElementById('brokerName').value = broker.brokerName || '';
+        document.getElementById('companyName').value = broker.companyName || '';
+        document.getElementById('brokerPhone').value = broker.brokerPhone || '';
+        document.getElementById('brokerEmail').value = broker.brokerEmail || '';
+        document.getElementById('propertyType').value = broker.propertyType || 'Residential';
+        document.getElementById('region').value = broker.region || '';
+        document.getElementById('propertiesManaged').value = broker.propertiesManaged || 1;
+        document.getElementById('commissionType').value = broker.commissionType || 'Percentage';
+        document.getElementById('commissionRate').value = broker.commissionRate || 2;
+        document.getElementById('status').value = broker.status || 'Active';
+        document.getElementById('rating').value = broker.rating || 4.5;
+        
+        const historyNameEl = document.getElementById('historyLicenseeName');
+        if (historyNameEl) historyNameEl.value = broker.historyLicenseeName || '';
+
+        const historyPropEl = document.getElementById('historyPropertyName');
+        if (historyPropEl) historyPropEl.value = broker.historyPropertyName || '';
+
+        const historyDatesEl = document.getElementById('historyAgreementDates');
+        if (historyDatesEl) historyDatesEl.value = broker.historyAgreementDates || '';
+
+        document.getElementById('notes').value = broker.notes || '';
+
+        if (formTitle) formTitle.textContent = 'Edit Broker Profile';
+        if (saveButton) saveButton.textContent = 'Update Broker';
+
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function renderOverview(list) {
         if (!overview) return;
         if (!list.length) {
@@ -241,7 +318,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const statusClass = broker.status === 'Active' ? 'active' : broker.status === 'Pending' ? 'pending' : 'inactive';
         const licensees = getLicensees();
         const payments = getRentPayments();
+        const agreements = getRentAgreements();
 
+        // Linked Licensees from System
         const linkedLicensees = licensees.filter(function (licensee) {
             const lBroker = String(licensee.brokerName || licensee.broker || '').trim().toLowerCase();
             const bName = String(broker.brokerName || '').trim().toLowerCase();
@@ -261,60 +340,67 @@ document.addEventListener('DOMContentLoaded', function () {
             return sum + getLicenseeCollection(licensee, payments);
         }, 0);
 
-        let licenseeListHtml = '';
+        // Matching Agreements
+        const matchedAgreements = agreements.filter(function (agr) {
+            const licenseeName = String(agr.licenseeName || '').trim().toLowerCase();
+            return linkedLicensees.some(l => String(l.name || '').trim().toLowerCase() === licenseeName);
+        });
 
+        // Licensees List HTML
+        let licenseeListHtml = '';
         if (!linkedLicensees.length) {
             licenseeListHtml = `
-                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;color:#64748b;text-align:center;">
-                    No licensees are currently linked to this broker. Select this broker when registering or editing a licensee.
+                <div style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:18px;color:#64748b;text-align:center;font-size:13px;">
+                    ℹ️ No active licensees are currently linked to <strong>${broker.brokerName}</strong> in the system. Select this broker when creating or editing a licensee in the Licensees module.
                 </div>
             `;
         } else {
             licenseeListHtml = `
-                <div style="display:grid;gap:10px;">
+                <div style="display:grid;gap:12px;">
                     ${linkedLicensees.map(function (licensee) {
                         const rent = Number(licensee.rent) || 0;
                         const commission = calculateLicenseeCommission(rent, broker);
                         const collection = getLicenseeCollection(licensee, payments);
 
                         return `
-                            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px;">
-                                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;">
+                            <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+                                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f1f5f9;">
                                     <div>
                                         <strong style="display:block;font-size:15px;color:#0f172a;">
-                                            ${licensee.name || 'Unnamed Licensee'}
+                                            👤 ${licensee.name || 'Unnamed Licensee'}
                                         </strong>
-                                        <small style="color:#64748b;">
-                                            ${licensee.propertyName || 'Property not set'}
-                                            ${licensee.unit ? ' • Unit ' + licensee.unit : ''}
+                                        <small style="color:#64748b;font-size:12px;">
+                                            🏠 ${licensee.propertyName || 'Property not set'} ${licensee.unit ? ' • Unit ' + licensee.unit : ''}
                                         </small>
                                     </div>
-                                    <span style="display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600;background:${licensee.status === 'Active' ? '#dcfce7' : '#f1f5f9'};color:${licensee.status === 'Active' ? '#15803d' : '#475569'};">
+                                    <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;background:${licensee.status === 'Active' ? '#dcfce7' : '#f1f5f9'};color:${licensee.status === 'Active' ? '#15803d' : '#475569'};">
                                         ${licensee.status || 'Active'}
                                     </span>
                                 </div>
 
-                                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;">
-                                    <div style="background:#fff;border-radius:8px;padding:9px;border:1px solid #edf2f7;">
-                                        <small style="display:block;color:#64748b;font-size:10px;margin-bottom:3px;">Monthly Rent</small>
-                                        <strong>${formatCurrency(rent)}</strong>
+                                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:8px;margin-bottom:10px;">
+                                    <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;border:1px solid #f1f5f9;">
+                                        <small style="display:block;color:#64748b;font-size:11px;margin-bottom:2px;">Monthly Rent</small>
+                                        <strong style="color:#0f172a;">${formatCurrency(rent)}</strong>
                                     </div>
-                                    <div style="background:#fff;border-radius:8px;padding:9px;border:1px solid #edf2f7;">
-                                        <small style="display:block;color:#64748b;font-size:10px;margin-bottom:3px;">Collection</small>
-                                        <strong>${formatCurrency(collection)}</strong>
+                                    <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;border:1px solid #f1f5f9;">
+                                        <small style="display:block;color:#64748b;font-size:11px;margin-bottom:2px;">Rent Collected</small>
+                                        <strong style="color:#166534;">${formatCurrency(collection)}</strong>
                                     </div>
-                                    <div style="background:#fff;border-radius:8px;padding:9px;border:1px solid #edf2f7;">
-                                        <small style="display:block;color:#64748b;font-size:10px;margin-bottom:3px;">Commission Rate</small>
-                                        <strong>${formatCommissionText(broker)}</strong>
+                                    <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;border:1px solid #f1f5f9;">
+                                        <small style="display:block;color:#64748b;font-size:11px;margin-bottom:2px;">Deposit</small>
+                                        <strong>${formatCurrency(licensee.deposit || 0)}</strong>
                                     </div>
-                                    <div style="background:#fff;border-radius:8px;padding:9px;border:1px solid #dbeafe;background:#eff6ff;">
-                                        <small style="display:block;color:#1e40af;font-size:10px;margin-bottom:3px;">Calculated Commission</small>
+                                    <div style="background:#eff6ff;border-radius:8px;padding:8px 10px;border:1px solid #bfdbfe;">
+                                        <small style="display:block;color:#1e40af;font-size:11px;margin-bottom:2px;">Broker Commission</small>
                                         <strong style="color:#1d4ed8;">${formatCurrency(commission)}</strong>
                                     </div>
                                 </div>
-                                <div style="margin-top:8px;font-size:11px;color:#64748b;display:flex;gap:14px;flex-wrap:wrap;">
-                                    <span>Mobile: <strong>${licensee.mobile || '-'}</strong></span>
-                                    <span>Agreement Start: <strong>${licensee.leaseDate || '-'}</strong></span>
+
+                                <div style="font-size:11px;color:#64748b;display:flex;gap:14px;flex-wrap:wrap;background:#f8fafc;padding:6px 10px;border-radius:6px;">
+                                    <span>📞 <strong>${licensee.mobile || 'Not set'}</strong></span>
+                                    <span>📅 Lease Start: <strong>${licensee.leaseDate || 'Not set'}</strong></span>
+                                    <span>🆔 Aadhaar: <strong>${licensee.aadhaar || licensee.aadhaarNumber || 'Not set'}</strong></span>
                                 </div>
                             </div>
                         `;
@@ -323,36 +409,132 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
         }
 
+        // History HTML
+        let historyHtml = '';
+        if (broker.historyLicenseeName || broker.historyPropertyName || broker.historyAgreementDates) {
+            historyHtml = `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-top:14px;">
+                    <small style="display:block;color:#64748b;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;font-size:11px;">📜 Recorded Deal & Agreement History</small>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:10px;">
+                        <div><small style="color:#64748b;display:block;">Licensee Name</small><strong style="color:#0f172a;">${broker.historyLicenseeName || '—'}</strong></div>
+                        <div><small style="color:#64748b;display:block;">Property</small><strong style="color:#0f172a;">${broker.historyPropertyName || '—'}</strong></div>
+                        <div><small style="color:#64748b;display:block;">Agreement Dates</small><strong style="color:#0f172a;">${broker.historyAgreementDates || '—'}</strong></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Matched Agreements HTML
+        let agreementsHtml = '';
+        if (matchedAgreements.length > 0) {
+            agreementsHtml = `
+                <div style="margin-top:14px;">
+                    <small style="display:block;color:#64748b;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;font-size:11px;">📋 Linked Leave & License Agreements (${matchedAgreements.length})</small>
+                    <div style="display:grid;gap:8px;">
+                        ${matchedAgreements.map(a => `
+                            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+                                <div>
+                                    <strong style="color:#0f172a;">${a.licenseeName}</strong> - <span style="color:#64748b;">${a.propertyAddress || 'Property'}</span>
+                                    <br><small style="color:#64748b;">Duration: ${a.durationLabel || '11 months'} • Start: ${a.agreementStartDate || '-'}</small>
+                                </div>
+                                <span style="font-weight:700;color:#2563eb;background:#eff6ff;padding:4px 8px;border-radius:6px;">${formatCurrency(a.monthlyLicenseFee || 0)}/mo</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         overview.innerHTML = `
-            <div style="display:grid;gap:16px;">
-                <div>
-                    <small style="display:block;color:#64748b;margin-bottom:4px;">Broker Profile</small>
-                    <strong style="font-size:20px;color:#0f172a;">${broker.brokerName || 'Unnamed broker'}</strong>
+            <div style="display:grid;gap:18px;">
+                <!-- HERO PROFILE HEADER -->
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(135deg, #1e293b, #0f172a);color:white;padding:18px;border-radius:14px;box-shadow:0 10px 25px rgba(15,23,42,0.15);">
+                    <div style="display:flex;align-items:center;gap:14px;">
+                        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg, #3b82f6, #2563eb);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;box-shadow:0 4px 12px rgba(37,99,235,0.4);">
+                            ${getInitials(broker.brokerName)}
+                        </div>
+                        <div>
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                                <strong style="font-size:20px;color:#ffffff;line-height:1.2;">${broker.brokerName || 'Unnamed broker'}</strong>
+                                <span class="broker-status ${statusClass}">${broker.status || 'Active'}</span>
+                            </div>
+                            <small style="color:#94a3b8;font-size:13px;display:block;margin-top:2px;">
+                                🏢 ${broker.companyName || 'Independent Broker'} • 📍 ${broker.region || 'All Regions'}
+                            </small>
+                            <div style="margin-top:4px;font-size:12px;color:#fbbf24;font-weight:700;">
+                                ${renderStars(broker.rating || 4.5)}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button type="button" class="mini-btn view" style="background:#3b82f6;color:white;padding:8px 12px;font-size:12px;" data-edit-profile-id="${broker.id}">✏️ Edit</button>
+                        <button type="button" class="mini-btn delete" style="background:rgba(239,68,68,0.2);color:#fca5a5;padding:8px 12px;font-size:12px;" data-delete-id="${broker.id}">🗑️ Delete</button>
+                    </div>
                 </div>
 
-                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
-                    <div style="background:#f8fafc;border-radius:10px;padding:12px;"><span style="display:block;color:#64748b;font-size:11px;margin-bottom:4px;">Agency</span><strong>${broker.companyName || 'Direct Partner'}</strong></div>
-                    <div style="background:#f8fafc;border-radius:10px;padding:12px;"><span style="display:block;color:#64748b;font-size:11px;margin-bottom:4px;">Phone</span><strong>${broker.brokerPhone || 'Not provided'}</strong></div>
-                    <div style="background:#f8fafc;border-radius:10px;padding:12px;"><span style="display:block;color:#64748b;font-size:11px;margin-bottom:4px;">Email</span><strong>${broker.brokerEmail || 'Not provided'}</strong></div>
-                    <div style="background:#f8fafc;border-radius:10px;padding:12px;"><span style="display:block;color:#64748b;font-size:11px;margin-bottom:4px;">Property Type</span><strong>${broker.propertyType || 'Residential'}</strong></div>
-                    <div style="background:#f8fafc;border-radius:10px;padding:12px;"><span style="display:block;color:#64748b;font-size:11px;margin-bottom:4px;">Region</span><strong>${broker.region || 'Not provided'}</strong></div>
-                    <div style="background:#f8fafc;border-radius:10px;padding:12px;"><span style="display:block;color:#64748b;font-size:11px;margin-bottom:4px;">Commission Setup</span><strong>${formatCommissionText(broker)}</strong></div>
-                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;"><span style="display:block;color:#1e40af;font-size:11px;margin-bottom:4px;">Linked Licensees</span><strong style="color:#1d4ed8;font-size:16px;">${linkedLicensees.length}</strong></div>
-                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;"><span style="display:block;color:#1e40af;font-size:11px;margin-bottom:4px;">Total Monthly Rent</span><strong style="color:#1d4ed8;font-size:16px;">${formatCurrency(totalMonthlyRent)}</strong></div>
-                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;"><span style="display:block;color:#1e40af;font-size:11px;margin-bottom:4px;">Total Collection</span><strong style="color:#1d4ed8;font-size:16px;">${formatCurrency(totalCollection)}</strong></div>
-                    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;"><span style="display:block;color:#166534;font-size:11px;margin-bottom:4px;">Total Broker Commission</span><strong style="color:#15803d;font-size:16px;">${formatCurrency(totalCommission)}</strong></div>
+                <!-- METRICS GRID -->
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:10px;">
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#64748b;font-size:11px;margin-bottom:3px;">📞 Phone Number</span>
+                        <strong>${broker.brokerPhone ? `<a href="tel:${broker.brokerPhone}" style="color:#2563eb;text-decoration:none;">${broker.brokerPhone}</a>` : 'Not provided'}</strong>
+                    </div>
+
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#64748b;font-size:11px;margin-bottom:3px;">✉️ Email Address</span>
+                        <strong style="word-break:break-all;">${broker.brokerEmail ? `<a href="mailto:${broker.brokerEmail}" style="color:#2563eb;text-decoration:none;">${broker.brokerEmail}</a>` : 'Not provided'}</strong>
+                    </div>
+
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#64748b;font-size:11px;margin-bottom:3px;">🏙️ Type & Area</span>
+                        <strong>${broker.propertyType || 'Residential'} (${broker.region || 'N/A'})</strong>
+                    </div>
+
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#64748b;font-size:11px;margin-bottom:3px;">💼 Commission Model</span>
+                        <strong style="color:#0f172a;">${formatCommissionText(broker)}</strong>
+                    </div>
+
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#64748b;font-size:11px;margin-bottom:3px;">🏠 Properties Managed</span>
+                        <strong style="color:#0f172a;">${broker.propertiesManaged || 0} Units</strong>
+                    </div>
+
+                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#1e40af;font-size:11px;margin-bottom:3px;">👥 Linked Licensees</span>
+                        <strong style="color:#1d4ed8;font-size:16px;">${linkedLicensees.length}</strong>
+                    </div>
+
+                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#1e40af;font-size:11px;margin-bottom:3px;">💰 Monthly Rent</span>
+                        <strong style="color:#1d4ed8;font-size:16px;">${formatCurrency(totalMonthlyRent)}</strong>
+                    </div>
+
+                    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;">
+                        <span style="display:block;color:#166534;font-size:11px;margin-bottom:3px;">🎯 Total Broker Commission</span>
+                        <strong style="color:#15803d;font-size:16px;">${formatCurrency(totalCommission)}</strong>
+                    </div>
                 </div>
 
-                <div><span class="broker-status ${statusClass}">${broker.status || 'Active'}</span></div>
-
+                <!-- LINKED LICENSEES -->
                 <div>
-                    <small style="display:block;color:#64748b;margin-bottom:8px;font-weight:700;">Associated Licensees (${linkedLicensees.length})</small>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <small style="color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:11px;">
+                            👥 Active System Licensees (${linkedLicensees.length})
+                        </small>
+                    </div>
                     ${licenseeListHtml}
                 </div>
 
-                <div>
-                    <small style="display:block;color:#64748b;margin-bottom:4px;">Notes</small>
-                    <p style="margin:0;color:#475569;line-height:1.5;">${broker.notes ? broker.notes : 'No notes added.'}</p>
+                <!-- HISTORY LOG -->
+                ${historyHtml}
+
+                <!-- MATCHED AGREEMENTS -->
+                ${agreementsHtml}
+
+                <!-- BROKER NOTES -->
+                <div style="background:#fff8f0;border:1px solid #fed7aa;border-radius:12px;padding:14px;">
+                    <small style="display:block;color:#9a3412;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;font-size:11px;">📝 Broker Notes & Special Remarks</small>
+                    <p style="margin:0;color:#7c2d12;line-height:1.5;font-size:13px;">${broker.notes ? broker.notes : 'No additional notes or comments recorded for this broker.'}</p>
                 </div>
             </div>
         `;
@@ -410,13 +592,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         <small style="color:#64748b;">${broker.brokerPhone || 'No phone'}</small>
                     </td>
                     <td>${broker.companyName || '—'}<br><small style="color:#64748b;">${broker.brokerEmail || 'No email'}</small></td>
-                    <td>${broker.region || '—'}</td>
-                    <td><strong>${linked.length} Licensees</strong></td>
+                    <td>${broker.region || '—'}<br><small style="color:#64748b;">${broker.propertyType || 'Residential'}</small></td>
+                    <td><strong>${linked.length} Licensees</strong><br><small style="color:#64748b;">⭐ ${Number(broker.rating || 4.5).toFixed(1)}</small></td>
                     <td>${formatCommissionText(broker)}<br><small style="color:#15803d;font-weight:600;">Total: ${formatCurrency(totalCommission)}</small></td>
                     <td><span class="broker-status ${statusClass}">${broker.status || 'Active'}</span></td>
                     <td>
                         <div class="broker-actions-cell">
                             <button type="button" class="mini-btn view" data-view-id="${broker.id}">${isSelected ? 'Viewing' : 'View'}</button>
+                            <button type="button" class="mini-btn view" style="background:#e0e7ff;color:#3730a3;" data-edit-id="${broker.id}">Edit</button>
                             <button type="button" class="mini-btn delete" data-delete-id="${broker.id}">Delete</button>
                         </div>
                     </td>
@@ -437,20 +620,26 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', function (event) {
             event.preventDefault();
 
+            const editingId = editingBrokerIdInput ? editingBrokerIdInput.value.trim() : '';
+
             const payload = {
-                id: 'broker-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                id: editingId || ('broker-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
                 brokerName: document.getElementById('brokerName').value.trim(),
                 companyName: document.getElementById('companyName').value.trim(),
                 brokerPhone: document.getElementById('brokerPhone').value.trim(),
                 brokerEmail: document.getElementById('brokerEmail').value.trim(),
                 propertyType: document.getElementById('propertyType').value,
                 region: document.getElementById('region').value.trim(),
-                propertiesManaged: document.getElementById('propertiesManaged').value || 0,
+                propertiesManaged: Number(document.getElementById('propertiesManaged').value) || 0,
                 commissionType: document.getElementById('commissionType').value || 'Percentage',
-                commissionRate: document.getElementById('commissionRate').value || 0,
+                commissionRate: Number(document.getElementById('commissionRate').value) || 0,
                 status: document.getElementById('status').value,
-                rating: document.getElementById('rating').value || 0,
-                notes: document.getElementById('notes').value.trim()
+                rating: Number(document.getElementById('rating').value) || 4.5,
+                historyLicenseeName: document.getElementById('historyLicenseeName') ? document.getElementById('historyLicenseeName').value.trim() : '',
+                historyPropertyName: document.getElementById('historyPropertyName') ? document.getElementById('historyPropertyName').value.trim() : '',
+                historyAgreementDates: document.getElementById('historyAgreementDates') ? document.getElementById('historyAgreementDates').value.trim() : '',
+                notes: document.getElementById('notes').value.trim(),
+                updatedAt: new Date().toISOString()
             };
 
             if (!payload.brokerName) {
@@ -458,19 +647,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const list = getBrokers();
-            list.push(payload);
+            let list = getBrokers();
+            if (editingId) {
+                const index = list.findIndex(item => String(item.id) === String(editingId));
+                if (index !== -1) {
+                    list[index] = { ...list[index], ...payload };
+                } else {
+                    list.push(payload);
+                }
+            } else {
+                payload.createdAt = new Date().toISOString();
+                list.push(payload);
+            }
+
             saveBrokers(list);
             selectedBrokerId = payload.id;
-            form.reset();
+            resetFormState();
             render();
-            alert('Broker added successfully!');
+            alert(editingId ? 'Broker details updated successfully!' : 'Broker added successfully!');
         });
     }
 
     if (resetButton) {
         resetButton.addEventListener('click', function () {
-            if (form) form.reset();
+            resetFormState();
         });
     }
 
@@ -479,9 +679,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const deleteButton = event.target.closest('[data-delete-id]');
             if (deleteButton) {
                 const id = deleteButton.getAttribute('data-delete-id');
-                const list = getBrokers().filter(item => String(item.id) !== String(id));
-                saveBrokers(list);
-                if (String(selectedBrokerId) === String(id)) selectedBrokerId = null;
+                if (confirm('Are you sure you want to delete this broker profile?')) {
+                    const list = getBrokers().filter(item => String(item.id) !== String(id));
+                    saveBrokers(list);
+                    if (String(selectedBrokerId) === String(id)) selectedBrokerId = null;
+                    render();
+                }
+                return;
+            }
+
+            const editButton = event.target.closest('[data-edit-id]');
+            if (editButton) {
+                const id = editButton.getAttribute('data-edit-id');
+                selectedBrokerId = id;
+                populateFormForEdit(id);
                 render();
                 return;
             }
@@ -495,6 +706,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    if (overview) {
+        overview.addEventListener('click', function (event) {
+            const editButton = event.target.closest('[data-edit-profile-id]');
+            if (editButton) {
+                const id = editButton.getAttribute('data-edit-profile-id');
+                selectedBrokerId = id;
+                populateFormForEdit(id);
+                render();
+                return;
+            }
+
+            const deleteButton = event.target.closest('[data-delete-id]');
+            if (deleteButton) {
+                const id = deleteButton.getAttribute('data-delete-id');
+                if (confirm('Are you sure you want to delete this broker profile?')) {
+                    const list = getBrokers().filter(item => String(item.id) !== String(id));
+                    saveBrokers(list);
+                    if (String(selectedBrokerId) === String(id)) selectedBrokerId = null;
+                    render();
+                }
+            }
+        });
+    }
+
     const brokerInput = document.getElementById('licenseeBrokers');
     if (brokerInput) {
         brokerInput.addEventListener('focus', populateBrokerDropdown);
@@ -504,7 +739,7 @@ document.addEventListener('DOMContentLoaded', function () {
     render();
 
     window.addEventListener('storage', function (event) {
-        if (event.key === 'rentlicensees' || event.key === 'rentPayments' || event.key === 'rentBrokers' || event.key === 'rentTenants') {
+        if (event.key === 'rentlicensees' || event.key === 'rentPayments' || event.key === 'rentBrokers' || event.key === 'rentTenants' || event.key === 'rentAgreements') {
             render();
         }
     });

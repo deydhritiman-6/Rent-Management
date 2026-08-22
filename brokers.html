@@ -249,11 +249,13 @@
 
             <div class="broker-layout">
                 <section class="broker-card">
-                    <h2>Add Broker</h2>
+                    <h2 id="brokerFormTitle">Add Broker</h2>
 
                     <form id="brokerForm" class="broker-form">
+                        <input type="hidden" id="editingBrokerId" value="">
+
                         <div class="broker-field">
-                            <label for="brokerName">Broker Name</label>
+                            <label for="brokerName">Broker Name *</label>
                             <input id="brokerName" type="text" placeholder="e.g. Arvind Mehta" required>
                         </div>
 
@@ -311,30 +313,34 @@
                         </div>
 
                         <div class="broker-field">
-                            <label for="rating">Rating</label>
+                            <label for="rating">Rating (1 - 5 ⭐)</label>
                             <input id="rating" type="number" min="1" max="5" step="0.1" value="4.5">
                         </div>
 
                         <div class="broker-field">
-                            <label for="Licensees History">Licensees History</label>
-                            <input id="Licensees History" type="text" placeholder="e.g. Name of the Licensees">
-                            <input id="Name of the Properties" type="text" placeholder="e.g. Name of the Properties">
+                            <label for="historyLicenseeName">Historical Licensee Name</label>
+                            <input id="historyLicenseeName" type="text" placeholder="e.g. Rajesh Kumar">
                         </div>
 
                         <div class="broker-field">
-                            <label for="Dates of Agreements">Date of Agreements</label>
-                            <input id="Dates of Agreements" type="text" placeholder="e.g. Dates of Agreements">
+                            <label for="historyPropertyName">Historical Property Name</label>
+                            <input id="historyPropertyName" type="text" placeholder="e.g. Sunrise Apartments #302">
                         </div>
 
                         <div class="broker-field full">
-                            <label for="notes">Broker Notes</label>
-                            <textarea id="notes" placeholder="Add details about the broker relationship, referral network, and deal history"></textarea>
+                            <label for="historyAgreementDates">Agreement Dates / Period</label>
+                            <input id="historyAgreementDates" type="text" placeholder="e.g. 01 Jan 2024 - 31 Dec 2024">
+                        </div>
+
+                        <div class="broker-field full">
+                            <label for="notes">Broker Notes & Remarks</label>
+                            <textarea id="notes" placeholder="Add details about the broker relationship, referral network, terms, and deal history"></textarea>
                         </div>
 
                         <div class="broker-field full">
                             <div class="broker-actions">
                                 <button type="button" id="resetBrokerForm" class="broker-btn secondary">Clear</button>
-                                <button type="submit" class="broker-btn primary">Save Broker</button>
+                                <button type="submit" id="saveBrokerBtn" class="broker-btn primary">Save Broker</button>
                             </div>
                         </div>
                     </form>
