@@ -775,6 +775,33 @@
                     min="0"
                     placeholder="Enter monthly rent">
 
+                <label for="PropertyMaintenanceCharges">
+                    Maintenance Charges
+                </label>   
+                
+                <input 
+                    type="number"
+                    id="PropertyMaintenanceCharges"
+                    min="0"
+                    placeholder="Enter monthly maintenance charges">
+                
+                <label for="Contact Person">
+                    Contact
+                </label>
+
+                <input
+                    type="text"
+                    id="propertyContact"
+                    placeholder="Enter contact person name">
+
+                <label for="propertyPhone">
+                    Phone Number
+                </label>
+
+                <input type="tel" id="licenseeMobile" placeholder="Enter mobile number" inputmode="tel" maxlength="10" oninput="let v=this.value.replace(/[^\d+]/g,''); if(v.indexOf('+')>0){v=v.replace(/\+/g,(m,i)=>i===0?'+':'');} this.value=v;">
+                    
+
+
                 <div class="property-detail-sections">
                     <div class="detail-section">
                         <div class="detail-section-header">Basic Information</div>
