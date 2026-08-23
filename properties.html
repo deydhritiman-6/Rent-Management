@@ -427,7 +427,42 @@
                 font-size: 11px;
             }
         }
-    </style>
+    
+        /* Premium property name styling */
+        .property-name-display {
+            display: inline-block;
+            font-size: 18px;
+            line-height: 1.25;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: #06b6d4;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .property-name-cell {
+            min-width: 220px;
+        }
+
+        .property-name-display:hover {
+            transform: translateY(-1px);
+            color: #06b6d4;
+        }
+
+        @media (max-width: 768px) {
+            .property-name-display {
+                font-size: 16px;
+            }
+            .property-name-cell {
+                min-width: 190px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .property-name-display {
+                font-size: 15px;
+            }
+        }
+</style>
 </head>
 
 <body>
@@ -2267,8 +2302,8 @@ function renderRows(list, tbody) {
     list.forEach(function(property) {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>
-                <strong>
+            <td class="property-name-cell">
+                <strong class="property-name-display">
                     ${escapeHtml(property.name)}
                 </strong>
             </td>

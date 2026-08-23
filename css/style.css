@@ -1363,3 +1363,446 @@ td {
 }
 
 /* Responsive layout is handled entirely in css/responsive.css */
+/* ============================================================
+   PREMIUM VISUAL SYSTEM
+   Rent Management App — restrained luxury / executive UI
+   ============================================================ */
+:root {
+    --primary: #1f3a5b;
+    --primary-dark: #14283f;
+    --primary-soft: #e9eef5;
+    --accent: #c7a467;
+    --accent-soft: #f4ead7;
+    --success: #2f7d5a;
+    --warning: #b8872e;
+    --danger: #b54a4a;
+    --ink: #172331;
+    --muted: #6d7783;
+    --panel: rgba(255, 255, 255, 0.94);
+    --surface: #f7f4ee;
+    --surface-2: #fbfaf7;
+    --border: rgba(30, 49, 70, 0.10);
+    --shadow-soft: 0 14px 38px rgba(24, 39, 56, 0.08);
+    --shadow-premium: 0 22px 55px rgba(24, 39, 56, 0.12);
+}
+
+html {
+    background: #f4f1eb;
+}
+
+body {
+    font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at 8% 2%, rgba(199, 164, 103, 0.09), transparent 26%),
+        radial-gradient(circle at 94% 8%, rgba(31, 58, 91, 0.08), transparent 24%),
+        linear-gradient(180deg, #faf8f4 0%, #f3f0ea 100%);
+    color: var(--ink);
+}
+
+body::before,
+body::after {
+    opacity: 0.18;
+    filter: blur(90px);
+}
+
+body::before { background: rgba(199, 164, 103, 0.26); }
+body::after { background: rgba(31, 58, 91, 0.20); }
+
+::selection {
+    background: rgba(199, 164, 103, 0.26);
+    color: var(--ink);
+}
+
+/* Shared premium surfaces */
+.panel,
+.summary-card,
+.quick-actions,
+.maintenance-card,
+.panel-card,
+.settings-card,
+.report-card,
+.reminder-message-card,
+.broker-profile,
+.broker-card,
+.rent-stat,
+.auth-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(250,248,244,0.94)) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-soft) !important;
+    border-radius: 18px !important;
+}
+
+.panel:hover,
+.summary-card:hover,
+.quick-actions:hover,
+.maintenance-card:hover,
+.panel-card:hover,
+.settings-card:hover,
+.report-card:hover,
+.reminder-message-card:hover,
+.broker-card:hover,
+.rent-stat:hover {
+    box-shadow: var(--shadow-premium) !important;
+}
+
+.sidebar {
+    background:
+        radial-gradient(circle at 100% 0%, rgba(199, 164, 103, 0.10), transparent 28%),
+        linear-gradient(180deg, #14283f 0%, #0e1d2e 56%, #0a1624 100%) !important;
+    border-right: 1px solid rgba(199, 164, 103, 0.16) !important;
+    box-shadow: 16px 0 40px rgba(12, 25, 40, 0.16) !important;
+}
+
+.logo {
+    background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)) !important;
+    border-bottom-color: rgba(199, 164, 103, 0.16) !important;
+}
+
+.logo-icon {
+    background: linear-gradient(135deg, #243f61 0%, #1a304b 68%, #12243a 100%) !important;
+    border: 1px solid rgba(199, 164, 103, 0.55) !important;
+    box-shadow: 0 10px 26px rgba(3, 12, 22, 0.32), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
+}
+
+.logo h2 {
+    letter-spacing: -0.02em;
+}
+
+.logo span {
+    color: #c9d2de !important;
+}
+
+.navigation {
+    scrollbar-color: rgba(199,164,103,0.55) transparent !important;
+}
+
+.nav-item {
+    color: #d9e1ea !important;
+    border-color: transparent !important;
+}
+
+.nav-item:hover {
+    background: rgba(255,255,255,0.045) !important;
+    color: #fff !important;
+    transform: translateX(2px) !important;
+    border-color: rgba(199,164,103,0.16) !important;
+    box-shadow: none !important;
+}
+
+.nav-item.active {
+    background: linear-gradient(90deg, rgba(199,164,103,0.18), rgba(255,255,255,0.04)) !important;
+    color: #fff !important;
+    border-left: 3px solid var(--accent) !important;
+    border-color: rgba(199,164,103,0.26) !important;
+    box-shadow: inset 0 0 0 1px rgba(199,164,103,0.06) !important;
+}
+
+.sidebar-footer {
+    background: rgba(0,0,0,0.10) !important;
+    border-top-color: rgba(199,164,103,0.15) !important;
+}
+
+.main-content {
+    background: transparent;
+}
+
+.topbar {
+    background: rgba(255,255,255,0.76) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 10px 26px rgba(24,39,56,0.05) !important;
+    backdrop-filter: blur(16px) !important;
+}
+
+.topbar h1 {
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: #182737 !important;
+}
+
+.topbar p {
+    color: #7a8490 !important;
+}
+
+.summary-grid,
+.action-grid,
+.dashboard-grid,
+.report-grid,
+.settings-grid,
+.section-grid,
+.broker-layout,
+.maintenance-layout {
+    gap: 18px;
+}
+
+.summary-card {
+    padding: 20px !important;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(199,164,103,0.28) !important;
+}
+
+.card-icon {
+    border: 1px solid rgba(31,58,91,0.06);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.card-icon.blue { background: #e8eef6 !important; color: #294b6e; }
+.card-icon.green { background: #e7f1eb !important; color: #2f7d5a; }
+.card-icon.orange { background: #f4ead7 !important; color: #a87926; }
+.card-icon.purple { background: #ece8f3 !important; color: #635278; }
+
+.panel-header {
+    border-bottom-color: rgba(31,58,91,0.08) !important;
+}
+
+.panel-header h2,
+.quick-actions h2,
+.maintenance-card h2,
+.panel-card h3,
+.settings-card h3,
+.report-card h3,
+.reminder-message-card h2 {
+    color: #1c2b3b !important;
+    letter-spacing: -0.02em;
+}
+
+.panel-header p,
+.maintenance-card p,
+.panel-card p,
+.settings-card p,
+.report-card p,
+.reminder-message-card p {
+    color: #7a8490 !important;
+}
+
+/* Buttons */
+.add-property-btn,
+.primary-btn,
+.save-btn,
+.broker-btn,
+.maintenance-btn.primary,
+.rent-action.primary,
+.form-buttons .save-btn {
+    background: linear-gradient(135deg, #233f60 0%, #1a304b 100%) !important;
+    color: #fff !important;
+    border: 1px solid rgba(199,164,103,0.28) !important;
+    box-shadow: 0 10px 22px rgba(20,40,63,0.14) !important;
+}
+
+.add-property-btn:hover,
+.primary-btn:hover,
+.save-btn:hover,
+.broker-btn:hover,
+.maintenance-btn.primary:hover,
+.rent-action.primary:hover,
+.form-buttons .save-btn:hover {
+    background: linear-gradient(135deg, #2b4b70 0%, #1e3854 100%) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(20,40,63,0.18) !important;
+}
+
+.secondary-btn,
+.cancel-btn,
+.clear-filter-btn,
+.maintenance-btn.secondary {
+    background: #f3f0ea !important;
+    color: #3c4a59 !important;
+    border: 1px solid rgba(31,58,91,0.10) !important;
+}
+
+.secondary-btn:hover,
+.cancel-btn:hover,
+.clear-filter-btn:hover,
+.maintenance-btn.secondary:hover {
+    background: #ebe6dd !important;
+}
+
+/* Form controls */
+input,
+select,
+textarea,
+.form-group input,
+.form-group select,
+.form-group textarea,
+.maintenance-field input,
+.maintenance-field select,
+.maintenance-field textarea,
+.filter-bar input,
+.filter-bar select {
+    border-color: rgba(31,58,91,0.13) !important;
+    background: rgba(255,255,255,0.92) !important;
+    color: #223244 !important;
+    border-radius: 10px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.75) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.maintenance-field input:focus,
+.maintenance-field select:focus,
+.maintenance-field textarea:focus {
+    border-color: rgba(199,164,103,0.72) !important;
+    box-shadow: 0 0 0 3px rgba(199,164,103,0.12) !important;
+    outline: none !important;
+}
+
+label,
+.form-group label,
+.maintenance-field label {
+    color: #465362 !important;
+}
+
+/* Tables */
+.table-container,
+.table-wrap,
+.table-responsive,
+.broker-table-wrap,
+.rent-table-wrap {
+    border: 1px solid rgba(31,58,91,0.08);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.78);
+}
+
+table {
+    background: transparent;
+}
+
+th {
+    background: #f3f1ec !important;
+    color: #65707c !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-size: 10px !important;
+    border-bottom: 1px solid rgba(31,58,91,0.08) !important;
+}
+
+td {
+    border-bottom-color: rgba(31,58,91,0.065) !important;
+    color: #2a3848;
+}
+
+tbody tr:hover td {
+    background: rgba(199,164,103,0.045);
+}
+
+.status {
+    border: 1px solid rgba(31,58,91,0.06);
+}
+
+.status.paid { background: #e7f1eb !important; color: #2f7d5a !important; }
+.status.pending { background: #f4ead7 !important; color: #9b6c20 !important; }
+.status.overdue { background: #f7e7e5 !important; color: #a84646 !important; }
+.status.partial { background: #eee9dc !important; color: #8b6b2e !important; }
+
+/* Details / modal surfaces */
+.details-overlay,
+.property-form-overlay,
+.licensee-form-overlay,
+.licensee-details-overlay,
+.rent-overlay {
+    background: rgba(11, 22, 36, 0.62) !important;
+    backdrop-filter: blur(4px);
+}
+
+.details-card,
+.property-form,
+.licensee-form,
+.licensee-details,
+.rent-modal {
+    background: linear-gradient(180deg, #fffefa 0%, #f8f6f1 100%) !important;
+    border: 1px solid rgba(31,58,91,0.10) !important;
+    box-shadow: 0 30px 90px rgba(10,22,36,0.25) !important;
+}
+
+.details-header,
+.form-header,
+.rent-modal-header {
+    border-bottom-color: rgba(31,58,91,0.08);
+}
+
+.details-close,
+.close-form,
+.close-rent-modal {
+    background: #f1eee8 !important;
+    color: #4d5966 !important;
+    border: 1px solid rgba(31,58,91,0.08) !important;
+}
+
+.details-close:hover,
+.close-form:hover,
+.close-rent-modal:hover {
+    background: #e8e3da !important;
+}
+
+.detail-item {
+    background: #f5f2ec !important;
+    border: 1px solid rgba(31,58,91,0.06) !important;
+}
+
+.detail-item strong {
+    color: #243344 !important;
+}
+
+/* Notification panel */
+.notification-panel {
+    background: rgba(255,255,255,0.98) !important;
+    border-color: rgba(31,58,91,0.10) !important;
+    box-shadow: 0 22px 60px rgba(20,38,56,0.16) !important;
+}
+
+.notification-header {
+    background: linear-gradient(180deg, #f4f1eb, #fffdfa) !important;
+    border-bottom-color: rgba(31,58,91,0.08) !important;
+}
+
+.notification-item {
+    background: #f7f4ee !important;
+    border-left-color: #c7a467 !important;
+}
+
+.notification-item:hover {
+    background: #f1ede5 !important;
+}
+
+/* Login */
+.login-body {
+    background:
+        radial-gradient(circle at 15% 10%, rgba(199,164,103,0.14), transparent 24%),
+        radial-gradient(circle at 90% 85%, rgba(31,58,91,0.12), transparent 25%),
+        linear-gradient(180deg, #faf8f4 0%, #f0ede6 100%) !important;
+}
+
+.login-card {
+    background: rgba(255,255,255,0.95) !important;
+    border: 1px solid rgba(31,58,91,0.10) !important;
+    box-shadow: 0 28px 80px rgba(24,39,56,0.16) !important;
+}
+
+.login-brand-icon {
+    background: linear-gradient(135deg, #233f60, #14283f) !important;
+    border: 1px solid rgba(199,164,103,0.55) !important;
+    box-shadow: 0 14px 28px rgba(20,40,63,0.18) !important;
+}
+
+/* Premium helper accents */
+.premium-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(199,164,103,0.55), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
