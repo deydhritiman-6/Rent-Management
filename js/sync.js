@@ -34,6 +34,25 @@
     const originalSetItem = localStorage.setItem;
     const originalRemoveItem = localStorage.removeItem;
 
+    // Cross-tab synchronization: when another page/tab changes application data,
+    // refresh the current page so its existing initialization logic reloads the
+    // latest canonical localStorage data. Changes made in this same document do
+    // not trigger a reload because the page already updates itself.
+    const AUTO_REFRESH_KEYS = new Set(Object.keys(KEY_ALIASES));
+    let refreshTimer = null;
+
+    function isAppDataKey(key) {
+        return Boolean(key && (AUTO_REFRESH_KEYS.has(key) || getRelatedKeys(key).some(k => AUTO_REFRESH_KEYS.has(k))));
+    }
+
+    function scheduleCrossTabRefresh() {
+        if (refreshTimer) return;
+        refreshTimer = setTimeout(function () {
+            refreshTimer = null;
+            try { window.location.reload(); } catch (e) {}
+        }, 120);
+    }
+
     localStorage.setItem = function (key, value) {
         const oldValue = localStorage.getItem(key);
         originalSetItem.call(localStorage, key, value);
@@ -69,6 +88,15 @@
         const eventDetail = { key, value: null, oldValue, relatedKeys: related };
         window.dispatchEvent(new CustomEvent(SYNC_EVENT_NAME, { detail: eventDetail }));
     };
+
+
+    // Native storage events are delivered to OTHER documents/tabs only.
+    // Therefore a storage event here is safe to treat as an external change.
+    window.addEventListener('storage', function (event) {
+        if (event && event.key && isAppDataKey(event.key)) {
+            scheduleCrossTabRefresh();
+        }
+    });
 
     const RentAppSync = {
         eventName: SYNC_EVENT_NAME,
@@ -139,4 +167,5 @@
     };
 
     window.RentAppSync = RentAppSync;
+    window.RentManagementSyncReady = true;
 })(window);

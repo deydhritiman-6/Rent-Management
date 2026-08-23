@@ -1,44 +1,811 @@
-html{overflow-x:hidden}body{overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}img,video{max-width:100%;height:auto}
-.table-container,.table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.main-content{min-width:0}.topbar,.panel-header{flex-wrap:wrap}button,input,select,textarea{max-width:100%}
+/* ============================================================
+   RESPONSIVE.CSS  —  Single source of truth for all breakpoints
+   Rent Management App
+   Breakpoints:  ≤1280  ≤1024  ≤768  ≤600  ≤400  ≤360
+   ============================================================ */
 
-@media(max-width:1024px){
-.sidebar{width:220px}.main-content{margin-left:220px;width:calc(100% - 220px);padding:24px;min-width:0}
-.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-card{min-width:0}.panel{min-width:0}
-.table-container{overflow-x:auto}table{min-width:680px}
-.property-form,.rent-form{max-width:min(620px,calc(100vw - 40px))}
+/* ----------------------------------------------------------
+   BASE / GLOBAL
+   ---------------------------------------------------------- */
+html { overflow-x: hidden; }
+body { overflow-x: hidden; }
+*, *::before, *::after { box-sizing: border-box; }
+img, video { max-width: 100%; height: auto; }
+
+/* Tables always scroll horizontally, never overflow */
+.table-container,
+.table-wrap,
+.table-responsive,
+.broker-table-wrap,
+.rent-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* Prevent layout overflow on flex/grid children */
+.main-content  { min-width: 0; }
+.panel         { min-width: 0; overflow: hidden; }
+.summary-card  { min-width: 0; }
+
+/* Topbar and panel headers wrap gracefully */
+.topbar, .panel-header { flex-wrap: wrap; }
+
+/* Inputs / buttons never overflow their container */
+button, input, select, textarea { max-width: 100%; }
+
+/* ----------------------------------------------------------
+   ≤ 1280px  —  Narrow laptops / large tablets landscape
+   ---------------------------------------------------------- */
+@media (max-width: 1280px) {
+    .sidebar      { width: 230px; }
+    .main-content { margin-left: 230px; width: calc(100% - 230px); padding: 26px; }
+
+    /* Summary: 4 → 2 columns */
+    .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    /* Dashboard right panel stacks below */
+    .dashboard-grid { grid-template-columns: 1fr; }
+
+    /* Quick actions: 4 → 2 columns */
+    .action-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media(max-width:768px){
-.app{display:block!important;width:100%;min-height:100vh}
-.sidebar{position:fixed!important;top:0;left:0;bottom:0;width:min(285px,82vw)!important;height:100vh!important;z-index:100001;transform:translateX(-105%);transition:transform .25s ease;overflow-y:auto;overflow-x:hidden;box-shadow:12px 0 35px rgba(15,23,42,.18)}
-body.mobile-menu-open .sidebar{transform:translateX(0)}
-.main-content{width:100%!important;margin-left:0!important;padding:18px!important;min-width:0}
-.mobile-menu-button{display:inline-flex!important;align-items:center;justify-content:center;width:44px;height:44px;flex:0 0 44px;border:0;border-radius:10px;background:#0f172a;color:#fff;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(15,23,42,.16)}
-.mobile-menu-overlay{display:block!important;position:fixed;inset:0;z-index:100000;background:rgba(15,23,42,.48);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s ease}
-body.mobile-menu-open .mobile-menu-overlay{opacity:1;visibility:visible;pointer-events:auto}
-.topbar{display:flex!important;align-items:center;gap:12px;width:100%}.topbar>div:first-child{flex:1 1 auto;min-width:0}
-.topbar h1{font-size:clamp(21px,5vw,28px);line-height:1.2;margin-bottom:4px}.topbar p{font-size:13px}
-.add-property-btn,.topbar .add-property-btn{min-height:44px}
-.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px}.summary-card{min-width:0;overflow:hidden}
-.report-grid,.settings-grid{grid-template-columns:1fr!important}.settings-card.full{grid-column:auto!important}.settings-form-grid{grid-template-columns:1fr!important}
-.property-form-overlay,.rent-form-overlay,.details-overlay{padding:14px!important;align-items:center}
-.property-form,.rent-form,.details-card{width:100%!important;max-width:560px!important;max-height:calc(100vh - 28px);overflow-y:auto;margin:0 auto}
-.form-buttons,.settings-actions{flex-wrap:wrap}table{min-width:720px}.panel{overflow:hidden}
+/* ----------------------------------------------------------
+   ≤ 1024px  —  Tablets landscape / small laptops
+   ---------------------------------------------------------- */
+@media (max-width: 1024px) {
+    .sidebar      { width: 210px; }
+    .main-content { margin-left: 210px; width: calc(100% - 210px); padding: 22px; }
+
+    /* Tables get a sensible minimum-width before scrolling kicks in */
+    table { min-width: 620px; }
+
+    /* Section grids (access-role page) */
+    .section-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    /* Property / Licensee modals */
+    .property-form, .rent-form { max-width: min(580px, calc(100vw - 40px)); }
 }
 
-@media(max-width:600px){
-.main-content{padding:14px!important}.logo{padding:14px 16px}.navigation{padding:8px 10px}.nav-item{min-height:44px}
-.summary-grid{grid-template-columns:1fr!important}.summary-card{width:100%}.panel{border-radius:12px}.panel-header{padding:14px}
-.property-form,.rent-form,.details-card{border-radius:14px!important;padding:18px!important}
-.form-buttons,.settings-actions{flex-direction:column;width:100%}.form-buttons button,.settings-actions button{width:100%}
-.report-toolbar,.filter-bar{flex-direction:column;align-items:stretch}.report-toolbar>*,.filter-bar>*{width:100%!important;min-height:42px}
-.details-grid{grid-template-columns:1fr!important}.storage-stats{grid-template-columns:1fr!important}
+/* ----------------------------------------------------------
+   ≤ 768px  —  Mobile / tablet portrait  →  SLIDE-OUT SIDEBAR
+   ---------------------------------------------------------- */
+@media (max-width: 768px) {
+    /* Full-width layout — no sidebar offset */
+    .app          { display: block !important; width: 100%; min-height: 100vh; }
+    .main-content { width: 100% !important; margin-left: 0 !important; padding: 18px !important; min-width: 0; }
+
+    /* Sidebar becomes a fixed off-canvas panel */
+    .sidebar {
+        position: fixed !important;
+        top: 0; left: 0; bottom: 0;
+        width: min(280px, 82vw) !important;
+        height: 100vh !important;
+        z-index: 100001;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        overflow-x: hidden;
+        box-shadow: 12px 0 35px rgba(15, 23, 42, 0.18);
+    }
+    body.mobile-menu-open .sidebar { transform: translateX(0); }
+
+    /* Mobile hamburger button (injected by mobile-menu.js) */
+    .mobile-menu-button {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        flex: 0 0 44px;
+        border: 0;
+        border-radius: 10px;
+        background: #0f172a;
+        color: #fff;
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Dark overlay behind the open sidebar */
+    .mobile-menu-overlay {
+        display: block !important;
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        background: rgba(15, 23, 42, 0.48);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    body.mobile-menu-open .mobile-menu-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* Topbar: hamburger | title | right area */
+    .topbar {
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+    }
+    .topbar > div:first-of-type { flex: 1 1 auto; min-width: 0; }
+    .topbar h1 { font-size: clamp(20px, 5vw, 26px); line-height: 1.2; margin-bottom: 3px; }
+    .topbar p  { font-size: 13px; }
+
+    /* "Add …" action buttons in the topbar */
+    .add-property-btn { min-height: 44px; }
+
+    /* Summary cards: 2-column on tablet */
+    .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px; }
+
+    /* Dashboard / reports / settings page grids → single column */
+    .dashboard-grid  { grid-template-columns: 1fr; }
+    .report-grid     { grid-template-columns: 1fr !important; }
+    .settings-grid   { grid-template-columns: 1fr !important; }
+    .section-grid    { grid-template-columns: 1fr !important; }
+
+    /* Quick actions: 2-column */
+    .action-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    /* Settings full-width cards */
+    .settings-card.full { grid-column: auto !important; }
+    .settings-form-grid { grid-template-columns: 1fr !important; }
+    .storage-stats      { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+    /* Modal overlays — centred with safe padding */
+    .property-form-overlay,
+    .licensee-form-overlay,
+    .licensee-details-overlay,
+    .details-overlay,
+    .rent-overlay { padding: 14px !important; align-items: center; }
+
+    /* Modal cards — fit within viewport */
+    .property-form,
+    .rent-form,
+    .licensee-form,
+    .details-card {
+        width: 100% !important;
+        max-width: 540px !important;
+        max-height: calc(100vh - 28px);
+        overflow-y: auto;
+        margin: 0 auto;
+    }
+    .licensee-details {
+        width: calc(100vw - 28px) !important;
+        max-width: 560px !important;
+        max-height: calc(100vh - 28px);
+        overflow-y: auto;
+        margin: 0 auto;
+    }
+    .rent-modal {
+        width: 100% !important;
+        max-width: 560px;
+        max-height: calc(100vh - 28px);
+        overflow-y: auto;
+    }
+
+    /* Form button rows can wrap */
+    .form-buttons,
+    .settings-actions,
+    .broker-actions,
+    .rent-form-actions { flex-wrap: wrap; }
+
+    /* Rent collection stats: 2-column */
+    .rent-summary { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+    /* Report toolbar wraps stacked */
+    .report-toolbar { flex-wrap: wrap; }
+
+    /* Tables */
+    table { min-width: 580px; }
 }
 
-@media(max-width:400px){
-.main-content{padding:10px!important}.topbar h1{font-size:21px}.topbar p{font-size:12px}
-.mobile-menu-button{width:42px;height:42px;flex-basis:42px}.summary-card{padding:13px!important}.summary-card strong{font-size:19px}
+/* Hide desktop-only elements on mobile */
+@media (max-width: 768px) {
+    /* Admin profile text hidden to save space (avatar still shows) */
+    .admin-profile > div:last-child { display: none; }
 }
-@media(max-width:360px){.main-content{padding:8px!important}.topbar{gap:8px}.mobile-menu-button{width:40px;height:40px;flex-basis:40px}table{min-width:680px}}
-@media(min-width:769px){.mobile-menu-button,.mobile-menu-overlay{display:none!important}}
+
+/* Keep hamburger / overlay hidden on desktop */
+@media (min-width: 769px) {
+    .mobile-menu-button,
+    .mobile-menu-overlay { display: none !important; }
+}
+
+/* ----------------------------------------------------------
+   ≤ 600px  —  Phones  (portrait)
+   ---------------------------------------------------------- */
+@media (max-width: 600px) {
+    .main-content { padding: 14px !important; }
+
+    /* Sidebar internals tighten */
+    .logo       { padding: 14px 16px; }
+    .navigation { padding: 8px 10px; }
+    .nav-item   { min-height: 44px; }  /* touch-friendly */
+
+    /* Summary: full-width single column */
+    .summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .summary-card { width: 100%; }
+
+    /* Panels */
+    .panel { border-radius: 12px; }
+    .panel-header { padding: 14px; }
+
+    /* Modals */
+    .property-form,
+    .licensee-form,
+    .details-card,
+    .licensee-details,
+    .rent-modal { border-radius: 14px !important; padding: 18px !important; }
+
+    /* Form buttons: full-width stacked */
+    .form-buttons,
+    .settings-actions,
+    .broker-actions,
+    .rent-form-actions,
+    .licensee-form-buttons { flex-direction: column !important; width: 100%; }
+    .form-buttons button,
+    .settings-actions button,
+    .broker-actions button,
+    .rent-form-actions button,
+    .licensee-form-buttons button { width: 100%; }
+
+    /* Report toolbar: full-width stacked */
+    .report-toolbar { flex-direction: column; align-items: stretch; }
+    .report-toolbar > * { width: 100% !important; min-height: 42px; }
+
+    /* Filter bars */
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-bar > * { width: 100% !important; min-height: 42px; }
+
+    /* Modal detail grids → 1 column */
+    .details-grid   { grid-template-columns: 1fr !important; }
+    .details-list   { grid-template-columns: 1fr !important; }
+
+    /* Settings storage stats → 1 column */
+    .storage-stats { grid-template-columns: 1fr !important; }
+
+    /* Quick actions → 1 column */
+    .action-grid { grid-template-columns: 1fr !important; }
+
+    /* Rent collection stats → 1 column */
+    .rent-summary { grid-template-columns: 1fr !important; }
+
+    /* Rent search bar full-width */
+    .rent-search { width: 100% !important; }
+    .rent-toolbar .add-property-btn { width: 100%; }
+
+    /* Access role page */
+    .permission-grid { grid-template-columns: 1fr !important; }
+    .role-form-grid,
+    .user-form-grid  { grid-template-columns: 1fr !important; }
+
+    /* Broker layout → 1 column */
+    .broker-layout { grid-template-columns: 1fr !important; }
+    .broker-form   { grid-template-columns: 1fr !important; }
+    .broker-actions { flex-direction: column; }
+    .broker-btn    { width: 100%; }
+
+    /* Licensee / property form grids → 1 column */
+    .licensee-form-grid { grid-template-columns: 1fr !important; }
+    .field-grid         { grid-template-columns: 1fr !important; }
+    .facility-checklist { grid-template-columns: 1fr !important; }
+    .inventory-form     { grid-template-columns: 1fr !important; }
+
+    /* Settings form */
+    .settings-form-grid { grid-template-columns: 1fr !important; }
+
+    /* Rent form grid → 1 column */
+    .rent-form-grid { grid-template-columns: 1fr !important; }
+
+    /* Tables min-width on small phones */
+    table { min-width: 520px; }
+
+    /* Action buttons in table cells: smaller */
+    .action-btn { padding: 6px 8px; font-size: 11px; }
+    .mini-btn   { padding: 5px 7px; font-size: 11px; }
+    .rent-action { padding: 5px 7px; font-size: 11px; }
+}
+
+/* ----------------------------------------------------------
+   ≤ 400px  —  Very small phones
+   ---------------------------------------------------------- */
+@media (max-width: 400px) {
+    .main-content { padding: 10px !important; }
+
+    .topbar h1 { font-size: 19px; }
+    .topbar p  { font-size: 12px; }
+
+    .mobile-menu-button { width: 40px; height: 40px; flex-basis: 40px; font-size: 20px; }
+
+    .summary-card         { padding: 13px !important; }
+    .summary-card strong  { font-size: 18px; }
+
+    .panel { padding: 12px; }
+
+    /* Action buttons in table cells: very compact */
+    .actions-cell { display: flex; flex-direction: column; gap: 4px; }
+    .action-btn   { width: 100%; text-align: center; }
+
+    table { min-width: 480px; }
+}
+
+/* ----------------------------------------------------------
+   ≤ 360px  —  Budget phones
+   ---------------------------------------------------------- */
+@media (max-width: 360px) {
+    .main-content { padding: 8px !important; }
+    .topbar       { gap: 8px; }
+    .mobile-menu-button { width: 38px; height: 38px; flex-basis: 38px; }
+    table { min-width: 460px; }
+}
+
+
+/* ============================================================
+   CROSS-PAGE RESPONSIVE HARDENING
+   Applies to all Rent Management pages
+   ============================================================ */
+
+/* Prevent common flex/grid overflow */
+.main-content > *,
+.topbar > *,
+.panel-header > *,
+.broker-card,
+.maintenance-card,
+.agreement-form-panel,
+.agreement-preview-panel,
+.drafts-panel,
+.report-card,
+.settings-card,
+.panel-card,
+.summary-card,
+.rent-stat {
+    min-width: 0;
+}
+
+/* Generic responsive wrappers */
+.broker-layout,
+.maintenance-layout,
+.agreement-layout,
+.report-grid,
+.settings-grid,
+.section-grid,
+.dashboard-grid,
+.broker-form,
+.maintenance-form,
+.field-grid,
+.licensee-form-grid,
+.rent-form-grid,
+.settings-form-grid,
+.user-form-grid,
+.role-form-grid,
+.permission-grid {
+    width: 100%;
+}
+
+/* Wide content blocks must wrap rather than overflow */
+.broker-card,
+.maintenance-card,
+.agreement-form-panel,
+.agreement-preview-panel,
+.drafts-panel,
+.report-card,
+.settings-card,
+.panel-card,
+.panel,
+.details-card,
+.licensee-form,
+.licensee-details,
+.property-form,
+.rent-modal,
+.rent-form {
+    max-width: 100%;
+}
+
+/* Text-heavy areas */
+.topbar h1,
+.topbar p,
+.panel-header h2,
+.panel-header p,
+.broker-card h2,
+.maintenance-card h2,
+.agreement-form-panel h2,
+.agreement-preview-panel h2,
+.report-card h3,
+.settings-card h2,
+.notification-panel,
+.licensee-details,
+.details-card {
+    overflow-wrap: anywhere;
+}
+
+/* Keep controls usable in narrow containers */
+input,
+select,
+textarea,
+button,
+.btn,
+.add-property-btn,
+.broker-btn,
+.rent-action,
+.action-btn,
+.mini-btn {
+    box-sizing: border-box;
+}
+
+/* Tables: scroll only inside their wrappers */
+.panel table,
+.broker-table,
+.rent-table,
+.report-table {
+    max-width: none;
+}
+
+.table-container,
+.table-wrap,
+.table-responsive,
+.broker-table-wrap,
+.rent-table-wrap,
+.report-table-wrap {
+    overflow-x: auto;
+    overflow-y: visible;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Agreement layout */
+@media (max-width: 1100px) {
+    .agreement-layout,
+    .broker-layout,
+    .maintenance-layout {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Narrow desktop / large tablet */
+@media (max-width: 1024px) {
+    .broker-form,
+    .maintenance-form,
+    .field-grid,
+    .licensee-form-grid,
+    .settings-form-grid,
+    .user-form-grid,
+    .role-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .agreement-layout,
+    .broker-layout,
+    .maintenance-layout,
+    .report-grid,
+    .settings-grid,
+    .section-grid {
+        gap: 16px;
+    }
+
+    .broker-card,
+    .maintenance-card,
+    .agreement-form-panel,
+    .agreement-preview-panel,
+    .drafts-panel,
+    .report-card,
+    .settings-card,
+    .panel-card {
+        padding: 18px;
+    }
+
+    .topbar {
+        gap: 12px;
+    }
+
+    .admin-area {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+/* Tablet / mobile transition */
+@media (max-width: 768px) {
+    .main-content {
+        overflow-x: hidden !important;
+    }
+
+    .topbar {
+        align-items: flex-start !important;
+    }
+
+    .admin-area {
+        width: auto;
+        max-width: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .notification-panel {
+        right: 0;
+        max-width: calc(100vw - 28px);
+    }
+
+    .broker-form,
+    .maintenance-form,
+    .field-grid,
+    .licensee-form-grid,
+    .settings-form-grid,
+    .user-form-grid,
+    .role-form-grid,
+    .permission-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .agreement-layout,
+    .broker-layout,
+    .maintenance-layout,
+    .report-grid,
+    .settings-grid,
+    .section-grid,
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .agreement-preview-panel,
+    .agreement-form-panel,
+    .drafts-panel {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .period-row,
+    .form-row,
+    .two-column,
+    .details-grid,
+    .details-list {
+        grid-template-columns: 1fr !important;
+    }
+
+    .broker-actions,
+    .maintenance-actions,
+    .form-buttons,
+    .settings-actions,
+    .rent-form-actions,
+    .licensee-form-buttons {
+        width: 100%;
+    }
+
+    .broker-actions > *,
+    .maintenance-actions > *,
+    .form-buttons > *,
+    .settings-actions > *,
+    .rent-form-actions > *,
+    .licensee-form-buttons > * {
+        max-width: 100%;
+    }
+
+    .table-container,
+    .table-wrap,
+    .table-responsive,
+    .broker-table-wrap,
+    .rent-table-wrap,
+    .report-table-wrap {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* Keep modal headers visible and allow only the body to scroll when possible */
+    .property-form,
+    .licensee-form,
+    .details-card,
+    .licensee-details,
+    .rent-modal {
+        min-height: 0;
+    }
+
+    .agreement-preview {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+}
+
+/* Phones */
+@media (max-width: 600px) {
+    .topbar {
+        gap: 8px !important;
+    }
+
+    .topbar > div:first-of-type,
+    .topbar > div:first-child {
+        width: 100%;
+    }
+
+    .admin-area {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .admin-area > * {
+        max-width: 100%;
+    }
+
+    .notification-panel {
+        position: fixed !important;
+        top: 68px !important;
+        right: 14px !important;
+        left: 14px !important;
+        width: auto !important;
+        max-width: none !important;
+    }
+
+    .broker-card,
+    .maintenance-card,
+    .agreement-form-panel,
+    .agreement-preview-panel,
+    .drafts-panel,
+    .report-card,
+    .settings-card,
+    .panel-card {
+        padding: 14px !important;
+        border-radius: 14px;
+    }
+
+    .broker-form,
+    .maintenance-form,
+    .field-grid,
+    .licensee-form-grid,
+    .settings-form-grid,
+    .user-form-grid,
+    .role-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .summary-grid,
+    .rent-summary,
+    .storage-stats,
+    .action-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .topbar h1 {
+        font-size: clamp(19px, 7vw, 24px) !important;
+    }
+
+    .topbar p {
+        font-size: 12px !important;
+    }
+
+    /* Give touch targets comfortable sizes without causing overflow */
+    .btn,
+    .add-property-btn,
+    .broker-btn,
+    .rent-action,
+    .action-btn,
+    .mini-btn,
+    button {
+        min-height: 40px;
+    }
+
+    /* Very wide agreement/summary content must wrap */
+    .agreement-preview,
+    .agreement-preview * {
+        max-width: 100%;
+    }
+
+    /* Forms inside tables / cards */
+    .form-group,
+    .broker-field,
+    .maintenance-field,
+    .settings-form-group,
+    .rent-field {
+        min-width: 0;
+    }
+
+    /* Avoid flex children forcing overflow */
+    .topbar > *,
+    .panel-header > *,
+    .notification-header > *,
+    .admin-area > * {
+        min-width: 0;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+    .main-content {
+        padding: 10px !important;
+    }
+
+    .topbar {
+        padding: 12px !important;
+        border-radius: 14px !important;
+    }
+
+    .mobile-menu-button {
+        width: 40px !important;
+        height: 40px !important;
+        flex-basis: 40px !important;
+        flex-shrink: 0;
+    }
+
+    .admin-area {
+        justify-content: flex-start;
+    }
+
+    .admin-area .btn,
+    .admin-area button {
+        width: 100%;
+    }
+
+    table {
+        min-width: 480px;
+    }
+}
+
+/* Desktop sanity */
+@media (min-width: 769px) {
+    .main-content {
+        overflow-x: hidden;
+    }
+
+    .mobile-menu-button,
+    .mobile-menu-overlay {
+        display: none !important;
+    }
+}
+
+/* ============================================================
+   LOGIN RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+    .login-body {
+        padding: 12px !important;
+        align-items: flex-start;
+    }
+    .login-shell {
+        width: 100%;
+        max-width: 520px;
+        margin: 12px auto;
+    }
+    .login-card {
+        width: 100%;
+        padding: 20px !important;
+        border-radius: 16px;
+    }
+    .login-brand {
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+    .login-brand-icon {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 46px;
+    }
+    .login-brand h1 {
+        font-size: clamp(22px, 7vw, 30px);
+    }
+    .login-form,
+    .login-field {
+        width: 100%;
+    }
+    .login-field input,
+    .login-submit {
+        min-height: 44px;
+    }
+    .demo-accounts {
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-body {
+        padding: 8px !important;
+    }
+    .login-card {
+        padding: 16px !important;
+    }
+    .login-brand h1 {
+        font-size: 21px;
+    }
+}

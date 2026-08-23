@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="css/style.css?v=20260817">
 <link rel="stylesheet" href="css/responsive.css?v=20260817">
 
-<script src="js/sync.js?v=20260817" defer></script>
+<script src="js/sync.js?v=20260823" defer></script>
 <script src="js/sidebar.js?v=20260817" defer></script>
 <script src="js/mobile-menu.js?v=20260817" defer></script>
 <script src="js/auth.js?v=20260817" defer></script>
@@ -2638,6 +2638,25 @@ updatePropertyOccupancy();
 
 </script>
 
+
+
+<script>
+// Real-time sync refresh for Licensees page.
+document.addEventListener('DOMContentLoaded', function () {
+    if (!window.RentAppSync) return;
+    window.RentAppSync.onDataChange(['rentlicensees', 'rentProperties', 'rentBrokers', 'rentPayments'], function () {
+        try {
+            if (typeof licensees !== 'undefined' && Array.isArray(licensees)) {
+                licensees = JSON.parse(localStorage.getItem('rentlicensees') || '[]');
+            }
+            if (typeof renderlicensees === 'function') renderlicensees();
+            if (typeof updatePropertyOccupancy === 'function') updatePropertyOccupancy();
+        } catch (e) {
+            console.error('Licensee sync refresh failed:', e);
+        }
+    });
+});
+</script>
 
 </body>
 </html>
